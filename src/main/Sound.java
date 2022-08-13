@@ -10,6 +10,7 @@ public class Sound {
 	
 	public Sound() {
 		soundURL[0] = getClass().getResource("/sound/door.wav");
+		soundURL[1] = getClass().getResource("/sound/key.wav");
 	}
 	
 	public void setFile(int i) {

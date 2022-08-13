@@ -12,7 +12,7 @@ import main.*;
 public class Player extends Entity {
 	GamePanel gp;
 	KeyHandler keyH;
-	
+
 	public final int screenX;
 	public final int screenY;
 	ArrayList<String> inventory = new ArrayList<String>();
@@ -158,12 +158,14 @@ public class Player extends Entity {
 			String objName = gp.obj[i].name;
 			switch(objName) {
 			case "Key1":
+				gp.ui.showMessage("you have key", 120, 2, 2);
+				gp.playSE(1);
 				inventory.add(gp.obj[i].name);
 				gp.obj[i] = null;
 				break;
 			case "Key2":
+				gp.playSE(1);
 				inventory.add(gp.obj[i].name);
-				
 				gp.obj[i] = null;
 				break;
 			case "Door1":
