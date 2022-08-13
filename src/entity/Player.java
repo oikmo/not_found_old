@@ -39,11 +39,10 @@ public class Player extends Entity {
 		getPlayerImage();
 	}
 	public void setDefaultValues() {
-		worldX = 550;//gp.tileSize * 23;
-		worldY = 550;//gp.tileSize * 21;
+		worldX = gp.tileSize * 16;
+		worldY = gp.tileSize * 16;
 		speed = 3;
 		direction = "idle";
-		//loadItems("res/items.txt/");
 	}
 	
 	public void getPlayerImage() {
@@ -157,19 +156,7 @@ public class Player extends Entity {
 	public void pickUpObject(int i) {
 		if (i != 99) {
 			String objName = gp.obj[i].name;
-			/*switch(objName) {
-			case "Key1":
-				hasKey++;
-				gp.obj[i] = null;
-				break;
-			case "Door":
-				if(hasKey > 0) {
-					gp.obj[i] = null;
-					hasKey--;
-				}
-				break;
-			}*/
-			/*switch(objName) {
+			switch(objName) {
 			case "Key1":
 				inventory.add(gp.obj[i].name);
 				gp.obj[i] = null;
@@ -181,147 +168,75 @@ public class Player extends Entity {
 				break;
 			case "Door1":
 				if(inventory.contains("Key1")) {
+					gp.playSE(0);
 					inventory.remove("Key1");
 					gp.obj[i] = null;
 				}
 				break;
 			case "Door2":
 				if(inventory.contains("Key2")) {
+					gp.playSE(0);
 					inventory.remove("Key2");
 					gp.obj[i] = null;
 				}
 				break;
-			}*/
+			}
 		}
 	}
-	/*public void loadItems(String textPath) {
-		try {
-			Scanner s = new Scanner(new File(textPath));
-			while (s.hasNext()){
-			    items.add(s.next());
-			}
-			s.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}*/
+	
 	public void draw(Graphics2D g2) {
-//		g2.setColor(Color.white);
-//		//g2.drawImage(image, playerX, playerY, tileSize, tileSize, null);
-//		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-//		g2.dispose();
 		
 		BufferedImage image = null;
 		
 		switch(direction) {
 		case "idle":
-			if(spriteNum == 1) {
-				image = idle1;
-			}
-			if(spriteNum == 2) {
-				image = idle2;
-			}
-			if(spriteNum == 3) {
-				image = idle3;
-			}
-			if(spriteNum == 4) {
-				image = idle4;
-			}
-			if(spriteNum == 5) {
-				image = idle5;
-			}
-			if(spriteNum == 6) {
-				image = idle6;
-			}
+			if(spriteNum == 1) {image = idle1;}
+			if(spriteNum == 2) {image = idle2;}
+			if(spriteNum == 3) {image = idle3;}
+			if(spriteNum == 4) {image = idle4;}
+			if(spriteNum == 5) {image = idle5;}
+			if(spriteNum == 6) {image = idle6;}
 			break;
+			
 		case "up":
-			if(spriteNum == 1) {
-				image = up1;
-			}
-			if(spriteNum == 2) {
-				image = up2;
-			}
-			if(spriteNum == 3) {
-				image = up3;
-			}
-			if(spriteNum == 4) {
-				image = up4;
-			}
-			if(spriteNum == 5) {
-				image = up5;
-			}
-			if(spriteNum == 6) {
-				image = up6;
-			}
+			if(spriteNum == 1) {image = up1;}
+			if(spriteNum == 2) {image = up2;}
+			if(spriteNum == 3) {image = up3;}
+			if(spriteNum == 4) {image = up4;}
+			if(spriteNum == 5) {image = up5;}
+			if(spriteNum == 6) {image = up6;}
 			break;
+			
 		case "down":
-			if(spriteNum == 1) {
-				image = down1;
-			}
-			if(spriteNum == 2) {
-				image = down2;
-			}
-			if(spriteNum == 3) {
-				image = down3;
-			}
-			if(spriteNum == 4) {
-				image = down4;
-			}
-			if(spriteNum == 5) {
-				image = down5;
-			}
-			if(spriteNum == 6) {
-				image = down6;
-			}
+			if(spriteNum == 1) {image = down1;}
+			if(spriteNum == 2) {image = down2;}
+			if(spriteNum == 3) {image = down3;}
+			if(spriteNum == 4) {image = down4;}
+			if(spriteNum == 5) {image = down5;}
+			if(spriteNum == 6) {image = down6;}
 			break;
 			
 		case "left":
-			if(spriteNum == 1) {
-				image = left1;
-			}
-			if(spriteNum == 2) {
-				image = left2;
-			}
-			if(spriteNum == 3) {
-				image = left3;
-			}
-			if(spriteNum == 4) {
-				image = left4;
-			}
-			if(spriteNum == 5) {
-				image = left5;
-			}
-			if(spriteNum == 6) {
-				image = left6;
-			}
-				break;
+			if(spriteNum == 1) {image = left1;}
+			if(spriteNum == 2) {image = left2;}
+			if(spriteNum == 3) {image = left3;}
+			if(spriteNum == 4) {image = left4;}
+			if(spriteNum == 5) {image = left5;}
+			if(spriteNum == 6) {image = left6;}
+			break;
+			
 		case "right":
-			if(spriteNum == 1) {
-				image = right1;
-			}
-			if(spriteNum == 2) {
-				image = right2;
-			}
-			if(spriteNum == 3) {
-				image = right3;
-			}
-			if(spriteNum == 4) {
-				image = right4;
-			}
-			if(spriteNum == 5) {
-				image = right5;
-			}
-			if(spriteNum == 6) {
-				image = right6;
-			}
+			if(spriteNum == 1) {image = right1;}
+			if(spriteNum == 2) {image = right2;}
+			if(spriteNum == 3) {image = right3;}
+			if(spriteNum == 4) {image = right4;}
+			if(spriteNum == 5) {image = right5;}
+			if(spriteNum == 6) {image = right6;}
 			break;
 		}
 
-		//System.out.println(x + y);
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-		g2.setColor(Color.red);
-		g2.setFont(new Font("TimesRoman", Font.BOLD, 15));
-		g2.drawString("FPS : " + gp.fpsCount, 0, 13);
+		
 	}
 	
 }
