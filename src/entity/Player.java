@@ -2,7 +2,8 @@ package entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -14,6 +15,10 @@ public class Player extends Entity {
 	
 	public final int screenX;
 	public final int screenY;
+	ArrayList<String> inventory = new ArrayList<String>();
+	//ArrayList<String> items = new ArrayList<String>();
+	int hasKey = 0;
+
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
@@ -38,6 +43,7 @@ public class Player extends Entity {
 		worldY = 550;//gp.tileSize * 21;
 		speed = 3;
 		direction = "idle";
+		//loadItems("res/items.txt/");
 	}
 	
 	public void getPlayerImage() {
@@ -78,6 +84,7 @@ public class Player extends Entity {
 	}
 	
 	public void update() {
+		System.out.println(inventory);
 		if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
 			if(keyH.upPressed == true) {
 				direction = "up";
@@ -94,6 +101,10 @@ public class Player extends Entity {
 			//check tile collision
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
+			
+			//check obj collision
+			int objIndex = gp.cChecker.checkObject(this, true);
+			pickUpObject(objIndex);
 			
 			//if collision false player move
 			if(collisionOn == false) {
@@ -142,6 +153,58 @@ public class Player extends Entity {
 		}
 		
 	}
+	
+	public void pickUpObject(int i) {
+		if (i != 99) {
+			String objName = gp.obj[i].name;
+			/*switch(objName) {
+			case "Key1":
+				hasKey++;
+				gp.obj[i] = null;
+				break;
+			case "Door":
+				if(hasKey > 0) {
+					gp.obj[i] = null;
+					hasKey--;
+				}
+				break;
+			}*/
+			/*switch(objName) {
+			case "Key1":
+				inventory.add(gp.obj[i].name);
+				gp.obj[i] = null;
+				break;
+			case "Key2":
+				inventory.add(gp.obj[i].name);
+				
+				gp.obj[i] = null;
+				break;
+			case "Door1":
+				if(inventory.contains("Key1")) {
+					inventory.remove("Key1");
+					gp.obj[i] = null;
+				}
+				break;
+			case "Door2":
+				if(inventory.contains("Key2")) {
+					inventory.remove("Key2");
+					gp.obj[i] = null;
+				}
+				break;
+			}*/
+		}
+	}
+	/*public void loadItems(String textPath) {
+		try {
+			Scanner s = new Scanner(new File(textPath));
+			while (s.hasNext()){
+			    items.add(s.next());
+			}
+			s.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}*/
 	public void draw(Graphics2D g2) {
 //		g2.setColor(Color.white);
 //		//g2.drawImage(image, playerX, playerY, tileSize, tileSize, null);
