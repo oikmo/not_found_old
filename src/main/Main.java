@@ -7,7 +7,7 @@ public class Main {
 		JFrame window = new JFrame();
 		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);
+		window.setResizable(true);
 		window.requestFocus();
 		window.setTitle("not_found");
 		Image icon = Toolkit.getDefaultToolkit().getImage("icon.png");
