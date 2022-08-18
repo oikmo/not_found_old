@@ -8,10 +8,9 @@ public class NPC_Dupe extends Entity{
 
 	public NPC_Dupe(GamePanel gp) {
 		super(gp);
-		name = "DUPE";
 		direction = "down";
 		speed = 2;
-		gp.npc[0] = this;
+		//gp.npc[0] = this;
 		getPlayerImage();
 		setDialogue();
 		
@@ -50,7 +49,6 @@ public class NPC_Dupe extends Entity{
 		right6 = setup("/npc/right_6");
 	}
 	public void setDialogue() {
-		gp.ui.npcCounter = 0;
 		dialogues[0] = "im you";
 		dialogues[1] = "what do you mean?";
 		dialogues[2] = "do you not fucking get it.";
@@ -86,6 +84,7 @@ public class NPC_Dupe extends Entity{
 	}
 	
 	public void speak() {
+		gp.ui.npcCounter = 0;
 		if(dialogues[dialogueIndex] == null) {
 			dialogueIndex = 0;
 		}

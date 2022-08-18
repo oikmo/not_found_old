@@ -49,13 +49,13 @@ public class UI {
 		if (gp.gameState == gp.playState) {
 			//g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 			g2.setFont(VCR);
-			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 			g2.setColor(Color.red);
-			g2.drawString("FPS : " + gp.fpsCount, 0, 13);
-			g2.setFont(VCR);
+			g2.drawString("FPS:" + gp.fpsCount, 0, gp.tileSize/3);
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 			g2.setColor(Color.white);
 			playTime +=(double)1/60;
-			g2.drawString("Time : "+ dForm.format(playTime), gp.tileSize*14, 39);
+			g2.drawString("Time : "+ dForm.format(playTime), gp.tileSize*14, gp.tileSize*1);
 		} else if(gp.gameState == gp.pauseState){
 			drawPScreen();
 		} else if(gp.gameState == gp.dialogueState) {

@@ -8,7 +8,6 @@ public class NPC_TEST extends Entity{
 
 	public NPC_TEST(GamePanel gp) {
 		super(gp);
-		name = "TEST";
 		direction = "down";
 		speed = 2;
 		gp.npc[1] = this;
@@ -50,7 +49,7 @@ public class NPC_TEST extends Entity{
 		right6 = setup("/npc/right_6");
 	}
 	public void setDialogue() {
-		gp.ui.npcCounter = 1;
+		
 		dialogues[0] = "test test test";;
 	}
 	public void setAction() {
@@ -97,6 +96,7 @@ public class NPC_TEST extends Entity{
 	}
 	
 	public void speak() {
+		gp.ui.npcCounter = 1;
 		if(dialogues[dialogueIndex] == null) {
 			dialogueIndex = 0;
 		}
