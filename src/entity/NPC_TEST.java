@@ -4,14 +4,14 @@ import java.util.Random;
 
 import main.GamePanel;
 
-public class NPC_Dupe extends Entity{
+public class NPC_TEST extends Entity{
 
-	public NPC_Dupe(GamePanel gp) {
+	public NPC_TEST(GamePanel gp) {
 		super(gp);
-		name = "DUPE";
+		name = "TEST";
 		direction = "down";
 		speed = 2;
-		gp.npc[0] = this;
+		gp.npc[1] = this;
 		getPlayerImage();
 		setDialogue();
 		
@@ -50,19 +50,16 @@ public class NPC_Dupe extends Entity{
 		right6 = setup("/npc/right_6");
 	}
 	public void setDialogue() {
-		gp.ui.npcCounter = 0;
-		dialogues[0] = "im you";
-		dialogues[1] = "what do you mean?";
-		dialogues[2] = "do you not fucking get it.";
-		dialogues[3] = "YOU ARE ME AND I AM YOU HOW DO YOU \nNOT FUCKING GET IT YOU SACK OF SHIT";
+		gp.ui.npcCounter = 1;
+		dialogues[0] = "test test test";;
 	}
 	public void setAction() {
 		
 		actionLockCounter++;
 		
-		if(actionLockCounter >= 120 && moving == false) {
+		if(actionLockCounter >= 80 && moving == false) {
 			Random random = new Random();
-			int i = random.nextInt(100)+1;
+			int i = random.nextInt(100)+2;
 			
 			if(i <= 25) {
 				direction = "up";
@@ -76,10 +73,24 @@ public class NPC_Dupe extends Entity{
 			if(i > 75 && i <= 100) {
 				direction = "right";
 			}
+			switch(gp.player.direction) {
+			case "up":
+				direction = "up";
+				break;
+			case "down":
+				direction = "down";
+				break;
+			case "left":
+				direction = "left";
+				break;
+			case "right":
+				direction = "right";
+				break;
+			}
 			moving = true;
 		}
 		
-		if(actionLockCounter > 120) {
+		if(actionLockCounter > 80) {
 			actionLockCounter = 0;
 		}
 

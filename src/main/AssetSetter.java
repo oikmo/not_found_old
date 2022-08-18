@@ -1,9 +1,7 @@
 package main;
 
-import entity.NPC_Dupe;
-import object.OBJ_Chest;
-import object.OBJ_Door;
-import object.OBJ_Key;
+import entity.*;
+import object.*;
 
 public class AssetSetter {
 	GamePanel gp;
@@ -46,6 +44,10 @@ public class AssetSetter {
 		gp.npc[0] = new NPC_Dupe(gp);
 		gp.npc[0].worldX = gp.tileSize*8;
 		gp.npc[0].worldY = gp.tileSize*12;
+		
+		gp.npc[1] = new NPC_TEST(gp);
+		gp.npc[1].worldX = gp.tileSize*3;
+		gp.npc[1].worldY = gp.tileSize*6;
 		
 	}
 }
