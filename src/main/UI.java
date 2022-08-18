@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 
-import javax.swing.text.html.parser.Entity;
-
 public class UI {
 	Graphics2D g2;
 	GamePanel gp;
