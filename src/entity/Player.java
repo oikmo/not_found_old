@@ -8,7 +8,7 @@ import main.*;
 
 public class Player extends Entity {
 	KeyHandler keyH;
-
+	public BufferedImage shadow;
 	public final int screenX;
 	public final int screenY;
 	ArrayList<String> inventory = new ArrayList<String>();
@@ -38,11 +38,18 @@ public class Player extends Entity {
 	public void setDefaultValues() {
 		worldX = gp.tileSize * 16;
 		worldY = gp.tileSize * 16;
+		int x = worldX;
+		int y = worldY;
 		speed = 4;
 		direction = "idle";
+		
+		//player status
+		maxLife = 6;
+		life = maxLife;
 	}
 
 	public void getPlayerImage() {
+		shadow = setup("/player/shadow");
 		idle1 = setup("/player/idle_1");
 		idle2 = setup("/player/idle_2");
 		idle3 = setup("/player/idle_3");

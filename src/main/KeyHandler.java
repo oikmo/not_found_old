@@ -26,17 +26,51 @@ public class KeyHandler implements KeyListener, MouseListener{
 		
 		int code = e.getKeyCode();
 		
+		
+		if(gp.gameState == gp.titleState) {
+			if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+				gp.ui.commandNum--;
+				if(gp.ui.commandNum < 0) {
+					gp.ui.commandNum = 3;
+				}
+			}
+			if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+				gp.ui.commandNum++;
+				if(gp.ui.commandNum > 3) {
+					gp.ui.commandNum = 0;
+				}
+			}
+			if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_RIGHT) {
+				if(gp.ui.commandNum == 0) {
+					rightPressed = false;
+					gp.gameState = gp.playState;
+				}
+				if(gp.ui.commandNum == 1) {
+					rightPressed = false;
+					gp.ui.drawERR("not available");
+				}
+				if(gp.ui.commandNum == 2) {
+					rightPressed = false;
+					gp.ui.drawERR("not available");
+				}
+				if(gp.ui.commandNum == 3) {
+					System.exit(0);
+				}
+				
+			}
+		}
+		
 		if(gp.gameState == gp.playState) {
-			if(code == KeyEvent.VK_W) {
+			if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 				upPressed = true;
 			}
-			else if(code == KeyEvent.VK_S) {
+			else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				downPressed = true;
 			}
-			else if(code == KeyEvent.VK_A) {
+			else if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 				leftPressed = true;
 			}
-			else if(code == KeyEvent.VK_D) {
+			else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 				rightPressed = true;
 			}
 			else if(code == KeyEvent.VK_P) {
@@ -44,6 +78,9 @@ public class KeyHandler implements KeyListener, MouseListener{
 			}
 			else if(code == KeyEvent.VK_ENTER) {
 				enterPressed = true;
+			}
+			else if(code == KeyEvent.VK_ESCAPE) {
+				gp.gameState = gp.titleState;
 			}
 		}
 		else if(gp.gameState == gp.pauseState) {
@@ -68,16 +105,16 @@ public class KeyHandler implements KeyListener, MouseListener{
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();
 		
-		if(code == KeyEvent.VK_W) {
+		if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 			upPressed = false;
 		}
-		else if(code == KeyEvent.VK_S) {
+		else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 			downPressed = false;
 		}
-		else if(code == KeyEvent.VK_A) {
+		else if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 			leftPressed = false;
 		}
-		else if(code == KeyEvent.VK_D) {
+		else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 			rightPressed = false;
 		}
 

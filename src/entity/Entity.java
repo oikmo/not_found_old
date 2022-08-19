@@ -27,13 +27,19 @@ public class Entity {
 	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collisionOn = false;
+	//movement
 	boolean moving = false;
 	int pixelCounter = 0;
 	public int actionLockCounter = 0;
+	//dialogues
 	String dialogues[] = new String[20];
 	int dialogueIndex = 0;
 	public String name;
 	
+	//char status
+	public int maxLife;
+	public int life;
+
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 	}

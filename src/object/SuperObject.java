@@ -7,7 +7,7 @@ import main.GamePanel;
 import main.UtilityBox;
 
 public class SuperObject {
-	public BufferedImage image;
+	public BufferedImage image1, image2, image3;
 	public String name;
 	public boolean collision = false;
 	public int worldX, worldY;
@@ -44,12 +44,12 @@ public class SuperObject {
 				&& worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
 				&& worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.drawImage(image1, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		}
 		// If player is around the edge, draw everything
 		else if (gp.player.worldX < gp.player.screenX || gp.player.worldY < gp.player.screenY
 				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.drawImage(image1, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		}
 	}
 }

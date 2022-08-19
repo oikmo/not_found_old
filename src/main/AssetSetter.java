@@ -29,7 +29,7 @@ public class AssetSetter {
 		//gp.obj[2].canPickUp = false;
 		
 		gp.obj[3] = new OBJ_Key(gp);
-		gp.obj[3].worldX = 5 * gp.tileSize;
+		gp.obj[3].worldX = 22 * gp.tileSize;
 		gp.obj[3].worldY = 5 * gp.tileSize;
 		gp.obj[3].name = "Key2";
 		

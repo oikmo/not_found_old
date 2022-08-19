@@ -87,10 +87,12 @@ public class NPC_TEST extends Entity{
 				break;
 			}
 			moving = true;
+			
 		}
 		
 		if(actionLockCounter > 80) {
 			actionLockCounter = 0;
+			direction = "idle";
 		}
 
 	}

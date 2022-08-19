@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 public class UI {
 	Graphics2D g2;
 	GamePanel gp;
-	Font roman, VCR;
+	Font VCR;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter;
@@ -17,6 +17,7 @@ public class UI {
 	float mY;
 	public String currentDialogue = "";
 	public int npcCounter;
+	public int commandNum = 0;
 	
 	double playTime;
 	DecimalFormat dForm = new DecimalFormat("#0");
@@ -44,7 +45,11 @@ public class UI {
 	
 	public void draw(Graphics2D g2) {
 		this.g2 = g2;
-		if (gp.gameState == gp.playState) {
+		if(gp.gameState == gp.titleState) {
+			drawTScreen();
+			//drawERR("");
+		}
+		else if (gp.gameState == gp.playState) {
 			//g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 			g2.setFont(VCR);
 			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
@@ -53,7 +58,9 @@ public class UI {
 			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 			g2.setColor(Color.white);
 			playTime +=(double)1/60;
-			g2.drawString("Time : "+ dForm.format(playTime), gp.tileSize*14, gp.tileSize*1);
+			String text = "Time : "+ dForm.format(playTime);
+			int x = getXfCT(text);
+			g2.drawString(text, x*1.9F, gp.tileSize/3);
 		} else if(gp.gameState == gp.pauseState){
 			drawPScreen();
 		} else if(gp.gameState == gp.dialogueState) {
@@ -72,15 +79,83 @@ public class UI {
 		}
 		
 	}
+	public void drawTScreen() {
+		g2.setColor(Color.black);
+		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
+		String text = "not_found";
+		
+		g2.setFont(VCR);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN,96F));
+		int x = getXfCT(text);
+		int y = gp.tileSize*3;
+		g2.setColor(Color.gray);
+		g2.drawString(text, x+5, y+5);
+		
+		g2.setColor(Color.white);
+		g2.drawString(text, x, y);
+		
+		x = gp.screenWidth/2 - (gp.tileSize*2)/2;
+		y += gp.tileSize*2.3F;
+		g2.drawImage(gp.player.shadow, x, y, gp.tileSize*2, gp.tileSize*2, null);
+		
+		x = gp.screenWidth/2 - (gp.tileSize*2)/2;
+		y += gp.tileSize/4 - (gp.tileSize*1.12);
+		g2.drawImage(gp.player.idle1, x, y, gp.tileSize*2, gp.tileSize*2, null);
+		
+		//menu
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 48F));
+		text = "NEW GAME";
+		x = getXfCT(text);
+		y += gp.tileSize*4;
+		g2.drawString(text, x, y);
+		if(commandNum == 0) {
+			g2.drawString(">", x-gp.tileSize, y);
+		}
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 48F));
+		text = "LOAD SAVE";
+		x = getXfCT(text);
+		y += gp.tileSize;
+		g2.drawString(text, x, y);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 48F));
+		if(commandNum == 1) {
+			g2.drawString(">", x-gp.tileSize, y);
+		}
+		
+		text = "OPTIONS";
+		x = getXfCT(text);
+		y += gp.tileSize;
+		g2.drawString(text, x, y);
+		if(commandNum == 2) {
+			g2.drawString(">", x-gp.tileSize, y);
+		}
+		
+		text = "QUIT";
+		x = getXfCT(text);
+		y += gp.tileSize;
+		g2.drawString(text, x, y);
+		if(commandNum == 3) {
+			g2.drawString(">", x-gp.tileSize, y);
+		}
+		
+		
+	}
 	
 	public void drawPScreen() {
 		g2.setColor(Color.white);
 		g2.setFont(g2.getFont().deriveFont(30F));
 		String text = "PAUSED";
-		int x;
-		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-		x = gp.screenWidth/2 - length/2;
+		int x = getXfCT(text);
 		int y = gp.screenHeight/12;
+		g2.drawString(text, x, y);
+	}
+	
+	public void drawERR(String text) {
+		g2.setColor(Color.red);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));
+		int x = getXfCT(text);
+		int y = gp.screenHeight/2;
 		g2.drawString(text, x, y);
 	}
 	
@@ -114,6 +189,12 @@ public class UI {
 		g2.setStroke(new BasicStroke(5));
 		g2.drawRoundRect(x+5, y+5, width-10, height-10, 25, 25);
 		
+	}
+	//getXforCenteredText
+	public int getXfCT(String text) {
+		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+		int x = gp.screenWidth/2 - length/2;
+		return x;
 	}
 	
 }

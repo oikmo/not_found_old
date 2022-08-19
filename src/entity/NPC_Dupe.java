@@ -61,7 +61,7 @@ public class NPC_Dupe extends Entity{
 		if(actionLockCounter >= 120 && moving == false) {
 			Random random = new Random();
 			int i = random.nextInt(100)+1;
-			
+			direction = "idle";
 			if(i <= 25) {
 				direction = "up";
 			}
@@ -75,10 +75,12 @@ public class NPC_Dupe extends Entity{
 				direction = "right";
 			}
 			moving = true;
+			
 		}
 		
 		if(actionLockCounter > 120) {
 			actionLockCounter = 0;
+			direction = "idle";
 		}
 
 	}
