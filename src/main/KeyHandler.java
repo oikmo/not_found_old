@@ -1,13 +1,13 @@
 package main;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class KeyHandler implements KeyListener, MouseListener{
 	
 	GamePanel gp;
+	ImageIcon icon = new ImageIcon("question.png");
+
 	
 	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
 	
@@ -54,7 +54,13 @@ public class KeyHandler implements KeyListener, MouseListener{
 					gp.ui.drawERR("not available");
 				}
 				if(gp.ui.commandNum == 3) {
-					System.exit(0);
+					
+					int balls = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit le game??", "POP-UP", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
+					if(balls == JOptionPane.OK_OPTION) {
+						System.exit(0);
+					}
+					
+					
 				}
 				
 			}
@@ -73,18 +79,18 @@ public class KeyHandler implements KeyListener, MouseListener{
 			else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 				rightPressed = true;
 			}
-			else if(code == KeyEvent.VK_P) {
+			else if(code == KeyEvent.VK_ESCAPE) {
 				gp.gameState = gp.pauseState;
 			}
 			else if(code == KeyEvent.VK_ENTER) {
 				enterPressed = true;
 			}
-			else if(code == KeyEvent.VK_ESCAPE) {
+			/*else if(code == KeyEvent.VK_ESCAPE) {
 				gp.gameState = gp.titleState;
-			}
+			}*/
 		}
 		else if(gp.gameState == gp.pauseState) {
-			if(code == KeyEvent.VK_P) {
+			if(code == KeyEvent.VK_ESCAPE) {
 				gp.gameState = gp.playState;
 			}
 		}

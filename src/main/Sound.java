@@ -12,7 +12,8 @@ public class Sound {
 		soundURL[0] = getClass().getResource("/sound/door.wav");
 		soundURL[1] = getClass().getResource("/sound/key.wav");
 		soundURL[2] = getClass().getResource("/sound/JEALOUS.wav");
-		soundURL[3] = getClass().getResource("/sound/3301.wav");
+		soundURL[3] = getClass().getResource("/sound/Espionage.wav");
+		soundURL[4] = getClass().getResource("/sound/3301.wav");
 	}
 	
 	public void setFile(int i) {

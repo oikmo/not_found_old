@@ -25,6 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int maxWorldRow = 32;
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
+	boolean music1, music2;
 	
 	int FPS = 60;
 	
@@ -32,6 +33,8 @@ public class GamePanel extends JPanel implements Runnable {
 	//system
 	TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
+	Sound Tmusic = new Sound();
+	Sound Pmusic = new Sound();
 	Sound music = new Sound();
 	Sound se = new Sound();
 	public CollisionChecker cChecker = new CollisionChecker(this);
@@ -64,7 +67,10 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setObject();
 		aSetter.setNPC();
 		gameState = titleState;
-		playMusic(2);
+		Pmusic.setFile(4);
+		Tmusic.setFile(3);
+		Tmusic.stop();
+		music.setFile(2);
 	}
 	
 	public void startGameThread() {
@@ -111,7 +117,14 @@ public class GamePanel extends JPanel implements Runnable {
 			counter = 0;
 		}
 		if(gameState == playState) {
-			music.play();
+			Tmusic.stop();
+			if(music1 == false) {
+				music2 = false;
+				Pmusic.stop();
+				music.play();
+				Tmusic.stop();
+				music1 = true;
+			} 
 			player.update();
 			for(int i=0;i<npc.length;i++) {
 				if(npc[i] != null) {
@@ -120,10 +133,22 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 		if(gameState == pauseState) {
-			music.stop();
-			if(gameState == playState) {
-				music.play();
+			if(music2 == false) {
+				Tmusic.stop();
+				music.stop();
+				Pmusic.play();
+				music1 = false;
+				music2 = true;
 			}
+		}
+		if(gameState == titleState) {
+			music1 = false;
+			music2 = false;
+			Tmusic.loop();
+			music.stop();
+			Pmusic.stop();
+			Tmusic.play();
+			
 		}
 	}
 	
@@ -169,11 +194,14 @@ public class GamePanel extends JPanel implements Runnable {
 		se.setFile(i);
 		se.play();
 	}
-	public void pause(int i) {
-		music.setFile(i);
+	public void playTMusic(int i) {
+		Tmusic.setFile(i);
+		Tmusic.play();
+		Tmusic.loop();
+	}
+	public void stopTMusic() {
 		music.stop();
 	}
-	
 }
 
 
