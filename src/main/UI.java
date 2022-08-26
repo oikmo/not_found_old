@@ -164,6 +164,10 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 48F));
 		if(commandNum == 1) {
 			g2.drawString(">", x-gp.tileSize, y);
+			drawERR("not available");
+			g2.setColor(Color.white);
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 48F));
+			
 		}
 		
 		text = "OPTIONS";
@@ -172,6 +176,9 @@ public class UI {
 		g2.drawString(text, x, y);
 		if(commandNum == 2) {
 			g2.drawString(">", x-gp.tileSize, y);
+			drawERR("not available");
+			g2.setColor(Color.white);
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 48F));
 		}
 		
 		text = "QUIT";
@@ -194,13 +201,7 @@ public class UI {
 		g2.drawString(text, x, y);
 	}
 	
-	public void drawERR(String text) {
-		g2.setColor(Color.red);
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));
-		int x = getXfCT(text);
-		int y = gp.screenHeight/2;
-		g2.drawString(text, x, y);
-	}
+	
 	
 	public void drawDScreen(int i) {
 		//window
@@ -240,4 +241,12 @@ public class UI {
 		return x;
 	}
 	
+	public void drawERR(String text) {
+		g2.setColor(Color.red);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));
+		int x = getXfCT(text);
+		int y = gp.tileSize*1;
+		g2.drawString(text, x, y); 
+		
+	}
 }

@@ -10,7 +10,8 @@ public class NPC_TEST extends Entity{
 		super(gp);
 		direction = "down";
 		speed = 2;
-		gp.npc[1] = this;
+		//gp.npc[1] = this;
+		//gp.npc[100] = new Entity(gp);
 		getPlayerImage();
 		setDialogue();
 		

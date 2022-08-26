@@ -43,7 +43,7 @@ public class Entity {
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 	}
-	
+
 	public void setAction() {}
 	public void speak() {}
 	public void update() {

@@ -107,6 +107,8 @@ public class Player extends Entity {
 				
 				int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
 				interactNPC(npcIndex);
+				//check event
+				gp.eHandler.checkEvent();
 				
 			} else {
 				direction = "idle";

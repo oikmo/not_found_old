@@ -23,7 +23,7 @@ public class TileManager {
 	public void getTileImage() {
 		setup(0, "ground", false);
 		setup(1, "wall", true);
-		setup(2, "water", true);
+		setup(2, "water", false);
 		setup(3, "/g_w/g_wbl", false);
 		setup(4, "/g_w/g_wmb", false);
 		setup(5, "/g_w/g_wbr", false);

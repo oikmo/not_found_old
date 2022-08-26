@@ -51,5 +51,9 @@ public class AssetSetter {
 		gp.npc[1].worldY = gp.tileSize*6;
 		gp.npc[1].name = "TEST";
 		
+		gp.npc[2] = new NPC_BLANK(gp);
+		gp.npc[2].name = "";
+		
+		
 	}
 }
