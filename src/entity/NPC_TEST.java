@@ -1,12 +1,16 @@
 package entity;
 
+import java.io.IOException;
 import java.util.Random;
 
 import main.GamePanel;
+import main.UtilityBox;
 
 public class NPC_TEST extends Entity{
-
-	public NPC_TEST(GamePanel gp) {
+	
+	UtilityBox uTool = new UtilityBox();
+	
+	public NPC_TEST(GamePanel gp) throws IOException {
 		super(gp);
 		direction = "down";
 		speed = 2;
@@ -49,9 +53,26 @@ public class NPC_TEST extends Entity{
 		right5 = setup("/npc/right_5");
 		right6 = setup("/npc/right_6");
 	}
-	public void setDialogue() {
+	public void setDialogue() throws IOException {
 		
-		dialogues[0] = "test test test";;
+		dialogues[0] = uTool.array("/dialogue/test")[0];
+		dialogues[1] = uTool.array("/dialogue/test")[1];
+		dialogues[2] = uTool.array("/dialogue/test")[2];
+		dialogues[3] = uTool.array("/dialogue/test")[3];
+		dialogues[4] = uTool.array("/dialogue/test")[4];
+		dialogues[5] = uTool.array("/dialogue/test")[5];
+		dialogues[6] = uTool.array("/dialogue/test")[6];
+		dialogues[7] = uTool.array("/dialogue/test")[7];
+		dialogues[8] = uTool.array("/dialogue/test")[8];
+		dialogues[9] = uTool.array("/dialogue/test")[9];
+		dialogues[10] = uTool.array("/dialogue/test")[10];
+		dialogues[11] = uTool.array("/dialogue/test")[11];
+		dialogues[12] = uTool.array("/dialogue/test")[12];
+		dialogues[13] = uTool.array("/dialogue/test")[13];
+		dialogues[14] = uTool.array("/dialogue/test")[14];
+		dialogues[15] = uTool.array("/dialogue/test")[15];
+		dialogues[16] = uTool.array("/dialogue/test")[16];
+		
 	}
 	public void setAction() {
 		

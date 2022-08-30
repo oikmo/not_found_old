@@ -1,5 +1,7 @@
 package main;
 
+import java.io.IOException;
+
 import entity.*;
 import object.*;
 
@@ -40,7 +42,7 @@ public class AssetSetter {
 		
 	}
 
-	public void setNPC() {
+	public void setNPC() throws IOException {
 		gp.npc[0] = new NPC_Dupe(gp);
 		gp.npc[0].worldX = gp.tileSize*8;
 		gp.npc[0].worldY = gp.tileSize*12;

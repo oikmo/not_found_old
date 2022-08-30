@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.*;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -48,7 +49,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public UI ui = new UI(this);
 	public EventHandler eHandler = new EventHandler(this);
 	
-	//gamestates
 	public int gameState;
 	public final int titleState = 0;
 	public final int playState = 1;
@@ -64,7 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.addMouseListener(keyH);
 	}
 	
-	public void setupGame() {
+	public void setupGame() throws IOException {
 		aSetter.setObject();
 		aSetter.setNPC();
 		gameState = titleState;
