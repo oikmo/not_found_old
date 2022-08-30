@@ -72,6 +72,30 @@ public class NPC_TEST extends Entity{
 		dialogues[14] = uTool.array("/dialogue/test")[14];
 		dialogues[15] = uTool.array("/dialogue/test")[15];
 		dialogues[16] = uTool.array("/dialogue/test")[16];
+		dialogues[17] = uTool.array("/dialogue/test")[17];
+		dialogues[18] = uTool.array("/dialogue/test")[18];
+		dialogues[19] = uTool.array("/dialogue/test")[19];
+		dialogues[20] = uTool.array("/dialogue/test")[20];
+		dialogues[21] = uTool.array("/dialogue/test")[21];
+		dialogues[22] = uTool.array("/dialogue/test")[22];
+		dialogues[23] = uTool.array("/dialogue/test")[23];
+		dialogues[24] = uTool.array("/dialogue/test")[24];
+		dialogues[25] = uTool.array("/dialogue/test")[25];
+		dialogues[26] = uTool.array("/dialogue/test")[26];
+		dialogues[27] = uTool.array("/dialogue/test")[27];
+		dialogues[28] = uTool.array("/dialogue/test")[28];
+		dialogues[29] = uTool.array("/dialogue/test")[29];
+		dialogues[30] = uTool.array("/dialogue/test")[30];
+		dialogues[31] = uTool.array("/dialogue/test")[31];
+		dialogues[32] = uTool.array("/dialogue/test")[32];
+		dialogues[33] = uTool.array("/dialogue/test")[33];
+		dialogues[34] = uTool.array("/dialogue/test")[34];
+		dialogues[35] = uTool.array("/dialogue/test")[35];
+		dialogues[36] = uTool.array("/dialogue/test")[36];
+		dialogues[37] = uTool.array("/dialogue/test")[37];
+		dialogues[38] = uTool.array("/dialogue/test")[38];
+		dialogues[39] = uTool.array("/dialogue/test")[39];
+		dialogues[40] = uTool.array("/dialogue/test")[40];
 		
 	}
 	public void setAction() {
@@ -96,16 +120,16 @@ public class NPC_TEST extends Entity{
 			}
 			switch(gp.player.direction) {
 			case "up":
-				direction = "up";
-				break;
-			case "down":
 				direction = "down";
 				break;
+			case "down":
+				direction = "up";
+				break;
 			case "left":
-				direction = "left";
+				direction = "right";
 				break;
 			case "right":
-				direction = "right";
+				direction = "left";
 				break;
 			}
 			moving = true;

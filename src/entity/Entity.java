@@ -32,7 +32,7 @@ public class Entity {
 	int pixelCounter = 0;
 	public int actionLockCounter = 0;
 	//dialogues
-	String dialogues[] = new String[20];
+	String dialogues[] = new String[100];
 	int dialogueIndex = 0;
 	public String name;
 	
