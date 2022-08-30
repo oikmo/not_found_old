@@ -22,6 +22,8 @@ public class EventHandler {
 	
 	public void checkEvent() {
 		if(hit(1,1,"any") == true) {damagePit(gp.dialogueState, 1);}
+		if(hit(2,2, "any") == true) {healPool(gp.dialogueState);}
+		if(hit(3,3, "any") == true) {tp(gp.dialogueState, 10, 10);}
 	}
 	
 	public boolean hit(int eventCol, int eventRow, String reqDir) {
@@ -52,5 +54,21 @@ public class EventHandler {
 		gp.ui.npcCounter = 2;
 		gp.player.life -= dmg;
 		
+	}
+	
+	public void healPool(int gameState) {
+		if(gp.keyH.enterPressed == true) {
+			gp.gameState = gameState;
+			gp.ui.currentDialogue = "you uh drank the liquid\n and you are good";
+			gp.player.life = gp.player.maxLife;
+		}
+		
+	}
+	
+	public void tp(int gameState, int x, int y) {
+		gp.gameState = gameState;
+		gp.ui.currentDialogue = "you got tp'd loser";
+		gp.player.worldX = gp.tileSize*x;
+		gp.player.worldY = gp.tileSize*y;
 	}
 }

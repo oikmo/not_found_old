@@ -56,6 +56,7 @@ public class UI {
 	
 	public void draw(Graphics2D g2) {
 		this.g2 = g2;
+		g2.setFont(VCR);
 		if(gp.gameState == gp.titleState) {
 			//gp.player.setDefaultValues();
 			drawTScreen();

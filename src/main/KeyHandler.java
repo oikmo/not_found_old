@@ -47,11 +47,10 @@ public class KeyHandler implements KeyListener, MouseListener{
 				}
 				if(gp.ui.commandNum == 1) {
 					rightPressed = false;
-					gp.ui.drawERR("not available");
+					
 				}
 				if(gp.ui.commandNum == 2) {
 					rightPressed = false;
-					gp.ui.drawERR("not available");
 				}
 				if(gp.ui.commandNum == 3) {
 					

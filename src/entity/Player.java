@@ -109,6 +109,7 @@ public class Player extends Entity {
 				interactNPC(npcIndex);
 				//check event
 				gp.eHandler.checkEvent();
+				gp.keyH.enterPressed = false;
 				
 			} else {
 				direction = "idle";

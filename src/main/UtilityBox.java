@@ -18,7 +18,7 @@ public class UtilityBox  {
 		return scaledImage;
 	}
 	
-	public String[] array(String filepath) throws IOException {
+	public String[] getDialogueFromTXT(String filepath) throws IOException {
 		List<String> listOfStrings = new ArrayList<String>();
 		BufferedReader bf = new BufferedReader(new FileReader("res" + filepath +".txt"));
 		String line = bf.readLine();
