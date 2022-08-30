@@ -19,27 +19,12 @@ public class UtilityBox  {
 	}
 	
 	public String[] array(String filepath) throws IOException {
-		// list that holds strings of a file
 		List<String> listOfStrings = new ArrayList<String>();
-			
-		// load data from file
 		BufferedReader bf = new BufferedReader(new FileReader("res" + filepath +".txt"));
-			
-		// read entire line as string 
 		String line = bf.readLine();
-			
-		// checking for end of file
-		while (line != null) {
-			listOfStrings.add(line);
-			line = bf.readLine();
-		}
-			
+		while (line != null) {listOfStrings.add(line);line = bf.readLine();}
 		bf.close();
-			
-		// storing the data in arraylist to array
 		String[] array= listOfStrings.toArray(new String[0]);
-				
-		//return array;
 		return array;
 	}
 	
