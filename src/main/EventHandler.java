@@ -23,7 +23,7 @@ public class EventHandler {
 	public void checkEvent() {
 		if(hit(2,2,"any") == true) {damagePit(gp.dialogueState, 1);}
 		if(hit(1,1, "up") == true) {healPool(gp.dialogueState);}
-		if(hit(3,3, "any") == true) {tp(gp.dialogueState, 10, 10);}
+		//if(hit(3,3, "any") == true) {tp(gp.dialogueState, 10, 10);}
 	}
 	
 	public boolean hit(int eventCol, int eventRow, String reqDir) {
