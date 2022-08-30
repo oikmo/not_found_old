@@ -21,8 +21,8 @@ public class EventHandler {
 	}
 	
 	public void checkEvent() {
-		if(hit(1,1,"any") == true) {damagePit(gp.dialogueState, 1);}
-		if(hit(2,2, "any") == true) {healPool(gp.dialogueState);}
+		if(hit(2,2,"any") == true) {damagePit(gp.dialogueState, 1);}
+		if(hit(1,1, "up") == true) {healPool(gp.dialogueState);}
 		if(hit(3,3, "any") == true) {tp(gp.dialogueState, 10, 10);}
 	}
 	
@@ -57,12 +57,14 @@ public class EventHandler {
 	}
 	
 	public void healPool(int gameState) {
+		System.out.println("not enter");
 		if(gp.keyH.enterPressed == true) {
+			System.out.println("enter");
 			gp.gameState = gameState;
 			gp.ui.currentDialogue = "you uh drank the liquid\n and you are good";
 			gp.player.life = gp.player.maxLife;
 		}
-		
+		gp.keyH.enterPressed = false;
 	}
 	
 	public void tp(int gameState, int x, int y) {

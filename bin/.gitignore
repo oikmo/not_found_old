@@ -1,15 +1,7 @@
-/dialogue/
-/fonts/
-/maps/
-/npc/
-/objects/
-/overlay/
-/player/
-/sound/
 /entity/
 /main/
 /object/
+/sound/
 /tile/
 /tiles/
 /unused.txt
-/test/
