@@ -83,7 +83,6 @@ public class UI {
 		}
 		else if (gp.gameState == gp.playState) {
 			if(gp.theBoys) {				
-				System.out.println(count);
 				if(count<2520) {
 					count++;
 				}
