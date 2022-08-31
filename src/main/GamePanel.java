@@ -2,6 +2,9 @@ package main;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.*;
 
@@ -44,8 +47,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//entities and objects
 	public Player player = new Player(this,keyH);
-	public SuperObject obj[] = new SuperObject[10];
+	public Entity obj[] = new Entity[10];
 	public Entity npc[] = new Entity[5];
+	ArrayList<Entity> eList = new ArrayList<>();
+	
 	public UI ui = new UI(this);
 	public EventHandler eHandler = new EventHandler(this);
 	
@@ -163,24 +168,45 @@ public class GamePanel extends JPanel implements Runnable {
 			ui.draw(g2);
 		} else {
 			tileM.draw(g2);
-			for(int i=0;i<obj.length;i++) {
+			
+			eList.add(player);
+			
+			for(int i=0; i<obj.length; i++) {
 				if(obj[i] != null) {
-					obj[i].draw(g2, this);
+					eList.add(obj[i]);
 				}
 			}
-			player.draw(g2);
-			for(int i=0;i<npc.length;i++) {
+			
+			for(int i=0; i<npc.length; i++) {
 				if(npc[i] != null) {
-					npc[i].draw(g2);
+					eList.add(npc[i]);
 				}
+			}
+			
+			Collections.sort(eList, new Comparator<Entity>() {
+
+				@Override
+				public int compare(Entity o1, Entity o2) {
+					int result = Integer.compare(o1.worldX, o2.worldY);
+					
+					return result;
+				}
+				
+			});
+			
+			for(int i =0; i<eList.size(); i++) {
+				eList.get(i).draw(g2);
+			}
+			for(int i =0; i<eList.size(); i++) {
+				eList.remove(i);
 			}
 			
 			ui.draw(g2);
-			g2.dispose();
+			
 			
 		}
 		
-		
+		g2.dispose();
 	}
 	
 	public void playMusic(int i) {

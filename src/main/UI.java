@@ -6,8 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 
+import entity.Entity;
 import object.OBJ_Heart;
-import object.SuperObject;
+
 
 public class UI {
 	Graphics2D g2;
@@ -41,7 +42,7 @@ public class UI {
 		
 		
 		//create HUD objs
-		SuperObject heart = new OBJ_Heart(gp);
+		Entity heart = new OBJ_Heart(gp);
 		hFull = heart.image1;
 		hHalf = heart.image2;
 		hBlank = heart.image3;
@@ -211,7 +212,7 @@ public class UI {
 		int y = gp.tileSize/2;
 		int width = gp.screenWidth - (gp.tileSize*4);
 		int height = gp.tileSize*5;
-		g2.drawString(gp.npc[i].name, x, y);
+		g2.drawString(gp.npc[i].npcName, x, y);
 		
 		drawSW(x, y, width, height);
 		

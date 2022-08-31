@@ -46,15 +46,15 @@ public class AssetSetter {
 		gp.npc[0] = new NPC_Dupe(gp);
 		gp.npc[0].worldX = gp.tileSize*8;
 		gp.npc[0].worldY = gp.tileSize*12;
-		gp.npc[0].name = "DUPE";
+		gp.npc[0].npcName = "DUPE";
 		
 		gp.npc[1] = new NPC_TEST(gp);
 		gp.npc[1].worldX = gp.tileSize*3;
 		gp.npc[1].worldY = gp.tileSize*6;
-		gp.npc[1].name = "TEST";
+		gp.npc[1].npcName = "TEST";
 		
 		gp.npc[2] = new NPC_BLANK(gp);
-		gp.npc[2].name = "";
+		gp.npc[2].npcName = "";
 		
 		
 	}

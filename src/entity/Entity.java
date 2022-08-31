@@ -34,7 +34,11 @@ public class Entity {
 	//dialogues
 	String dialogues[] = new String[100];
 	int dialogueIndex = 0;
+	public String npcName;
+	//objs
+	public BufferedImage image1, image2, image3;
 	public String name;
+	public boolean collision = false;
 	
 	//char status
 	public int maxLife;
