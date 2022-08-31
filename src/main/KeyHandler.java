@@ -25,7 +25,7 @@ public class KeyHandler implements KeyListener, MouseListener{
 	public void keyPressed(KeyEvent e) {
 		
 		int code = e.getKeyCode();
-		
+		//
 		
 		if(gp.gameState == gp.titleState) {
 			if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -81,7 +81,7 @@ public class KeyHandler implements KeyListener, MouseListener{
 			else if(code == KeyEvent.VK_ESCAPE) {
 				gp.gameState = gp.pauseState;
 			}
-			else if(code == KeyEvent.VK_ENTER) {
+			if(code == KeyEvent.VK_ENTER) {
 				enterPressed = true;
 			}
 			/*else if(code == KeyEvent.VK_ESCAPE) {
@@ -122,6 +122,10 @@ public class KeyHandler implements KeyListener, MouseListener{
 		else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 			rightPressed = false;
 		}
+		else if(code == KeyEvent.VK_ENTER) {
+			enterPressed = false;
+		}
+		
 
 		
 	}

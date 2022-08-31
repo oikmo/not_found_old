@@ -20,7 +20,7 @@ public class Entity {
 	public BufferedImage down1, down2, down3, down4, down5, down6;
 	public BufferedImage left1, left2, left3, left4, left5, left6;
 	public BufferedImage right1, right2, right3, right4, right5, right6;
-	public String direction;
+	public String direction = "idle";
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
 	// collision
@@ -53,7 +53,7 @@ public class Entity {
 			
 		}
 		
-		System.out.println(moving);
+		//System.out.println(moving);
 		if(moving == true) {
 			
 			collisionOn = false;

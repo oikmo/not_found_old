@@ -81,7 +81,11 @@ public class Player extends Entity {
 	}
 
 	public void update() {
-
+		
+		if(life <= 0) {
+			System.exit(0);
+		}
+		
 		if (moving == false) {
 			if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
 					|| keyH.rightPressed == true) {
@@ -213,7 +217,7 @@ public class Player extends Entity {
 			}
 			
 		}
-		gp.keyH.enterPressed = false;
+		//gp.keyH.enterPressed = false;
 	}
 	
 	public void draw(Graphics2D g2) {
