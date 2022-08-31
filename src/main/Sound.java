@@ -6,7 +6,7 @@ import javax.sound.sampled.*;
 
 public class Sound {
 	Clip clip;
-	URL soundURL[] = new URL[5];
+	URL soundURL[] = new URL[6];
 	
 	public Sound() {
 		soundURL[0] = getClass().getResource("/sound/door.wav");
@@ -14,6 +14,7 @@ public class Sound {
 		soundURL[2] = getClass().getResource("/sound/JEALOUS.wav"); //in game
 		soundURL[3] = getClass().getResource("/sound/Espionage.wav"); //main menu
 		soundURL[4] = getClass().getResource("/sound/3301.wav"); //pause menu
+		soundURL[5] = getClass().getResource("/sound/theBoys.wav");
 	}
 	
 	public void setFile(int i) {

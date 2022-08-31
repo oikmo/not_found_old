@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 
+import javax.imageio.ImageIO;
+
 import entity.Entity;
 import object.OBJ_Heart;
 
@@ -24,13 +26,29 @@ public class UI {
 	public String currentDialogue = "";
 	public int npcCounter;
 	public int commandNum = 0;
+	boolean ifBoys = false;
+	BufferedImage image = null;
+	int count = 0;
+	int pX, pY;
+	int dX, dY;
+	int XX = 11;
 	
 	double playTime;
 	DecimalFormat dForm = new DecimalFormat("#0");
 	UtilityBox uTool = new UtilityBox();
 	
 	public UI(GamePanel gp) {
+		
+		
 		this.gp = gp;
+		try{
+	        image = ImageIO.read(getClass().getResource("/theBoys.png/"));
+		} catch(IOException e)	{
+	    	e.printStackTrace();
+	    } catch(Exception e){
+	    	e.printStackTrace();
+	    	}
+		
 		try {
 			InputStream is = getClass().getResourceAsStream("/fonts/VCR.ttf");
 			VCR = Font.createFont(Font.TRUETYPE_FONT, is);
@@ -64,6 +82,26 @@ public class UI {
 			//drawERR("");
 		}
 		else if (gp.gameState == gp.playState) {
+			if(gp.theBoys) {				
+				System.out.println(count);
+				if(count<2520) {
+					count++;
+				}
+				
+				if(count>=500) {
+					if(!gp.STOPPLAYER) {
+						drawTheBoys();
+						gp.STOPPLAYER = true;
+					}
+				}
+				
+				if(count>=2520) {
+					XX = 10000;
+				}
+				if(count>=2520) {
+					count = 0;
+				}
+			}
 			drawPLife();
 			//g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 			g2.setFont(VCR);
@@ -203,8 +241,13 @@ public class UI {
 		g2.drawString(text, x, y);
 	}
 	
-	
-	
+	public void drawTheBoys() {
+		ifBoys = true;
+		if(ifBoys) {
+			g2.drawImage(image, gp.tileSize*XX, gp.tileSize, gp.tileSize*4, gp.tileSize*2, null);
+		}
+	}
+
 	public void drawDScreen(int i) {
 		//window
 		//StringBuilder sbf = new StringBuilder();
@@ -225,6 +268,7 @@ public class UI {
 			
 		}
 	}
+	
 	public void drawSW(int x, int y, int width, int height) {
 		Color c = new Color(0,0,0, 220);
 		g2.setColor(c);

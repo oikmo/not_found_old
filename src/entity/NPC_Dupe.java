@@ -79,8 +79,9 @@ public class NPC_Dupe extends Entity{
 		}
 		
 		if(actionLockCounter > 120) {
-			actionLockCounter = 0;
 			direction = "idle";
+			actionLockCounter = 0;
+			
 		}
 
 	}
@@ -92,6 +93,9 @@ public class NPC_Dupe extends Entity{
 		}
 		gp.ui.currentDialogue = dialogues[dialogueIndex];
 		dialogueIndex++;
+		if(dialogueIndex == 4) {
+			gp.theBoys = true;
+		}
 		
 		switch(gp.player.direction) {
 		case "up":

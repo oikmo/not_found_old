@@ -42,7 +42,7 @@ public class EventHandler {
 		}
 		if(canTouchEvent) {
 			if(hit(2,2,"any")) {damagePit(2,2,gp.dialogueState,1,true);}
-			if(hit(1,1, "any")) {healPool(1,1,gp.dialogueState,false);}
+			if(hit(1,1, "up")) {healPool(1,1,gp.dialogueState,false);}
 		}
 		
 		
@@ -80,7 +80,6 @@ public class EventHandler {
 		gp.ui.npcCounter = 2;
 		gp.player.life -= dmg;
 		eventRect[col][row].eventDone = isOnce;
-		canTouchEvent = false;
 	}
 	
 	public void healPool(int col, int row, int gameState, boolean isOnce) {

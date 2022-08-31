@@ -1,9 +1,6 @@
-/overlay/
-/player/
-/sound/
 /entity/
 /main/
+/monster/
 /object/
-/tile/
-/tiles/
-/unused.txt
+/sound/
+/theBoys.png

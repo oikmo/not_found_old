@@ -29,6 +29,10 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
 	boolean music1, music2;
+	public boolean theBoys;
+	boolean isTheBoys = false;
+	public boolean STOPPLAYER = false;
+	
 	
 	int FPS = 60;
 	
@@ -116,10 +120,10 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void update() {
-		int counter = 0;
-		counter++;
-		if(counter > 120) {
-			counter = 0;
+		if(theBoys && !isTheBoys && gameState == playState) {
+			isTheBoys = true;
+			se.setFile(5);
+			se.play();
 		}
 		if(gameState == playState) {
 			Tmusic.stop();
@@ -167,7 +171,7 @@ public class GamePanel extends JPanel implements Runnable {
 			ui.draw(g2);
 		} else {
 			tileM.draw(g2);
-			
+
 			eList.add(player);
 			
 			for(int i=0; i<obj.length; i++) {
@@ -195,6 +199,12 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			for(int i =0; i<eList.size(); i++) {
 				eList.get(i).draw(g2);
+				if(STOPPLAYER) {
+					STOPPLAYER = false;
+					eList.remove(npc[0]);
+				}
+				
+				
 			}
 			for(int i =0; i<eList.size(); i++) {
 				eList.remove(i);
