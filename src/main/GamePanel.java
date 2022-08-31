@@ -9,7 +9,6 @@ import java.util.Comparator;
 import javax.swing.*;
 
 import entity.*;
-import object.SuperObject;
 import tile.TileManager;
 
 @SuppressWarnings("serial")
