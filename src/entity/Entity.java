@@ -27,8 +27,8 @@ public class Entity {
 	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collisionOn = false;
-	//movement
-	boolean moving = false;
+	//movement (grid based)
+	public boolean moving = false;
 	int pixelCounter = 0;
 	public int actionLockCounter = 0;
 	//dialogues
@@ -39,6 +39,11 @@ public class Entity {
 	public BufferedImage image1, image2, image3;
 	public String name;
 	public boolean collision = false;
+	//damage
+	public boolean isInvince = false;
+	public int invinceCounter = 0;
+	
+	public int monType;
 	
 	//char status
 	public int maxLife;
@@ -52,9 +57,23 @@ public class Entity {
 	public void speak() {}
 	public void update() {
 		
+		collisionOn = false;
+		gp.cChecker.checkTile(this);
+		gp.cChecker.checkObject(this, false);
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.monster);
+		boolean contactPlayer = gp.cChecker.checkPlayer(this);
+		
+		if(this.monType == 0 && contactPlayer) {
+			if(!gp.player.isInvince) {
+				gp.player.life -= 1;
+				gp.player.isInvince = true;
+			}
+		}
+		
+		
 		if (moving == false) {
 			setAction();
-			
 		}
 		
 		//System.out.println(moving);

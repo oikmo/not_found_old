@@ -34,10 +34,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public boolean STOPPLAYER = false;
 	
 	
-	int FPS = 60;
+	
 	
 	Image image;
-	//system
+	
+	//SYSTEM
+	int FPS = 60;
 	TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	Sound Tmusic = new Sound();
@@ -52,6 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Player player = new Player(this,keyH);
 	public Entity obj[] = new Entity[10];
 	public Entity npc[] = new Entity[5];
+	public Entity monster[] = new Entity[20];
 	ArrayList<Entity> eList = new ArrayList<>();
 	
 	public UI ui = new UI(this);
@@ -73,9 +76,12 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void setupGame() throws IOException {
+		//set objs, npcs, mons, gamestate etc
 		aSetter.setObject();
 		aSetter.setNPC();
+		aSetter.setMonster();
 		gameState = titleState;
+		//music setter
 		Pmusic.setFile(4);
 		Tmusic.setFile(3);
 		Tmusic.stop();
@@ -88,7 +94,6 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	@Override
-
 	public void run() { //gameloop
 		double drawInterval = 1000000000 / FPS;
 		double delta = 0;
@@ -120,11 +125,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void update() {
-		if(theBoys && !isTheBoys && gameState == playState) {
-			isTheBoys = true;
-			se.setFile(5);
-			se.play();
-		}
+		
 		if(gameState == playState) {
 			Tmusic.stop();
 			if(music1 == false) {
@@ -140,7 +141,19 @@ public class GamePanel extends JPanel implements Runnable {
 					npc[i].update();
 				}
 			}
+			for(int i=0;i<monster.length;i++) {
+				if(monster[i] != null) {
+					monster[i].update();
+				}
+			}
 		}
+		//easter egg
+		if(theBoys && !isTheBoys && gameState == playState) {
+			isTheBoys = true;
+			se.setFile(5);
+			se.play();
+		}
+		//music stuff
 		if(gameState == pauseState) {
 			if(music2 == false) {
 				Tmusic.stop();
@@ -183,6 +196,12 @@ public class GamePanel extends JPanel implements Runnable {
 			for(int i=0; i<npc.length; i++) {
 				if(npc[i] != null) {
 					eList.add(npc[i]);
+				}
+			}
+			
+			for(int i=0; i<monster.length; i++) {
+				if(monster[i] != null) {
+					eList.add(monster[i]);
 				}
 			}
 			

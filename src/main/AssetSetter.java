@@ -3,6 +3,7 @@ package main;
 import java.io.IOException;
 
 import entity.*;
+import monster.*;
 import object.*;
 
 public class AssetSetter {
@@ -56,6 +57,11 @@ public class AssetSetter {
 		gp.npc[2] = new NPC_BLANK(gp);
 		gp.npc[2].npcName = "";
 		
-		
+	}
+	
+	public void setMonster() {
+		gp.monster[0] = new MON_EYE(gp);
+		gp.monster[0].worldX = gp.tileSize*3;
+		gp.monster[0].worldY = gp.tileSize*6;
 	}
 }

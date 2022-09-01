@@ -86,7 +86,7 @@ public class Player extends Entity {
 			System.exit(0);
 		}
 		
-		if (moving == false) {
+		if (!moving) {
 			if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
 					|| keyH.rightPressed == true) {
 				if (keyH.upPressed == true) {
@@ -111,6 +111,10 @@ public class Player extends Entity {
 				
 				int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
 				interactNPC(npcIndex);
+				//check momster collision
+				int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+				contactMon(monsterIndex);
+				
 				//check event
 				gp.eHandler.checkEvent();
 				
@@ -133,9 +137,9 @@ public class Player extends Entity {
 			}
 		}
 
-		if (moving == true) {
+		if (moving) {
 			// if collision false player move
-			if (collisionOn == false) {
+			if (!collisionOn) {
 				switch (direction) {
 				case "up":
 					worldY -= speed;
@@ -168,6 +172,14 @@ public class Player extends Entity {
 			if (pixelCounter == 48) {
 				moving = false;
 				pixelCounter = 0;
+			}
+		}
+		
+		if(isInvince) {
+			invinceCounter++;
+			if(invinceCounter > 60) {
+				isInvince = false;
+				invinceCounter = 0;
 			}
 		}
 
@@ -220,6 +232,16 @@ public class Player extends Entity {
 		//gp.keyH.enterPressed = false;
 	}
 	
+	public void contactMon(int i) {
+		if(i != 999) {
+			if(!isInvince) {
+				life -= 1;
+				isInvince = true;
+			}
+			
+		}
+	}
+	
 	public void draw(Graphics2D g2) {
 
 		BufferedImage image = null;
@@ -240,6 +262,18 @@ public class Player extends Entity {
 		int bottomOffset = gp.screenHeight - gp.player.screenY;
 		if (bottomOffset > gp.worldHeight - gp.player.worldY) {
 			screenY = gp.screenHeight - (gp.worldHeight - worldY);
+		}
+		
+		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
+				&& worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
+				&& worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
+				&& worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		}
+		// If player is around the edge, draw everything
+		else if (gp.player.worldX < gp.player.screenX || gp.player.worldY < gp.player.screenY
+				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
+			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		}
 
 		switch (direction) {
@@ -345,20 +379,19 @@ public class Player extends Entity {
 			break;
 		}
 
-		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
-				&& worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
-				&& worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
-				&& worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-		}
-		// If player is around the edge, draw everything
-		else if (gp.player.worldX < gp.player.screenX || gp.player.worldY < gp.player.screenY
-				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		if(isInvince) {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
 		}
 
 		g2.drawImage(image, screenX, screenY, null);
-
+		
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
+		
+		/*g2.setFont(gp.ui.VCR);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+		g2.setColor(Color.red);
+		g2.drawString("invince: " + invinceCounter, 10, 400);*/
+		
 	}
 
 }

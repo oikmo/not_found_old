@@ -15,7 +15,7 @@ import object.OBJ_Heart;
 public class UI {
 	Graphics2D g2;
 	GamePanel gp;
-	Font VCR;
+	public Font VCR;
 	BufferedImage hFull, hHalf, hBlank;
 	public boolean messageOn = false;
 	public String message = "";
