@@ -29,6 +29,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
 	boolean music1, music2;
+	
 	public boolean theBoys;
 	boolean isTheBoys = false;
 	public boolean STOPPLAYER = false;

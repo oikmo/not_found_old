@@ -8,8 +8,8 @@ import main.GamePanel;
 public class MON_EYE extends Entity {
 	public MON_EYE(GamePanel gp) {
 		super(gp);
-		isMon = true;
-		monType = 0;
+
+		type = 2;
 		name = "EYE";
 		speed = 1;
 		maxLife = 4;

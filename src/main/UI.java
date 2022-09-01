@@ -29,8 +29,6 @@ public class UI {
 	boolean ifBoys = false;
 	BufferedImage image = null;
 	int count = 0;
-	int pX, pY;
-	int dX, dY;
 	int XX = 11;
 	
 	double playTime;
