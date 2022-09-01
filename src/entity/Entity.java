@@ -44,6 +44,7 @@ public class Entity {
 	public int invinceCounter = 0;
 	
 	public int monType;
+	public boolean isMon = false;
 	
 	//char status
 	public int maxLife;
@@ -64,7 +65,7 @@ public class Entity {
 		gp.cChecker.checkEntity(this, gp.monster);
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
-		if(this.monType == 0 && contactPlayer) {
+		if(this.isMon && monType == 0 && contactPlayer) {
 			if(!gp.player.isInvince) {
 				gp.player.life -= 1;
 				gp.player.isInvince = true;

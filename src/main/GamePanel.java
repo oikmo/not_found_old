@@ -132,6 +132,7 @@ public class GamePanel extends JPanel implements Runnable {
 				music2 = false;
 				Pmusic.stop();
 				music.play();
+				music.loop();
 				Tmusic.stop();
 				music1 = true;
 			} 
@@ -225,9 +226,7 @@ public class GamePanel extends JPanel implements Runnable {
 				
 				
 			}
-			for(int i =0; i<eList.size(); i++) {
-				eList.remove(i);
-			}
+			eList.clear();
 			
 			ui.draw(g2);
 			

@@ -87,15 +87,14 @@ public class Player extends Entity {
 		}
 		
 		if (!moving) {
-			if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
-					|| keyH.rightPressed == true) {
-				if (keyH.upPressed == true) {
+			if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed  || keyH.enterPressed) {
+				if (keyH.upPressed) {
 					direction = "up";
-				} else if (keyH.downPressed == true) {
+				} else if (keyH.downPressed) {
 					direction = "down";
-				} else if (keyH.leftPressed == true) {
+				} else if (keyH.leftPressed) {
 					direction = "left";
-				} else if (keyH.rightPressed == true) {
+				} else if (keyH.rightPressed) {
 					direction = "right";
 				}
 
@@ -119,6 +118,8 @@ public class Player extends Entity {
 				gp.eHandler.checkEvent();
 				
 				
+				
+				
 			} else {
 				direction = "idle";
 				spriteCounter++;
@@ -139,7 +140,7 @@ public class Player extends Entity {
 
 		if (moving) {
 			// if collision false player move
-			if (!collisionOn) {
+			if (!collisionOn && !gp.keyH.enterPressed) {
 				switch (direction) {
 				case "up":
 					worldY -= speed;
@@ -155,6 +156,7 @@ public class Player extends Entity {
 					break;
 				}
 			}
+			gp.keyH.enterPressed = false;
 
 			spriteCounter++;
 			if (spriteCounter > 8) {
