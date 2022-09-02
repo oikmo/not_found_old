@@ -12,13 +12,13 @@ public class NPC_TEST extends Entity{
 	
 	public NPC_TEST(GamePanel gp) throws IOException {
 		super(gp);
+		setDialogue();
+		
 		direction = "down";
 		speed = 2;
 		//gp.npc[1] = this;
 		//gp.npc[100] = new Entity(gp);
 		getPlayerImage();
-		setDialogue();
-		
 	}
 	
 	public void getPlayerImage() {
@@ -54,48 +54,9 @@ public class NPC_TEST extends Entity{
 		right6 = setup("/npc/right_6");
 	}
 	public void setDialogue() throws IOException {
-		
-		dialogues[0] = uTool.getDialogueFromTXT("/dialogue/test")[0];
-		dialogues[1] = uTool.getDialogueFromTXT("/dialogue/test")[1];
-		dialogues[2] = uTool.getDialogueFromTXT("/dialogue/test")[2];
-		dialogues[3] = uTool.getDialogueFromTXT("/dialogue/test")[3];
-		dialogues[4] = uTool.getDialogueFromTXT("/dialogue/test")[4];
-		dialogues[5] = uTool.getDialogueFromTXT("/dialogue/test")[5];
-		dialogues[6] = uTool.getDialogueFromTXT("/dialogue/test")[6];
-		dialogues[7] = uTool.getDialogueFromTXT("/dialogue/test")[7];
-		dialogues[8] = uTool.getDialogueFromTXT("/dialogue/test")[8];
-		dialogues[9] = uTool.getDialogueFromTXT("/dialogue/test")[9];
-		dialogues[10] = uTool.getDialogueFromTXT("/dialogue/test")[10];
-		dialogues[11] = uTool.getDialogueFromTXT("/dialogue/test")[11];
-		dialogues[12] = uTool.getDialogueFromTXT("/dialogue/test")[12];
-		dialogues[13] = uTool.getDialogueFromTXT("/dialogue/test")[13];
-		dialogues[14] = uTool.getDialogueFromTXT("/dialogue/test")[14];
-		dialogues[15] = uTool.getDialogueFromTXT("/dialogue/test")[15];
-		dialogues[16] = uTool.getDialogueFromTXT("/dialogue/test")[16];
-		dialogues[17] = uTool.getDialogueFromTXT("/dialogue/test")[17];
-		dialogues[18] = uTool.getDialogueFromTXT("/dialogue/test")[18];
-		dialogues[19] = uTool.getDialogueFromTXT("/dialogue/test")[19];
-		dialogues[20] = uTool.getDialogueFromTXT("/dialogue/test")[20];
-		dialogues[21] = uTool.getDialogueFromTXT("/dialogue/test")[21];
-		dialogues[22] = uTool.getDialogueFromTXT("/dialogue/test")[22];
-		dialogues[23] = uTool.getDialogueFromTXT("/dialogue/test")[23];
-		dialogues[24] = uTool.getDialogueFromTXT("/dialogue/test")[24];
-		dialogues[25] = uTool.getDialogueFromTXT("/dialogue/test")[25];
-		dialogues[26] = uTool.getDialogueFromTXT("/dialogue/test")[26];
-		dialogues[27] = uTool.getDialogueFromTXT("/dialogue/test")[27];
-		dialogues[28] = uTool.getDialogueFromTXT("/dialogue/test")[28];
-		dialogues[29] = uTool.getDialogueFromTXT("/dialogue/test")[29];
-		dialogues[30] = uTool.getDialogueFromTXT("/dialogue/test")[30];
-		dialogues[31] = uTool.getDialogueFromTXT("/dialogue/test")[31];
-		dialogues[32] = uTool.getDialogueFromTXT("/dialogue/test")[32];
-		dialogues[33] = uTool.getDialogueFromTXT("/dialogue/test")[33];
-		dialogues[34] = uTool.getDialogueFromTXT("/dialogue/test")[34];
-		dialogues[35] = uTool.getDialogueFromTXT("/dialogue/test")[35];
-		dialogues[36] = uTool.getDialogueFromTXT("/dialogue/test")[36];
-		dialogues[37] = uTool.getDialogueFromTXT("/dialogue/test")[37];
-		dialogues[38] = uTool.getDialogueFromTXT("/dialogue/test")[38];
-		dialogues[39] = uTool.getDialogueFromTXT("/dialogue/test")[39];
-		dialogues[40] = uTool.getDialogueFromTXT("/dialogue/test")[40];
+		for(int i=0; i < 69; i++) {
+			dialogues[i] = uTool.getDialogueFromTXT("/dialogue/test")[i];
+		}
 		
 	}
 	public void setAction() {
