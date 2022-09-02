@@ -6,9 +6,11 @@ import entity.Entity;
 import main.GamePanel;
 
 public class MON_EYE extends Entity {
+	GamePanel gp;
+	
 	public MON_EYE(GamePanel gp) {
 		super(gp);
-
+		this.gp = gp;
 		type = 2;
 		name = "EYE";
 		speed = 1;
@@ -25,36 +27,36 @@ public class MON_EYE extends Entity {
 	}
 	
 	public void getImage() {
-		idle1 = setup("/monster/eye/idle_1");
-		idle2 = setup("/monster/eye/idle_2");
-		idle3 = setup("/monster/eye/idle_3");
-		idle4 = setup("/monster/eye/idle_4");
-		idle5 = setup("/monster/eye/idle_5");
-		idle6 = setup("/monster/eye/idle_6");
-		up1 = setup("/monster/eye/up_1");
-		up2 = setup("/monster/eye/up_2");
-		up3 = setup("/monster/eye/up_3");
-		up4 = setup("/monster/eye/up_4");
-		up5 = setup("/monster/eye/up_5");
-		up6 = setup("/monster/eye/up_6");
-		down1 = setup("/monster/eye/down_1");
-		down2 = setup("/monster/eye/down_2");
-		down3 = setup("/monster/eye/down_3");
-		down4 = setup("/monster/eye/down_4");
-		down5 = setup("/monster/eye/down_5");
-		down6 = setup("/monster/eye/down_6");
-		left1 = setup("/monster/eye/left_1");
-		left2 = setup("/monster/eye/left_2");
-		left3 = setup("/monster/eye/left_3");
-		left4 = setup("/monster/eye/left_4");
-		left5 = setup("/monster/eye/left_5");
-		left6 = setup("/monster/eye/left_6");
-		right1 = setup("/monster/eye/right_1");
-		right2 = setup("/monster/eye/right_2");
-		right3 = setup("/monster/eye/right_3");
-		right4 = setup("/monster/eye/right_4");
-		right5 = setup("/monster/eye/right_5");
-		right6 = setup("/monster/eye/right_6");
+		idle1 = setup("/monster/eye/idle_1", gp.tileSize, gp.tileSize);
+		idle2 = setup("/monster/eye/idle_2", gp.tileSize, gp.tileSize);
+		idle3 = setup("/monster/eye/idle_3", gp.tileSize, gp.tileSize);
+		idle4 = setup("/monster/eye/idle_4", gp.tileSize, gp.tileSize);
+		idle5 = setup("/monster/eye/idle_5", gp.tileSize, gp.tileSize);
+		idle6 = setup("/monster/eye/idle_6", gp.tileSize, gp.tileSize);
+		up1 = setup("/monster/eye/up_1", gp.tileSize, gp.tileSize);
+		up2 = setup("/monster/eye/up_2", gp.tileSize, gp.tileSize);
+		up3 = setup("/monster/eye/up_3", gp.tileSize, gp.tileSize);
+		up4 = setup("/monster/eye/up_4", gp.tileSize, gp.tileSize);
+		up5 = setup("/monster/eye/up_5", gp.tileSize, gp.tileSize);
+		up6 = setup("/monster/eye/up_6", gp.tileSize, gp.tileSize);
+		down1 = setup("/monster/eye/down_1", gp.tileSize, gp.tileSize);
+		down2 = setup("/monster/eye/down_2", gp.tileSize, gp.tileSize);
+		down3 = setup("/monster/eye/down_3", gp.tileSize, gp.tileSize);
+		down4 = setup("/monster/eye/down_4", gp.tileSize, gp.tileSize);
+		down5 = setup("/monster/eye/down_5", gp.tileSize, gp.tileSize);
+		down6 = setup("/monster/eye/down_6", gp.tileSize, gp.tileSize);
+		left1 = setup("/monster/eye/left_1", gp.tileSize, gp.tileSize);
+		left2 = setup("/monster/eye/left_2", gp.tileSize, gp.tileSize);
+		left3 = setup("/monster/eye/left_3", gp.tileSize, gp.tileSize);
+		left4 = setup("/monster/eye/left_4", gp.tileSize, gp.tileSize);
+		left5 = setup("/monster/eye/left_5", gp.tileSize, gp.tileSize);
+		left6 = setup("/monster/eye/left_6", gp.tileSize, gp.tileSize);
+		right1 = setup("/monster/eye/right_1", gp.tileSize, gp.tileSize);
+		right2 = setup("/monster/eye/right_2", gp.tileSize, gp.tileSize);
+		right3 = setup("/monster/eye/right_3", gp.tileSize, gp.tileSize);
+		right4 = setup("/monster/eye/right_4", gp.tileSize, gp.tileSize);
+		right5 = setup("/monster/eye/right_5", gp.tileSize, gp.tileSize);
+		right6 = setup("/monster/eye/right_6", gp.tileSize, gp.tileSize);
 		
 	
 	}

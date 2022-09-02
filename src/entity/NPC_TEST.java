@@ -22,36 +22,36 @@ public class NPC_TEST extends Entity{
 	}
 	
 	public void getPlayerImage() {
-		idle1 = setup("/npc/idle_1");
-		idle2 = setup("/npc/idle_2");
-		idle3 = setup("/npc/idle_3");
-		idle4 = setup("/npc/idle_4");
-		idle5 = setup("/npc/idle_5");
-		idle6 = setup("/npc/idle_6");
-		up1 = setup("/npc/up_1");
-		up2 = setup("/npc/up_2");
-		up3 = setup("/npc/up_3");
-		up4 = setup("/npc/up_4");
-		up5 = setup("/npc/up_5");
-		up6 = setup("/npc/up_6");
-		down1 = setup("/npc/down_1");
-		down2 = setup("/npc/down_2");
-		down3 = setup("/npc/down_3");
-		down4 = setup("/npc/down_4");
-		down5 = setup("/npc/down_5");
-		down6 = setup("/npc/down_6");
-		left1 = setup("/npc/left_1");
-		left2 = setup("/npc/left_2");
-		left3 = setup("/npc/left_3");
-		left4 = setup("/npc/left_4");
-		left5 = setup("/npc/left_5");
-		left6 = setup("/npc/left_6");
-		right1 = setup("/npc/right_1");
-		right2 = setup("/npc/right_2");
-		right3 = setup("/npc/right_3");
-		right4 = setup("/npc/right_4");
-		right5 = setup("/npc/right_5");
-		right6 = setup("/npc/right_6");
+		idle1 = setup("/player/idle_1", gp.tileSize, gp.tileSize);
+		idle2 = setup("/player/idle_2", gp.tileSize, gp.tileSize);
+		idle3 = setup("/player/idle_3", gp.tileSize, gp.tileSize);
+		idle4 = setup("/player/idle_4", gp.tileSize, gp.tileSize);
+		idle5 = setup("/player/idle_5", gp.tileSize, gp.tileSize);
+		idle6 = setup("/player/idle_6", gp.tileSize, gp.tileSize);
+		up1 = setup("/player/up_1", gp.tileSize, gp.tileSize);
+		up2 = setup("/player/up_2", gp.tileSize, gp.tileSize);
+		up3 = setup("/player/up_3", gp.tileSize, gp.tileSize);
+		up4 = setup("/player/up_4", gp.tileSize, gp.tileSize);
+		up5 = setup("/player/up_5", gp.tileSize, gp.tileSize);
+		up6 = setup("/player/up_6", gp.tileSize, gp.tileSize);
+		down1 = setup("/player/down_1", gp.tileSize, gp.tileSize);
+		down2 = setup("/player/down_2", gp.tileSize, gp.tileSize);
+		down3 = setup("/player/down_3", gp.tileSize, gp.tileSize);
+		down4 = setup("/player/down_4", gp.tileSize, gp.tileSize);
+		down5 = setup("/player/down_5", gp.tileSize, gp.tileSize);
+		down6 = setup("/player/down_6", gp.tileSize, gp.tileSize);
+		left1 = setup("/player/left_1", gp.tileSize, gp.tileSize);
+		left2 = setup("/player/left_2", gp.tileSize, gp.tileSize);
+		left3 = setup("/player/left_3", gp.tileSize, gp.tileSize);
+		left4 = setup("/player/left_4", gp.tileSize, gp.tileSize);
+		left5 = setup("/player/left_5", gp.tileSize, gp.tileSize);
+		left6 = setup("/player/left_6", gp.tileSize, gp.tileSize);
+		right1 = setup("/player/right_1", gp.tileSize, gp.tileSize);
+		right2 = setup("/player/right_2", gp.tileSize, gp.tileSize);
+		right3 = setup("/player/right_3", gp.tileSize, gp.tileSize);
+		right4 = setup("/player/right_4", gp.tileSize, gp.tileSize);
+		right5 = setup("/player/right_5", gp.tileSize, gp.tileSize);
+		right6 = setup("/player/right_6", gp.tileSize, gp.tileSize);
 	}
 	public void setDialogue() throws IOException {
 		for(int i=0; i < 69; i++) {
