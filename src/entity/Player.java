@@ -14,7 +14,7 @@ public class Player extends Entity {
 	ArrayList<String> inventory = new ArrayList<String>();
 	boolean moving = false;
 	int pixelCounter = 0;
-	
+	int ii = 0;
 	int atkSpriteCounter;
 	int atkSpriteNum;
 	
@@ -32,10 +32,13 @@ public class Player extends Entity {
 		solidAreaDefaultY = solidArea.y;
 		solidArea.width = 46;
 		solidArea.height = 46;
+		
+		attackArea.width = 36;
+		attackArea.height = 36;
 
 		setDefaultValues();
 		getPlayerImage();
-		getAtkImage();
+		//getAtkImage();
 			
 	}
 
@@ -84,7 +87,7 @@ public class Player extends Entity {
 		right6 = setup("/player/right_6", gp.tileSize, gp.tileSize);
 	}
 	
-	public void getAtkImage() {
+	/*public void getAtkImage() {
 		atkLeft1 = setup("/player/attack_left_1", gp.tileSize*2, gp.tileSize);
 		atkLeft2 = setup("/player/attack_left_2", gp.tileSize*2, gp.tileSize);
 		atkRight1 = setup("/player/attack_right_1", gp.tileSize*2, gp.tileSize);
@@ -93,12 +96,45 @@ public class Player extends Entity {
 		atkUp2 = setup("/player/attack_up_2", gp.tileSize, gp.tileSize*2);
 		atkDown1 = setup("/player/attack_down_1", gp.tileSize, gp.tileSize*2);
 		atkDown2 = setup("/player/attack_down_2", gp.tileSize, gp.tileSize*2);
-	}
+	}*/
 
 	public void update() {
 		
-		if(life <= 0) {
-			System.exit(0);
+		if(attacking) {
+			
+			if(ii < 60) {
+				ii++;
+				
+				int cWorldX = worldX;
+				int cWorldY = worldY;
+				int sAW = solidArea.width;
+				int sAH = solidArea.height;
+				
+				switch(direction) {
+				case "up": worldY -= attackArea.height; break;
+				case "down": worldY += attackArea.height; break;
+				case "left": worldX -= attackArea.width; break;
+				case "right": worldX += attackArea.width; break;}
+				
+				solidArea.width = attackArea.width;
+				solidArea.height = attackArea.height;
+				
+				int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+				damageMon(monsterIndex);
+				
+				worldX = cWorldX;
+				worldY = cWorldY;
+				solidArea.width = sAW;
+				solidArea.height = sAH;
+				
+				if(ii >= 60) {
+					ii = 0;
+					attacking = false;
+				}
+			}
+			
+			
+			
 		}
 		
 		if (!moving) {
@@ -112,38 +148,28 @@ public class Player extends Entity {
 				} else if (keyH.rightPressed) {
 					direction = "right";
 				}
-
+				
 				moving = true;
-
 				// check tile collision
 				collisionOn = false;
 				gp.cChecker.checkTile(this);
-
 				// check obj collision
 				int objIndex = gp.cChecker.checkObject(this, true);
 				pickUpObject(objIndex);
-				
 				int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
 				interactNPC(npcIndex);
 				//check momster collision
 				int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
 				contactMon(monsterIndex);
-				
 				//check event
 				gp.eHandler.checkEvent();
-				
-				
-				
-				
+
 			} else {
 				direction = "idle";
 				spriteCounter++;
-
 				if (spriteCounter > 12) {
 					if (spriteNum > 0) {
-
 						spriteNum++;
-
 					}
 					if (spriteNum > 6) {
 						spriteNum = 1;
@@ -203,7 +229,20 @@ public class Player extends Entity {
 		// System.out.println(inventory);
 
 	}
-
+	
+	public void damageMon(int i) {
+		if(i != 999) {
+			if(!gp.monster[i].isInvince ) {
+				gp.monster[i].life -= 1;
+				gp.monster[i].isInvince = true;
+				
+				if(gp.monster[i].life <= 0) {
+					gp.monster[i] = null;
+				}
+			}
+		}
+	}
+	
 	public void pickUpObject(int i) {
 		if (i != 99) {
 			String objName = gp.obj[i].name;
@@ -252,8 +291,10 @@ public class Player extends Entity {
 	public void contactMon(int i) {
 		if(i != 999) {
 			if(!isInvince) {
-				life -= 1;
-				isInvince = true;
+				if (invinceCounter <= 0) { 
+					life -= 1;
+					isInvince = true;
+				}
 			}
 			
 		}
@@ -405,10 +446,11 @@ public class Player extends Entity {
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		
-		/*g2.setFont(gp.ui.VCR);
+		g2.setFont(gp.ui.VCR);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 		g2.setColor(Color.red);
-		g2.drawString("invince: " + invinceCounter, 10, 400);*/
+		g2.drawString("monster life: " + gp.monster[0].life, 10, 200);
+		g2.drawString("invince: " + invinceCounter, 10, 400);
 		
 	}
 	

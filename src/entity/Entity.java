@@ -13,19 +13,19 @@ public class Entity {
 	GamePanel gp;
 	// position
 	public int worldX, worldY;
-	public int speed;
 	// animation
 	public BufferedImage idle1, idle2, idle3, idle4, idle5, idle6;
 	public BufferedImage up1, up2, up3, up4, up5, up6;
 	public BufferedImage down1, down2, down3, down4, down5, down6;
 	public BufferedImage left1, left2, left3, left4, left5, left6;
 	public BufferedImage right1, right2, right3, right4, right5, right6;
-	public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, atkRight2;
+	//public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, atkRight2;
 	public String direction = "idle";
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
 	// collision
 	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collisionOn = false;
 	//movement (grid based)
@@ -43,13 +43,15 @@ public class Entity {
 	//damage
 	public boolean isInvince = false;
 	public int invinceCounter = 0;
-	public int type;
+	
 	boolean attacking = false;
 	
 	//char status
+	public int speed;
 	public int maxLife;
 	public int life;
-
+	public int type;
+	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 	}
@@ -73,12 +75,12 @@ public class Entity {
 		}
 		
 		
-		if (moving == false) {
+		if (!moving) {
 			setAction();
 		}
 		
 		//System.out.println(moving);
-		if(moving == true) {
+		if(moving) {
 			
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
@@ -115,6 +117,14 @@ public class Entity {
 			if (pixelCounter == 48) {
 				moving = false;
 				pixelCounter = 0;
+			}
+		}
+		
+		if(isInvince) {
+			invinceCounter++;
+			if(invinceCounter > 40) {
+				isInvince = false;
+				invinceCounter = 0;
 			}
 		}
 		
@@ -244,17 +254,25 @@ public class Entity {
 			}
 			break;
 		}
-
+		
+		if(isInvince) {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
+		}
+		
+		
+		
 		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
 				&& worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
 				&& worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
 				&& worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
 		// If player is around the edge, draw everything
 		else if (gp.player.worldX < gp.player.screenX || gp.player.worldY < gp.player.screenY
 				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
 	}
 
