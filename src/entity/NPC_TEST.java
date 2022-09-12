@@ -63,7 +63,7 @@ public class NPC_TEST extends Entity{
 		
 		actionLockCounter++;
 		
-		if(actionLockCounter >= 80 && moving == false) {
+		if(actionLockCounter >= 80) {
 			Random random = new Random();
 			int i = random.nextInt(100)+2;
 			
@@ -93,7 +93,6 @@ public class NPC_TEST extends Entity{
 				direction = "left";
 				break;
 			}
-			moving = true;
 			
 		}
 		

@@ -19,7 +19,7 @@ public class Entity {
 	public BufferedImage down1, down2, down3, down4, down5, down6;
 	public BufferedImage left1, left2, left3, left4, left5, left6;
 	public BufferedImage right1, right2, right3, right4, right5, right6;
-	//public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, atkRight2;
+	public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, atkRight2;
 	public String direction = "idle";
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
@@ -29,8 +29,6 @@ public class Entity {
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collisionOn = false;
 	//movement (grid based)
-	public boolean moving = false;
-	int pixelCounter = 0;
 	public int actionLockCounter = 0;
 	//dialogues
 	String dialogues[] = new String[100];
@@ -43,7 +41,7 @@ public class Entity {
 	//damage
 	public boolean isInvince = false;
 	public int invinceCounter = 0;
-	
+	int dyingCounter = 0;
 	boolean attacking = false;
 	
 	//char status
@@ -51,6 +49,7 @@ public class Entity {
 	public int maxLife;
 	public int life;
 	public int type;
+	public boolean alive = true;
 	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
@@ -67,21 +66,16 @@ public class Entity {
 		gp.cChecker.checkEntity(this, gp.monster);
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
-		if(type == 2 && contactPlayer) {
+		if(this.type == 2 && contactPlayer) {
 			if(!gp.player.isInvince) {
 				gp.player.life -= 1;
 				gp.player.isInvince = true;
 			}
 		}
 		
+		setAction();
 		
-		if (!moving) {
-			setAction();
-		}
-		
-		//System.out.println(moving);
-		if(moving) {
-			
+		//System.out.println(moving)			
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
 			if (collisionOn == false) {
@@ -112,13 +106,6 @@ public class Entity {
 				spriteCounter = 0;
 				
 			}
-			pixelCounter += speed;
-			// System.out.println(pixelCounter);
-			if (pixelCounter == 48) {
-				moving = false;
-				pixelCounter = 0;
-			}
-		}
 		
 		if(isInvince) {
 			invinceCounter++;
@@ -258,7 +245,9 @@ public class Entity {
 		if(isInvince) {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
 		}
-		
+		if(!alive) {
+			dieAnim(g2);
+		}
 		
 		
 		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
@@ -273,6 +262,13 @@ public class Entity {
 				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
+		}
+	}
+	
+	public void dieAnim(Graphics2D g2) {
+		dyingCounter++;
+		if(dyingCounter <= 5) {
+			
 		}
 	}
 

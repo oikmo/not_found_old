@@ -208,11 +208,9 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 			
 			Collections.sort(eList, new Comparator<Entity>() {
-
 				@Override
 				public int compare(Entity o1, Entity o2) {
 					int result = Integer.compare(o1.worldX, o2.worldY);
-					
 					return result;
 				}
 				
@@ -225,10 +223,9 @@ public class GamePanel extends JPanel implements Runnable {
 					eList.remove(npc[0]);
 				}
 				
-				
 			}
-			eList.clear();
 			
+			eList.clear();
 			ui.draw(g2);
 			
 			

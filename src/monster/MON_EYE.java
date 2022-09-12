@@ -14,7 +14,7 @@ public class MON_EYE extends Entity {
 		type = 2;
 		name = "EYE";
 		speed = 1;
-		maxLife = 4;
+		maxLife = 1;
 		life = maxLife;
 		
 		solidArea.x = 1;
@@ -65,7 +65,7 @@ public class MON_EYE extends Entity {
 		
 		actionLockCounter++;
 		
-		if(actionLockCounter >= 120 && moving == false) {
+		if(actionLockCounter >= 120) {
 			Random random = new Random();
 			int i = random.nextInt(100)+1;
 			direction = "idle";
@@ -81,7 +81,6 @@ public class MON_EYE extends Entity {
 			if(i > 75 && i <= 100) {
 				direction = "right";
 			}
-			moving = true;
 			
 		}
 		

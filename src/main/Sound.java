@@ -11,9 +11,9 @@ public class Sound {
 	public Sound() {
 		soundURL[0] = getClass().getResource("/sound/door.wav");
 		soundURL[1] = getClass().getResource("/sound/key.wav");
-		soundURL[2] = getClass().getResource("/sound/JEALOUS.wav"); //in game
-		soundURL[3] = getClass().getResource("/sound/Espionage.wav"); //main menu
-		soundURL[4] = getClass().getResource("/sound/3301.wav"); //pause menu
+		soundURL[2] = getClass().getResource("/sound/momentum(L).wav"); //in game
+		soundURL[3] = getClass().getResource("/sound/undecided.wav"); //main menu
+		soundURL[4] = getClass().getResource("/sound/intense-moments.wav"); //pause menu
 		soundURL[5] = getClass().getResource("/sound/theBoys.wav");
 	}
 	
