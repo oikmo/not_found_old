@@ -1,0 +1,94 @@
+player :
+
+/*switch(objName) {
+			case "Key1":
+				hasKey++;
+				gp.obj[i] = null;
+				break;
+			case "Door":
+				if(hasKey > 0) {
+					gp.obj[i] = null;
+					hasKey--;
+				}
+				break;
+			}*/
+
+			/*public void loadItems(String textPath) {
+		try {
+			Scanner s = new Scanner(new File(textPath));
+			while (s.hasNext()){
+			    items.add(s.next());
+			}
+			s.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}*/
+	
+//		g2.setColor(Color.white);
+//		//g2.drawImage(image, playerX, playerY, tileSize, tileSize, null);
+//		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
+//		g2.dispose();
+
+gamepanel :
+//public void run() { // game loop
+//
+//	double drawInterval = 1000000000 / FPS;
+//	double nextDrawTime = System.nanoTime() + drawInterval;
+//
+//	while (gameThread != null) {
+//		// long currentTime = System.nanoTime();
+//		// System.out.println("current time : " + currentTime);
+//		// System.out.println("the game loop is loop");
+//		update();
+//
+//		repaint();
+//		try {
+//			double remainingTime = nextDrawTime - System.nanoTime();
+//			remainingTime = remainingTime / 1000000;
+//
+//			if (remainingTime < 0) {
+//				remainingTime = 0;
+//			}
+//
+//			Thread.sleep((long) remainingTime);
+//
+//			nextDrawTime += drawInterval;
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//}
+
+player (contactMon):
+if (!collisionOn && !gp.keyH.enterPressed) {
+	switch (gp.monster[i].direction) {
+	case "up":
+		worldY -= speed;
+		break;
+	case "down":
+		worldY += speed;
+		break;
+	case "left":
+		worldX -= speed;
+		break;
+	case "right":
+		worldX += speed;
+		break;
+	}
+}
+
+ui :
+if(gp.theBoys) {				
+	if(count<2520) { count++; }
+	if(count>=500) { if(!gp.STOPPLAYER) { drawTheBoys(); gp.STOPPLAYER = true; } }
+	if(count>=2520) { XX = 10000; }
+	if(count>=2520) { count = 0; }
+}
+
+public void drawTheBoys() {
+	ifBoys = true;
+	if(ifBoys) {
+		g2.drawImage(image, gp.tileSize*XX, gp.tileSize, gp.tileSize*4, gp.tileSize*2, null);
+	}
+}
