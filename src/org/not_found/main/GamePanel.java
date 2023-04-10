@@ -30,7 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
 	boolean music1, music2;
-	
+	public String version;
 	
 	//DEBUG BOOLEANS
 	public boolean debug;
@@ -83,10 +83,11 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setObject();
 		aSetter.setNPC();
 		aSetter.setMonster();
+		player.setDefaultValues();
 		gameState = titleState;
-		Tmusic.setFile(0);
-		music.setFile(1);
-		Pmusic.setFile(2);
+		if(!Tmusic.isPlaying()) { Tmusic.setFile(0);} else { Tmusic.stop(); Tmusic.setFile(0); }
+		if(!music.isPlaying()) { music.setFile(1); } else { music.stop(); music.setFile(1);}
+		if(!Pmusic.isPlaying()) { Pmusic.setFile(2);} else { Pmusic.stop(); Pmusic.setFile(2); }
 	}
 	
 	public void startGameThread() {

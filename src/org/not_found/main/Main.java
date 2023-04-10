@@ -26,6 +26,7 @@ public class Main {
 		
 		gamePanel.debug = false;
 		gamePanel.fps = false;
+		gamePanel.version = "alpha 0.1.1";
 		
 		if(args.length != 0) {
 			for(int i=0;i<args.length;i++) {

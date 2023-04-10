@@ -9,7 +9,7 @@ public class OBJ_Sword_Normal extends Entity {
 		super(gp);
 		name = "Normal Sword";
 		idle1 = setup("/objects/sword_normal", gp.tileSize, gp.tileSize);
-		attackValue = 1;
+		attackValue = 2;
 	}
 
 }

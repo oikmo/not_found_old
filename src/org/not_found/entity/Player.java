@@ -2,6 +2,7 @@ package org.not_found.entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.not_found.main.GamePanel;
@@ -32,7 +33,7 @@ public class Player extends Entity {
 
 		setDefaultValues();
 		getPlayerImage();
-		getAtkImage();
+		getAttackImage();
 
 	}
 
@@ -100,7 +101,7 @@ public class Player extends Entity {
 		
 	}
 	
-	public void getAtkImage() {
+	public void getAttackImage() {
 		atkLeft1 = setup("/player/attack_left_1", gp.tileSize * 2, gp.tileSize);
 		atkLeft2 = setup("/player/attack_left_2", gp.tileSize * 2, gp.tileSize);
 		atkRight1 = setup("/player/attack_right_1", gp.tileSize * 2, gp.tileSize);
@@ -113,8 +114,12 @@ public class Player extends Entity {
 
 	public void update() {
 		if(life <= 0) {
-			gp.gameState = gp.titleState;
-			setDefaultValues();
+			try {
+				gp.setupGame();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (attacking) {
@@ -209,11 +214,38 @@ public class Player extends Entity {
 		}
 	}
 	
+	public void contactMon(int i) {
+		if (i != 999) {
+			if (!isInvince) {
+				if (invinceCounter <= 0) {
+					//System.out.println("call!");
+					gp.playSE(7);
+					
+					int damage = gp.monster[i].attack - defense;
+					if(damage < 0) {
+						damage = 0;
+					}
+					
+					life -= damage;
+					isInvince = true;
+				}
+			}
+		}
+	}
+	
 	public void damageMon(int i) {
 		if (i != 999) {
 			if (!gp.monster[i].isInvince) {
+				
 				gp.playSE(7);
-				gp.monster[i].life -= attack;
+				
+				int damage = attack - gp.monster[i].defense;
+				if(damage < 0) {
+					damage = 0;
+				}
+				//System.out.println(damage);
+				
+				gp.monster[i].life -= damage;
 				gp.monster[i].isInvince = true;
 				gp.monster[i].damageReaction();
 
@@ -313,20 +345,6 @@ public class Player extends Entity {
 		}
 	}
 
-	public void contactMon(int i) {
-		if (i != 999) {
-			if (!isInvince) {
-				if (invinceCounter <= 0) {
-					//System.out.println("call!");
-					gp.playSE(7);
-					life -= 1;
-					isInvince = true;
-				}
-			}
-
-		}
-	}
-
 	public void draw(Graphics2D g2) {
 		
 		BufferedImage image = null;
@@ -420,9 +438,9 @@ public class Player extends Entity {
 			g2.setFont(gp.ui.VCR);
 			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 			g2.setColor(Color.red);
-			if(gp.monster[0] != null) {
-				g2.drawString("monster life: " + gp.monster[0].life, 10, 300);
-			}
+			//if(gp.monster[0] != null) {
+			//	g2.drawString("monster life: " + gp.monster[0].life, 10, 300);
+			//}
 			
 			g2.drawString("invince: " + invinceCounter, 10, 250);
 			
@@ -437,7 +455,6 @@ public class Player extends Entity {
 		}
 		
 		if (isInvince) {
-			System.out.println("run!");
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
 		}
 		

@@ -15,8 +15,10 @@ public class MON_EYE extends Entity {
 		type = 2;
 		name = "EYE";
 		speed = 1;
-		maxLife = 1000;
+		maxLife = 8;
 		life = maxLife;
+		attack = 5;
+		defense = 0;
 		
 		hitBox = new Rectangle();
 		hitBox.x = 8;

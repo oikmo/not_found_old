@@ -57,6 +57,17 @@ public class Sound {
 		
 	}
 	
+	public boolean isPlaying() {
+		boolean playing = false;
+		if(clip != null) {
+			if(clip.isOpen()) {
+				playing = clip.isRunning();
+			}
+		}
+		
+		return playing;
+	}
+	
 	public int getCurrentFile() {
 		return selectedTrack;
 	}
