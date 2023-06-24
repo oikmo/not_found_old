@@ -1,11 +1,11 @@
 package org.not_found.object;
 
-import org.not_found.entity.Entity;
 import org.not_found.main.GamePanel;
 
-public class OBJ_Door extends Entity{
+public class OBJ_Door extends OBJ {
 	public OBJ_Door(GamePanel gp) {
 		super(gp);
+		eType = EntityType.Door;
 		name = "Door";
 		idle1 = setup("/objects/door", gp.tileSize, gp.tileSize);
 		collision = true;

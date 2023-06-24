@@ -11,7 +11,7 @@ import org.not_found.object.*;
 public class Player extends Entity {
 	public BufferedImage shadow;
 	public final int screenX, screenY;
-	ArrayList<String> inventory = new ArrayList<String>();
+	ArrayList<OBJ> inventory = new ArrayList<>();
 	int atkSpriteCounter, atkSpriteNum;
 	public boolean stopAttacking = false;
 
@@ -27,7 +27,7 @@ public class Player extends Entity {
 		solidAreaDefaultY = hitBox.y;
 		hitBox.width = 32;
 		hitBox.height = 46;
-
+		eType = EntityType.Player;
 		attackArea.width = 36;
 		attackArea.height = 36;
 
@@ -300,39 +300,59 @@ public class Player extends Entity {
 			attacking = false;
 		}
 	}
-
+	
+	int getXforText(String string) {
+		return gp.ui.getXforCenteredText(string) / gp.tileSize;
+	}
+	
+	void displayMessage(int i, OBJ item) {
+		OBJ object = gp.obj[i];
+		EntityType type = object.eType;
+		switch(type) {
+		case Key:
+			gp.playSE(4);
+			inventory.add(object);
+			gp.ui.showMessage("you have key", 120, getXforText("you have key"), 1);
+			break;
+		case Door:
+			gp.playSE(3);
+			gp.ui.showMessage("you opened door", 120, getXforText("you opened door"), 1);
+			if(item != null) {
+				inventory.remove(item);
+			}
+			break;
+		default:
+			break;
+		}
+		
+		gp.obj[i] = null;
+	}
+	
+	
 	public void pickUpObject(int i) {
 		if (i != 99) {
-			String objName = gp.obj[i].name;
-			switch (objName) {
+			switch (gp.obj[i].ID) {
 			case "Key1":
-				gp.ui.showMessage("you have key", 120, gp.maxScreenCol/2.35f, 13);
-				gp.playSE(4);
-				inventory.add(gp.obj[i].name);
-				gp.obj[i] = null;
+				displayMessage(i, null);
 				break;
 			case "Key2":
-				gp.ui.showMessage("you have key", 120, gp.maxScreenCol/2.35f, 13);
-				gp.playSE(4);
-				inventory.add(gp.obj[i].name);
-				gp.obj[i] = null;
+				displayMessage(i, null);
 				break;
 			case "Door1":
-				if (inventory.contains("Key1")) {
-					gp.playSE(3);
-					inventory.remove("Key1");
-					gp.obj[i] = null;
+				if (inventory.contains(OBJItems.Key1)) {
+					displayMessage(i, OBJItems.Key1);
 				}
 				break;
 			case "Door2":
-				if (inventory.contains("Key2")) {
-					gp.playSE(3);
-					inventory.remove("Key2");
-					gp.obj[i] = null;
+				if (inventory.contains(OBJItems.Key2)) {
+					displayMessage(i, OBJItems.Key2);
 				}
 				break;
 			}
+			
+			
 		}
+		
 	}
 
 	public void interactNPC(int i) {

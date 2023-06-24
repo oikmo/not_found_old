@@ -5,11 +5,8 @@ import java.io.*;
 
 import javax.swing.*;
 
-import org.not_found.toolbox.Discord;
-
 public class Main {
 	public static void main(String[] args) throws IOException {	
-		//args = new String[10];
 		JFrame window = new JFrame();
 		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,6 +25,7 @@ public class Main {
 		gamePanel.fps = false;
 		gamePanel.version = "alpha 0.1.1";
 		
+		
 		if(args.length != 0) {
 			for(int i=0;i<args.length;i++) {
 				if(args[i].contains("-debug")) {
@@ -43,9 +41,7 @@ public class Main {
 		gamePanel.setupGame();
 		gamePanel.startGameThread();
 		
-		Discord.details = "i cant anymo";
-		Discord.state = "game";
-		Discord.main(args);
+		
 	}
 
 }

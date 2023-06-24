@@ -11,7 +11,6 @@ import org.not_found.toolbox.UtilityBox;
 public class NPC_TEST extends Entity{
 	
 	GamePanel gp;
-	UtilityBox uTool = new UtilityBox();
 	
 	public NPC_TEST(GamePanel gp) throws IOException {
 		super(gp);
@@ -63,8 +62,8 @@ public class NPC_TEST extends Entity{
 		right6 = setup("/player/right_6", gp.tileSize, gp.tileSize);
 	}
 	public void setDialogue() throws IOException {
-		for(int i=0; i < uTool.getDialogueFromTXT("dialogue/test").length; i++) {
-			dialogues[i] = uTool.getDialogueFromTXT("dialogue/test")[i];
+		for(int i=0; i < UtilityBox.getDialogueFromTXT("dialogue/test").length; i++) {
+			dialogues[i] = UtilityBox.getDialogueFromTXT("dialogue/test")[i];
 		}
 		
 	}

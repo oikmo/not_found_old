@@ -3,6 +3,7 @@ package org.not_found.main;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -19,9 +20,11 @@ public class UI {
 	BufferedImage hFull, hHalf, hBlank;
 	
 	public boolean messageOn = false;
-	public String message = "";
+	public ArrayList<String> message = new ArrayList<>();
+	public ArrayList<Integer> messageCounter = new ArrayList<>();
+	public ArrayList<Integer> mCounterLimit = new ArrayList<>();
 	
-	int messageCounter;
+	//int messageCounter;
 	int messageCMax;
 	
 	float mX, mY;
@@ -60,7 +63,10 @@ public class UI {
 		hBlank = heart.image3;
 	}
 	public void showMessage(String text, int messageCMax, float mX, float mY) {
-		message = text;
+		message.add(text);
+		messageCounter.add(0);
+		mCounterLimit.add(messageCMax);
+		
 		messageOn = true;
 		this.messageCMax = messageCMax;
 		this.mX = mX;
@@ -75,11 +81,13 @@ public class UI {
 		}
 		else if (gp.gameState == gp.playState) {
 			drawPlayerLife();
+			drawMessage();
 			if(gp.debug || gp.fps) {
 				g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 				g2.setColor(Color.red);
 				g2.drawString("FPS:" + gp.fpsCount, 0, gp.tileSize/3);
 			}
+			
 		} else if(gp.gameState == gp.pauseState){
 			drawPauseScreen();
 		} else if(gp.gameState == gp.dialogueState) {
@@ -88,21 +96,42 @@ public class UI {
 			drawCharacterScreen();
 		}
 
-		if(messageOn) {
-			g2.setFont(VCR);
-			g2.setColor(Color.white);
-			g2.setFont(g2.getFont().deriveFont(20F));
-			//System.out.println("mX : " + gp.tileSize*mX + " mY: " + gp.tileSize*mY);
-			g2.drawString(message, gp.tileSize*mX, gp.tileSize);//*mY);
-			messageCounter++;
-			if (messageCounter > messageCMax) { messageCounter = 0; messageOn = false; }
-		}
+		
 		
 		g2.setColor(Color.white);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN,20F));
 		g2.drawString(gp.version, gp.tileSize-40f, gp.tileSize-20f);
 		
 	}
+	
+	public void drawMessage() {
+		g2.setFont(VCR);
+		g2.setFont(g2.getFont().deriveFont(20F));
+		
+		float messageY = (gp.tileSize*mY);
+		//System.out.println("yeah");
+		for(int i = 0; i < message.size(); i++) {
+			if(message.get(i) != null) {
+				g2.setColor(Color.gray);
+				g2.drawString(message.get(i), (gp.tileSize*mX)+2, (messageY)+2);
+				g2.setColor(Color.white);
+				g2.drawString(message.get(i), gp.tileSize*mX, messageY);
+				
+				int counter = messageCounter.get(i) + 1;
+				
+				messageCounter.set(i, counter);
+				messageY += 50;
+				
+				if(messageCounter.get(i) > mCounterLimit.get(i)) {
+					message.remove(i);
+					messageCounter.remove(i);
+				}
+			}
+			
+			
+		}
+	}
+	
 	public void drawPlayerLife() {
 		//gp.player.life = 3;
 		int x = gp.tileSize/2;
@@ -325,6 +354,11 @@ public class UI {
 		g2.drawImage(gp.player.currentShield.idle1, tailX - gp.tileSize, textY-14, null);
 		
 	}
+	
+	public void textXthat() {
+		
+	}
+	
 	public void drawSubWindow(int x, int y, int width, int height) {
 		Color c = new Color(0,0,0, 210);
 		g2.setColor(c);

@@ -1,14 +1,20 @@
 package org.not_found.main;
 
+import java.net.URISyntaxException;
 import java.net.URL;
+
 import javax.sound.sampled.*;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 
 public class Sound {
 	Clip clip;
 	URL soundURL[] = new URL[12];
 	public int selectedTrack;
 	
-	public Sound() {
+	public Sound() throws URISyntaxException {
 		soundURL[0] = getClass().getResource("/res/sound/music/Espionage.wav"); //main menu
 		soundURL[1] = getClass().getResource("/res/sound/music/JEALOUS.wav"); //in game
 		soundURL[2] = getClass().getResource("/res/sound/music/intense-moments.wav"); //pause menu
@@ -54,7 +60,6 @@ public class Sound {
 		if(clip.isOpen()) {
 			clip.stop();
 		}
-		
 	}
 	
 	public boolean isPlaying() {

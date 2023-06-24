@@ -24,6 +24,15 @@ public class Entity {
 	public boolean collision = false;
 	protected String dialogues[] = new String[100];
 	
+	public enum EntityType {
+		Player,
+		Monster,
+		Key,
+		Door,
+		Chest
+	}
+	public EntityType eType;
+	
 	// state
 	public int worldX, worldY;
 	public String direction = "idle";
@@ -275,12 +284,11 @@ public class Entity {
 	}
 
 	public BufferedImage setup(String imageName, int width, int height) {
-		UtilityBox uTool = new UtilityBox();
 		BufferedImage image = null;
 
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream("/res" + imageName + ".png"));
-			image = uTool.scaleImage(image, width, height);
+			image = UtilityBox.scaleImage(image, width, height);
 
 		} catch (IOException e) {
 			e.printStackTrace();
