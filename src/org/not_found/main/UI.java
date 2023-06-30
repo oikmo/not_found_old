@@ -76,7 +76,9 @@ public class UI {
 	public void draw(Graphics2D g2) {
 		this.g2 = g2;
 		g2.setFont(VCR);
-		if(gp.gameState == gp.titleState) {
+		if(gp.gameState == gp.loadingState) {
+			drawLoadingScreen();
+		}else if(gp.gameState == gp.titleState) {
 			drawTitleScreen();
 		}
 		else if (gp.gameState == gp.playState) {
@@ -155,6 +157,22 @@ public class UI {
 			i++;
 			x += gp.tileSize;
 		}
+	}
+	
+	public void drawLoadingScreen() {
+		g2.setColor(Color.black);
+		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
+		String text = "not_found";
+		
+		g2.setFont(VCR);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN,96F));
+		int x = getXforCenteredText(text);
+		int y = gp.screenHeight / 2;
+		g2.setColor(Color.gray);
+		g2.drawString(text, x+5, y+5);
+		g2.setColor(Color.white);
+		g2.drawString(text, x, y);
 	}
 	
 	public void drawTitleScreen() {
@@ -245,18 +263,35 @@ public class UI {
 		//FontMetrics fm = g2.getFontMetrics();
 		//int totalWidth = (fm.stringWidth(gp.npc[i].npcName) * 2) + 4;
 		
+		
 		drawSubWindow(x, y, width, height);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 15F));
-		g2.drawString(gp.npc[i].npcName, x+gp.tileSize/4+1, y + gp.tileSize/ 2);
 		
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
-		x += gp.tileSize;
-		y += gp.tileSize;
-		for(String line : currentDialogue.split("\n")) {
-			g2.drawString(line, x, y);
-			y += 30;
+		
+		
+		if(currentDialogue.contains("%")) {
+			String[] dialogue = currentDialogue.split("%");
+			g2.drawString(dialogue[0], x+gp.tileSize/4+1, y + gp.tileSize/ 2);
 			
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+			x += gp.tileSize;
+			y += gp.tileSize;
+			for(String line : dialogue[1].split("\n")) {
+				g2.drawString(line, x, y);
+				y += 30;
+				
+			}
+		} else {
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+			x += gp.tileSize;
+			y += gp.tileSize;
+			for(String line : currentDialogue.split("\n")) {
+				g2.drawString(line, x, y);
+				y += 30;
+				
+			}
 		}
+		
 		
 	}
 	

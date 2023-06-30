@@ -2,10 +2,7 @@ package org.not_found.main;
 
 import java.awt.*;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.JPanel;
 
 import org.not_found.entity.*;
@@ -42,10 +39,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//SYSTEM
 	int FPSLock = 60;
-	Sound Tmusic;
-	Sound Pmusic;
-	Sound music;
-	Sound se;
+	Sound Tmusic = new Sound();
+	Sound Pmusic = new Sound();
+	Sound music = new Sound();
+	Sound se = new Sound();
 	
 	
 	public Thread gameThread;
@@ -67,11 +64,12 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//GAMESTATE
 	public int gameState;
-	public final int titleState = 0;
-	public final int playState = 1;
-	public final int pauseState = 2;
-	public final int dialogueState = 3;
-	public final int characterState = 4;
+	public final int loadingState = 0;
+	public final int titleState = 1;
+	public final int playState = 2;
+	public final int pauseState = 3;
+	public final int dialogueState = 4;
+	public final int characterState = 5;
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -84,21 +82,12 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() throws IOException {
 		
-		try {
-			Tmusic = new Sound();
-			Pmusic = new Sound();
-			music = new Sound();
-			se = new Sound();
-		} catch(URISyntaxException e) {
-			//throw ig
-		}
-		
 		//set objs, npcs, mons, gamestate etc
 		aSetter.setObject();
 		aSetter.setNPC();
 		aSetter.setMonster();
 		player.setDefaultValues();
-		gameState = titleState;
+		gameState = loadingState;
 		 Tmusic.setFile(0);
 		if(!Tmusic.isPlaying()) { Tmusic.setFile(0);} else { Tmusic.stop(); Tmusic.setFile(0); }
 		if(!music.isPlaying()) { music.setFile(1); } else { music.stop(); music.setFile(1);}
@@ -107,39 +96,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void startGameThread() {
 		gameThread = new Thread(this);
+		gameState = titleState;
 		gameThread.start();
 	}
-	
-	public void runn() {
-        long startTime = System.nanoTime();
-        long runTime = TimeUnit.NANOSECONDS.convert(10, TimeUnit.SECONDS);
-        System.out.println(runTime);
-        
-        while (true) {
-
-            long now = System.nanoTime();
-            long diff = now - startTime;
-            double progress = diff / (double) runTime;
-            if (progress > 1.0d) {
-                progress = 0d;
-                startTime = System.nanoTime();
-            }
-            
-            //updateLock.lock();
-            try {
-                update();
-            } finally {
-                //updateLock.unlock();
-            }
-
-            repaint();
-            try {
-                Thread.sleep(8);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 	
 	@Override
 	public void run() { //gameloop
@@ -157,31 +116,14 @@ public class GamePanel extends JPanel implements Runnable {
 			lastTime = currentTime;
 			
 			if(delta >= 1) {
-				
-				//updateLock.lock(); 
-				
-				/*try {
-					
-					
-				} finally {
-					updateLock.unlock();
-				}*/
 				update();
 				repaint();
 				delta--;
 				drawCount++;
-				
-				try {
-                    Thread.sleep(8);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 			}
 			
 			if (timer >= 1000000000) {
 				fpsCount = Integer.toString(drawCount);
-				
-				//drawCount = drawCount;
 				drawCount = 0;
 				timer = 0;
 			}

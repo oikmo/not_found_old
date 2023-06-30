@@ -59,10 +59,10 @@ public class NPC_Dupe extends Entity{
 		right6 = setup("/player/right_6", gp.tileSize, gp.tileSize);
 	}
 	public void setDialogue() {
-		dialogues[0] = "im you";
-		dialogues[1] = "what do you mean?";
-		dialogues[2] = "do you not fucking get it.";
-		dialogues[3] = "YOU ARE ME AND I AM YOU HOW DO YOU \nNOT FUCKING GET IT YOU SACK OF SHIT";
+		dialogues[0] = "DUPE%im you";
+		dialogues[1] = "YOU%what do you mean?";
+		dialogues[2] = "DUPE%do you not fucking get it.";
+		dialogues[3] = "DUPE%YOU ARE ME AND I AM YOU HOW DO YOU \nNOT FUCKING GET IT YOU SACK OF SHIT";
 	}
 	public void setAction() {
 		Random random = new Random();
