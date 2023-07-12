@@ -3,17 +3,17 @@ package org.not_found.entity.monster;
 import java.awt.Rectangle;
 import java.util.Random;
 
-import org.not_found.entity.Entity;
 import org.not_found.main.GamePanel;
 
-public class MON_EYE extends Entity {
+public class MON_EYE extends MONSTER {
 	GamePanel gp;
 	
 	public MON_EYE(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
-		type = 2;
+		
 		name = "EYE";
+		
 		speed = 1;
 		maxLife = 8;
 		life = maxLife;

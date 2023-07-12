@@ -86,12 +86,14 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setObject();
 		aSetter.setNPC();
 		aSetter.setMonster();
-		player.setDefaultValues();
+		//player.setDefaultValues();
 		gameState = loadingState;
 		 Tmusic.setFile(0);
-		if(!Tmusic.isPlaying()) { Tmusic.setFile(0);} else { Tmusic.stop(); Tmusic.setFile(0); }
-		if(!music.isPlaying()) { music.setFile(1); } else { music.stop(); music.setFile(1);}
-		if(!Pmusic.isPlaying()) { Pmusic.setFile(2);} else { Pmusic.stop(); Pmusic.setFile(2); }
+		 
+		//System.out.println(SoundEnum.Espionage.ordinal());
+		if(!Tmusic.isPlaying()) { Tmusic.setFile(SoundEnum.Espionage);} else { Tmusic.stop(); Tmusic.setFile(SoundEnum.Espionage); }
+		if(!music.isPlaying()) { music.setFile(SoundEnum.JEALOUS); } else { music.stop(); music.setFile(SoundEnum.JEALOUS);}
+		if(!Pmusic.isPlaying()) { Pmusic.setFile(SoundEnum.IntenseMoments);} else { Pmusic.stop(); Pmusic.setFile(SoundEnum.IntenseMoments); }
 	}
 	
 	public void startGameThread() {

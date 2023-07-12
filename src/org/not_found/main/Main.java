@@ -32,9 +32,7 @@ public class Main {
 				} if(args[i].contains("-fps")) {
 					gamePanel.fps = true;
 				}
-				
 			}
-			
 		}
 		
 		gamePanel.setupGame();

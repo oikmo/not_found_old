@@ -68,8 +68,8 @@ public class KeyHandler implements KeyListener, MouseListener{
 				rightPressed = false;
 			}
 			if(gp.ui.commandNum == 3) {
-				int balls = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit le game??", "POP-UP", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
-				if(balls == JOptionPane.OK_OPTION) {
+				int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit le game??", "POP-UP", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
+				if(option == JOptionPane.OK_OPTION) {
 					System.exit(0);
 				}
 			}
@@ -118,6 +118,31 @@ public class KeyHandler implements KeyListener, MouseListener{
 	public void charState(int code) {
 		if(code == KeyEvent.VK_C) {
 			gp.gameState = gp.playState;
+		}
+		
+		if(code == KeyEvent.VK_W) {
+			if(gp.ui.slotRow !=0) {
+				gp.ui.slotRow--;
+				gp.playSE(SoundEnum.cursor);
+			}
+			
+		} else if(code == KeyEvent.VK_S) {
+			if(gp.ui.slotRow !=3) {
+				gp.ui.slotRow++;
+				gp.playSE(SoundEnum.cursor);
+			}
+		} else if(code == KeyEvent.VK_D) {
+			if(gp.ui.slotCol != 4) {
+				gp.ui.slotCol++;
+				gp.playSE(SoundEnum.cursor);
+			}
+		} else if(code == KeyEvent.VK_A) {
+			if(gp.ui.slotCol != 0) {
+				gp.ui.slotCol--;
+				gp.playSE(SoundEnum.cursor);
+			}
+		} else if(code == KeyEvent.VK_ENTER) {
+			gp.player.selectItem();
 		}
 	}
 	

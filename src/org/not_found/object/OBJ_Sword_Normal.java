@@ -6,10 +6,14 @@ public class OBJ_Sword_Normal extends OBJ {
 
 	public OBJ_Sword_Normal(GamePanel gp) {
 		super(gp);
+		entityType = EntityType.Weapon;
 		ID = "NormSword";
 		name = "Normal Sword";
 		idle1 = setup("/objects/sword_normal", gp.tileSize, gp.tileSize);
 		attackValue = 4;
+		description = "[" + name + "] \n Rusty, great for giving\n people tetnus.";
+		attackArea.width = 36;
+		attackArea.height = 36;
 	}
 
 }

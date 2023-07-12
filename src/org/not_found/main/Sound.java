@@ -20,6 +20,7 @@ public class Sound {
 		soundURL[7] = getClass().getResource("/res/sound/sfx/receivedamage.wav");
 		soundURL[8] = getClass().getResource("/res/sound/sfx/swingweapon.wav");
 		soundURL[9] = getClass().getResource("/res/sound/sfx/powerup.wav");
+		soundURL[10] = getClass().getResource("/res/sound/sfx/cursor.wav");
 	}
 	
 	public URL[] returnArray() {

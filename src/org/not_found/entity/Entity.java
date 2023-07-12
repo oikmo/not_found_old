@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.not_found.main.GamePanel;
+import org.not_found.object.OBJ;
 import org.not_found.toolbox.UtilityBox;
 
 public class Entity {
@@ -26,12 +27,18 @@ public class Entity {
 	
 	public enum EntityType {
 		Player,
+		NPC,
 		Monster,
+		
 		Key,
 		Door,
-		Chest
+		Chest,
+		
+		Weapon,
+		Shield,
+		Eatable
 	}
-	public EntityType eType;
+	public EntityType entityType;
 	
 	// state
 	public int worldX, worldY;
@@ -55,7 +62,6 @@ public class Entity {
 	int healthCounter = 0;
 	
 	// char attributes
-	public int type; // 0 = player, 1 = npc, 2 = enemy
 	public String name;
 	public String npcName;
 	public int speed;
@@ -69,8 +75,8 @@ public class Entity {
 	public int exp;
 	public int nextLevelExp;
 	public int coin;
-	public Entity currentWeapon;
-	public Entity currentShield;
+	public OBJ currentWeapon;
+	public OBJ currentShield;
 	
 	//item attributes
 	public int attackValue;
@@ -97,7 +103,7 @@ public class Entity {
 		//System.out.println(collisionOn);
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 
-		if (this.type == 2 && contactPlayer) {
+		if (this.entityType == EntityType.Monster && contactPlayer) {
 			if (!gp.player.isInvince && !gp.player.attacking) {
 				gp.playSE(8);
 				int damage = attack - gp.player.defense;
@@ -209,7 +215,7 @@ public class Entity {
 		}
 		
 		//monster health bar
-		if(type == 2) {
+		if(this.entityType == EntityType.Monster) {
 			double oneScale = (double)gp.tileSize/maxLife;
 			double hpBarValue = oneScale * life;
 			

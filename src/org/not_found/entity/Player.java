@@ -6,20 +6,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.not_found.main.GamePanel;
+import org.not_found.main.SoundEnum;
 import org.not_found.object.*;
 
 public class Player extends Entity {
 	public BufferedImage shadow;
 	public final int screenX, screenY;
-	ArrayList<OBJ> inventory = new ArrayList<>();
+	public ArrayList<OBJ> inventory = new ArrayList<>();
+	public final int maxInventorySize = 20;
 	int atkSpriteCounter, atkSpriteNum;
 	public boolean stopAttacking = false;
 
 	public Player(GamePanel gp) {
 		super(gp);
+		
+		entityType = EntityType.Player;
+		
 		screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
-
+		
 		hitBox = new Rectangle();
 		hitBox.x = 8;
 		hitBox.y = 1;
@@ -27,9 +32,6 @@ public class Player extends Entity {
 		solidAreaDefaultY = hitBox.y;
 		hitBox.width = 32;
 		hitBox.height = 46;
-		eType = EntityType.Player;
-		attackArea.width = 36;
-		attackArea.height = 36;
 
 		setDefaultValues();
 		getPlayerImage();
@@ -56,9 +58,16 @@ public class Player extends Entity {
 		currentShield = new OBJ_Shield_Wood(gp);
 		attack = getAttack();
 		defense = getDefense();
+		setItems();
+	}
+	
+	public void setItems() {
+		inventory.add(currentWeapon);
+		inventory.add(currentShield);
 	}
 	
 	public int getAttack() {
+		attackArea = currentWeapon.attackArea;
 		return attack = strength * currentWeapon.attackValue;
 	}
 	
@@ -112,7 +121,13 @@ public class Player extends Entity {
 		atkDown2 = setup("/player/attack_down_2", gp.tileSize, gp.tileSize * 2);
 	}
 
+	boolean lockCarry = false;
 	public void update() {
+		if(gp.ui.message.size() == 0) {
+			if(lockCarry) {
+				lockCarry = false;
+			}
+		}
 		if(life <= 0) {
 			try {
 				gp.setupGame();
@@ -168,10 +183,11 @@ public class Player extends Entity {
 					worldX += speed;
 					break;
 				}
+			} else {
+				direction = "idle";
 			}
-			
 			if(gp.keyH.enterPressed && !stopAttacking && direction != "idle")  {
-				gp.playSE(8);
+				gp.playSE(SoundEnum.swingWeapon);
 				attacking = true;
 				spriteCounter = 0;
 			}
@@ -219,7 +235,7 @@ public class Player extends Entity {
 			if (!isInvince) {
 				if (invinceCounter <= 0) {
 					//System.out.println("call!");
-					gp.playSE(7);
+					gp.playSE(SoundEnum.recieveDmg);
 					
 					int damage = gp.monster[i].attack - defense;
 					if(damage < 0) {
@@ -237,7 +253,7 @@ public class Player extends Entity {
 		if (i != 999) {
 			if (!gp.monster[i].isInvince) {
 				
-				gp.playSE(7);
+				gp.playSE(SoundEnum.swingWeapon);
 				
 				int damage = attack - gp.monster[i].defense;
 				if(damage < 0) {
@@ -307,15 +323,15 @@ public class Player extends Entity {
 	
 	void displayMessage(int i, OBJ item) {
 		OBJ object = gp.obj[i];
-		EntityType type = object.eType;
+		EntityType type = object.entityType;
 		switch(type) {
 		case Key:
-			gp.playSE(4);
+			gp.playSE(SoundEnum.key);
 			inventory.add(object);
 			gp.ui.showMessage("you have key", 120, getXforText("you have key"), 1);
 			break;
 		case Door:
-			gp.playSE(3);
+			gp.playSE(SoundEnum.door);
 			gp.ui.showMessage("you opened door", 120, getXforText("you opened door"), 1);
 			if(item != null) {
 				inventory.remove(item);
@@ -328,31 +344,34 @@ public class Player extends Entity {
 		gp.obj[i] = null;
 	}
 	
-	
 	public void pickUpObject(int i) {
 		if (i != 99) {
-			switch (gp.obj[i].ID) {
-			case "Key1":
-				displayMessage(i, null);
-				break;
-			case "Key2":
-				displayMessage(i, null);
-				break;
-			case "Door1":
-				if (inventory.contains(OBJItems.Key1)) {
-					displayMessage(i, OBJItems.Key1);
+			if(inventory.size() != maxInventorySize) {
+				switch (gp.obj[i].ID) {
+				case "Key1":
+					displayMessage(i, null);
+					break;
+				case "Key2":
+					displayMessage(i, null);
+					break;
+				case "Door1":
+					if (inventory.contains(OBJItems.Key1)) {
+						displayMessage(i, OBJItems.Key1);
+					}
+					break;
+				case "Door2":
+					if (inventory.contains(OBJItems.Key2)) {
+						displayMessage(i, OBJItems.Key2);
+					}
+					break;
 				}
-				break;
-			case "Door2":
-				if (inventory.contains(OBJItems.Key2)) {
-					displayMessage(i, OBJItems.Key2);
-				}
-				break;
+			} else {
+				if(!lockCarry) {
+					gp.ui.showMessage("You cant carry anymo", 40, getXforText("You cant carry anymo"), 1);
+					lockCarry = true;
+				}	
 			}
-			
-			
 		}
-		
 	}
 
 	public void interactNPC(int i) {
@@ -365,6 +384,31 @@ public class Player extends Entity {
 		}
 	}
 
+	public void selectItem() {
+		int itemIndex = gp.ui.getItemIndexOnSlot();
+		
+		if(itemIndex < inventory.size()) {
+			OBJ selectedItem = inventory.get(itemIndex);
+			
+			if(selectedItem.entityType == EntityType.Weapon) {
+				currentWeapon = selectedItem;
+				attack = getAttack();
+			}
+			
+			if(selectedItem.entityType == EntityType.Shield) {
+				currentShield = selectedItem;
+				defense = getDefense();
+			}
+			
+			if(selectedItem.entityType == EntityType.Eatable) {
+				// later :3
+			}
+			
+			
+		}
+		
+	}
+	
 	public void draw(Graphics2D g2) {
 		
 		BufferedImage image = null;
@@ -458,17 +502,12 @@ public class Player extends Entity {
 			g2.setFont(gp.ui.VCR);
 			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 			g2.setColor(Color.red);
-			//if(gp.monster[0] != null) {
-			//	g2.drawString("monster life: " + gp.monster[0].life, 10, 300);
-			//}
-			
 			g2.drawString("invince: " + invinceCounter, 10, 250);
 			
 			g2.setColor(Color.white);
 			Stroke oldStroke = g2.getStroke();
 			g2.setStroke(new BasicStroke(2f));
 			
-			//System.out.println(attackArea.x + " " + attackArea.y);
 			g2.drawRect(tempScreenX + hitBox.x, tempScreenY + hitBox.y, hitBox.width, hitBox.height);
 			
 			g2.setStroke(oldStroke);
@@ -477,8 +516,6 @@ public class Player extends Entity {
 		if (isInvince) {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
 		}
-		
-		//g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 
 		g2.drawImage(image, tempScreenX, tempScreenY, null);
 	}

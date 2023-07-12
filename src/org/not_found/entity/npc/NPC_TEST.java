@@ -4,11 +4,10 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.Random;
 
-import org.not_found.entity.Entity;
 import org.not_found.main.GamePanel;
 import org.not_found.toolbox.UtilityBox;
 
-public class NPC_TEST extends Entity{
+public class NPC_TEST extends NPC {
 	
 	GamePanel gp;
 	
@@ -17,8 +16,6 @@ public class NPC_TEST extends Entity{
 		this.gp = gp;
 		setDialogue();
 		
-		direction = "down";
-		speed = 2;
 		hitBox = new Rectangle();
 		hitBox.x = 8;
 		hitBox.y = 1;
@@ -102,21 +99,6 @@ public class NPC_TEST extends Entity{
 		
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.monster);
-		
-		/*if(gp.cChecker.checkPlayer(this)) {
-			switch(lastDirection) {
-			case "left":
-				gp.player.MoveX(gp.tileSize/3);
-				break;
-			case "right":
-				gp.player.MoveX(-gp.tileSize/3);
-			}
-			
-		}*/
-		
-		//if((collisionOfEntity||collisionOn) && direction != "idle") {
-			//actionLockCounter = 0;
-		//}
 	}
 	
 	public void speak() {
