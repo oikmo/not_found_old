@@ -1,12 +1,15 @@
-package org.not_found.main;
+package org.not_found.achievements;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import org.not_found.main.GamePanel;
+
 public class Achievement {
 	
 	BufferedImage image;
-	String name;
+	public String name;
+	public boolean completed = false;
 	
 	public Achievement(BufferedImage image, String name) {
 		this.image = image;

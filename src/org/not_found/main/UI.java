@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 
+import org.not_found.achievements.Achievement;
 import org.not_found.object.OBJ_Heart;
 
 public class UI {
@@ -19,6 +20,8 @@ public class UI {
 	public ArrayList<String> message = new ArrayList<>();
 	public ArrayList<Integer> messageCounter = new ArrayList<>();
 	public ArrayList<Integer> mCounterLimit = new ArrayList<>();
+	public ArrayList<Achievement> achievements = new ArrayList<>();
+	public ArrayList<Integer> achieveCounter = new ArrayList<>();
 	
 	int messageCMax, messageY;
 	
@@ -66,7 +69,8 @@ public class UI {
 		}
 		else if (gp.gameState == gp.playState) {
 			drawPlayerLife();
-			drawMessage();
+			drawMessages();
+			drawAchievements();
 			if(gp.debug || gp.fps) {
 				g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
 				g2.setColor(Color.red);
@@ -90,8 +94,33 @@ public class UI {
 		
 	}
 	
+	public void addAchievement(Achievement achievement) {
+		achievements.add(achievement);
+		achieveCounter.add(0);
+	}
 	
-	public void drawMessage() {
+	public void drawAchievements() {
+		int messageYY = 10;
+		
+		for(int i = 0; i < achievements.size(); i++) {
+			if(achievements.get(i) != null) {
+				achievements.get(i).drawAchievement(gp, messageYY);
+				achievements.get(i).completed = true;
+				
+				int counter = achieveCounter.get(i) + 1;
+				
+				achieveCounter.set(i, counter);
+				messageYY += gp.tileSize*2 + 10;
+				
+				if(achieveCounter.get(i) > 120) {
+					achievements.remove(i);
+					achieveCounter.remove(i);
+				}
+			}
+		}
+	}
+	
+	public void drawMessages() {
 		g2.setFont(VCR);
 		g2.setFont(g2.getFont().deriveFont(20F));
 		
@@ -558,13 +587,34 @@ public class UI {
 	}
 	
 	public void optionsControl(int frameX, int frameY) {
-		//int textX;
-		//int textY;
-		//finish this later
+		int textX;
+		int textY;
 		
-		if(gp.keyH.enterPressed) {
-			//subState = 0;
-		}
+		//title :)
+		g2.setFont(g2.getFont().deriveFont(32F));
+		String text = "Control";
+		textX = getXforCenteredText(text);
+		textY = frameY + gp.tileSize;
+		g2.drawString(text, textX, textY);
+		
+		g2.setFont(g2.getFont().deriveFont(16F));
+		textX = frameX + gp.tileSize;
+		textY += gp.tileSize;
+		g2.drawString("Move", textX, textY); textY += gp.tileSize;
+		g2.drawString("Confirm/Attack", textX, textY); textY += gp.tileSize;
+		g2.drawString("Shoot/Cast", textX, textY); textY += gp.tileSize;
+		g2.drawString("Character Screen", textX, textY); textY += gp.tileSize;
+		g2.drawString("Pause", textX, textY); textY += gp.tileSize;
+		g2.drawString("Options", textX, textY); textY += gp.tileSize;
+		
+		textX = frameX + gp.tileSize * 6;
+		textY = frameY + gp.tileSize * 2;
+		g2.drawString("WASD", textX, textY); textY += gp.tileSize;
+		g2.drawString("ENTER", textX, textY); textY += gp.tileSize;
+		g2.drawString("F", textX, textY); textY += gp.tileSize;
+		g2.drawString("C", textX, textY); textY += gp.tileSize;
+		g2.drawString("P", textX, textY); textY += gp.tileSize;
+		g2.drawString("ESC", textX, textY); textY += gp.tileSize;
 	}
 	
 	public void drawSubWindow(int x, int y, int width, int height) {

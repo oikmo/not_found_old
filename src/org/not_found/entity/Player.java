@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.not_found.achievements.AchieveManager;
 import org.not_found.main.GamePanel;
 import org.not_found.main.SoundEnum;
 import org.not_found.object.*;
@@ -330,6 +331,7 @@ public class Player extends Entity {
 			if(inventory.size() != maxInventorySize) {
 				switch (gp.obj[i].ID) {
 				case "Key1":
+					gp.ui.addAchievement(AchieveManager.achievements.get("key-pickup"));
 					displayMessage(i, null);
 					break;
 				case "Key2":
@@ -337,6 +339,7 @@ public class Player extends Entity {
 					break;
 				case "Door1":
 					if (inventory.contains(OBJItems.Key1)) {
+						gp.ui.addAchievement(AchieveManager.achievements.get("door-open"));
 						displayMessage(i, OBJItems.Key1);
 					}
 					break;

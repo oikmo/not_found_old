@@ -7,6 +7,7 @@ import java.util.*;
 
 import javax.swing.JPanel;
 
+import org.not_found.achievements.AchieveManager;
 import org.not_found.entity.*;
 import org.not_found.entity.monster.MONSTER;
 import org.not_found.entity.npc.NPC;
@@ -53,7 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
 	Sound se = new Sound();
 	
 	public Thread gameThread;
-	Graphics2D g2;
+	public Graphics2D g2;
 	
 	//ENTITIES AND OBJECTS
 	ArrayList<Entity> entityList = new ArrayList<>();
@@ -90,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void setupGame() throws IOException {
+		AchieveManager.setAchievements(this);
 		se.volumeScale = 2;
 		//set objs, npcs, mons, gamestate etc
 		aSetter.setObject();
