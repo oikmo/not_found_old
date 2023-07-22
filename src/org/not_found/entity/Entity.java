@@ -2,49 +2,43 @@ package org.not_found.entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
 import org.not_found.main.GamePanel;
+import org.not_found.main.Main;
+import org.not_found.main.SoundEnum;
 import org.not_found.object.OBJ;
+import org.not_found.projectiles.Projectile;
 import org.not_found.toolbox.UtilityBox;
 
 public class Entity {
 	GamePanel gp;
-	public BufferedImage idle1, idle2, idle3, idle4, idle5, idle6;
-	public BufferedImage up1, up2, up3, up4, up5, up6;
-	public BufferedImage down1, down2, down3, down4, down5, down6;
-	public BufferedImage left1, left2, left3, left4, left5, left6;
-	public BufferedImage right1, right2, right3, right4, right5, right6;
+	
+	public enum Direction  {
+		Any,
+		Idle,
+		Down,
+		Up,
+		Left,
+		Right,
+	}
+	
+	public BufferedImage[] sprites = null;
+	public BufferedImage[] atkSprites = null;
 	public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, atkRight2;
-	public BufferedImage image1, image2, image3;
 	public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
 	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 	public int solidAreaDefaultX, solidAreaDefaultY;
-	public boolean collision = false;
-	protected String dialogues[] = new String[100];
 	
-	public enum EntityType {
-		Player,
-		NPC,
-		Monster,
-		
-		Key,
-		Door,
-		Chest,
-		
-		Weapon,
-		Shield,
-		Eatable
-	}
 	public EntityType entityType;
 	
 	// state
 	public int worldX, worldY;
-	public String direction = "idle";
+	public Direction direction = Direction.Idle;
 	public int spriteNum = 1;
-	public int dialogueIndex = 0;
 	public boolean moving = false;
 	public boolean collisionOn = false;
 	public boolean isInvince = false;
@@ -55,7 +49,6 @@ public class Entity {
 	
 	// counters
 	public int spriteCounter = 0;
-	public int actionLockCounter = 0;
 	public int invinceCounter = 0;
 	int pixelCounter = 0;
 	int dyingCounter = 0;
@@ -63,10 +56,11 @@ public class Entity {
 	
 	// char attributes
 	public String name;
-	public String npcName;
 	public int speed;
 	public int maxLife;
 	public int life;
+	public int maxMana;
+	public int mana;
 	public int level;
 	public int strength;
 	public int dexterity;
@@ -75,16 +69,15 @@ public class Entity {
 	public int exp;
 	public int nextLevelExp;
 	public int coin;
+	
 	public OBJ currentWeapon;
 	public OBJ currentShield;
-	
-	//item attributes
-	public int attackValue;
-	public int defenseValue;
-	
+	public Projectile projectile;
 
 	public Entity(GamePanel gp) {
 		this.gp = gp;
+		
+		getSpriteSheet();
 	}
 
 	public void setAction() {}
@@ -100,12 +93,12 @@ public class Entity {
 		collisionOn = false;
 		gp.cChecker.checkTile(this);
 		gp.cChecker.checkObject(this, false);
-		//System.out.println(collisionOn);
+		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 
-		if (this.entityType == EntityType.Monster && contactPlayer) {
-			if (!gp.player.isInvince && !gp.player.attacking) {
-				gp.playSE(8);
+		if (this.entityType == EntityType.Monster && contactPlayer && !this.dying) {
+			if (!gp.player.isInvince && !gp.player.attacking && !this.dying) {
+				gp.playSE(SoundEnum.swingWeapon);
 				int damage = attack - gp.player.defense;
 				if(damage < 0) {
 					damage = 0;
@@ -115,16 +108,15 @@ public class Entity {
 				gp.player.isInvince = true;
 			}
 		}
-		
-		
-		//System.out.println(moving);
 			
 		if (!collisionOn) {
 			switch (direction) {
-				case "up": worldY -= speed; break;
-				case "down": worldY += speed; break;
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
+				case Up: worldY -= speed; break;
+				case Down: worldY += speed; break;
+				case Left: worldX -= speed; break;
+				case Right: worldX += speed; break;
+			default:
+				break;
 			}
 			spriteCounter++;
 			if (spriteCounter > 8) { 
@@ -138,7 +130,7 @@ public class Entity {
 			}
 		}
 		else {
-			direction = "idle";
+			direction = Direction.Idle;
 		}
 		
 		if (isInvince) { invinceCounter++; if (invinceCounter > 40) { isInvince = false; invinceCounter = 0; } }
@@ -147,7 +139,11 @@ public class Entity {
 	}
 	
 	public void update_alt() {}
-
+	
+	public void getSpriteSheet() {}
+	
+	public void use(Entity entity) {}
+	
 	public void draw(Graphics2D g2) {
 
 		BufferedImage image = null;
@@ -169,49 +165,32 @@ public class Entity {
 		if (bottomOffset > gp.worldHeight - gp.player.worldY) {
 			screenY = gp.screenHeight - (gp.worldHeight - worldY);
 		}
-		///////////////////
-
-		switch (direction) {
-			case "idle":
-				if (spriteNum == 1) { image = idle1; }
-				if (spriteNum == 2) { image = idle2; }
-				if (spriteNum == 3) { image = idle3; }
-				if (spriteNum == 4) { image = idle4; }
-				if (spriteNum == 5) { image = idle5; }
-				if (spriteNum == 6) { image = idle6; }
-				break;
-			case "up":
-				if (spriteNum == 1) { image = up1; }
-				if (spriteNum == 2) { image = up2; }
-				if (spriteNum == 3) { image = up3; }
-				if (spriteNum == 4) { image = up4; }
-				if (spriteNum == 5) { image = up5; }
-				if (spriteNum == 6) { image = up6; }
-				break;
-			case "down":
-				if (spriteNum == 1) { image = down1; }
-				if (spriteNum == 2) { image = down2; }
-				if (spriteNum == 3) { image = down3; }
-				if (spriteNum == 4) { image = down4; }
-				if (spriteNum == 5) { image = down5; }
-				if (spriteNum == 6) { image = down6; }
-				break;
-			case "left":
-				if (spriteNum == 1) {image = left1; }
-				if (spriteNum == 2) { image = left2; }
-				if (spriteNum == 3) { image = left3; }
-				if (spriteNum == 4) { image = left4; }
-				if (spriteNum == 5) { image = left5; }
-				if (spriteNum == 6) { image = left6; }
-				break;
-			case "right":
-				if (spriteNum == 1) { image = right1; }
-				if (spriteNum == 2) { image = right2; }
-				if (spriteNum == 3) { image = right3; }
-				if (spriteNum == 4) { image = right4; }
-				if (spriteNum == 5) { image = right5; }
-				if (spriteNum == 6) { image = right6; }
-				break;
+		
+		if(isNotType()) {
+			if(sprites != null)  {
+				switch (direction) {
+				case Idle:
+					image = sprites[spriteNum - 1];
+					break;
+				case Down:
+					image = sprites[spriteNum + 5];
+					break;
+				case Up:
+					image = sprites[spriteNum + 11];
+					break;
+				case Left:
+					image = sprites[spriteNum + 17];
+					break;
+				case Right:
+					image = sprites[spriteNum + 23];
+					break;
+				default:
+					break;
+				}
+			}
+		} else if(this.entityType == EntityType.Object){
+			OBJ obj = (OBJ) this;
+			image = obj.image;
 		}
 		
 		//monster health bar
@@ -248,7 +227,7 @@ public class Entity {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
-		// If player is around the edge, draw everything
+		// if player is around the edg basically just draw everything
 		else if (gp.player.worldX < gp.player.screenX || gp.player.worldY < gp.player.screenY
 				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
@@ -280,7 +259,6 @@ public class Entity {
 		if (dyingCounter > i*7 && dyingCounter <= i*8) { changeAlpha(g2, 1f); }
 		
 		if (dyingCounter > 40) {
-			dying = false;
 			alive = false;
 		}
 	}
@@ -293,7 +271,7 @@ public class Entity {
 		BufferedImage image = null;
 
 		try {
-			image = ImageIO.read(getClass().getResourceAsStream("/res" + imageName + ".png"));
+			image = ImageIO.read(new File(Main.tempDir + "/res/" + imageName + ".png"));
 			image = UtilityBox.scaleImage(image, width, height);
 
 		} catch (IOException e) {
@@ -301,5 +279,100 @@ public class Entity {
 		}
 
 		return image;
+	}
+	
+	public BufferedImage setup(String imageName) {
+		return setup(imageName, gp.tileSize, gp.tileSize);
+	}
+	
+	public BufferedImage[] setupSheet(String filePath, int row, int col) {
+		BufferedImage[] result = null;
+		try {
+			BufferedImage spriteSheet = ImageIO.read(new File(Main.tempDir + "/res/" + filePath + ".png"));
+			result = new BufferedImage[row * col];
+			result = UtilityBox.fromSheet(spriteSheet, row, col);
+			result = scaleArray(result);
+		} catch (IOException e) {
+			System.err.println("[ERROR] \"" + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+		}
+		
+		return result;
+	}
+	
+	public BufferedImage[] setupSheet(String filePath, int row, int col, int width, int height) {
+		BufferedImage[] result = null;
+		try {
+			System.out.println(Main.tempDir + "/res/" + filePath + ".png");
+			BufferedImage spriteSheet = ImageIO.read(new File(Main.tempDir + "/res/" + filePath + ".png"));
+			result = new BufferedImage[row * col];
+			result = UtilityBox.fromSheet(spriteSheet, row, col, width, height);
+			result = scaleArray(result, width, height);
+		} catch (IOException e) {
+			System.err.println("[ERROR] \"" + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+		}
+		
+		return result;
+	}
+	
+	public BufferedImage[] scaleArray(BufferedImage[] array, int width, int height) {
+		BufferedImage[] result = new BufferedImage[array.length];
+		
+	    for (int i = 0; i < array.length; i++) {
+	        result[i] = UtilityBox.scaleImage(array[i], width, height);
+	    }
+		
+	    return result;
+	}
+	
+	public BufferedImage[] scaleArray(BufferedImage[] array) {
+		return scaleArray(array, gp.tileSize, gp.tileSize);
+	}
+	
+	public BufferedImage[][] setupSheet2D(String filePath, int row, int col) {
+		BufferedImage[][] result = null;
+		try {
+			BufferedImage spriteSheet = ImageIO.read(new File(Main.tempDir + "/res/" + filePath + ".png"));
+			result = new BufferedImage[row * col][row * col];
+			result = UtilityBox.fromSheet2D(spriteSheet, row, col);
+			result = scaleArray(result, row, col);
+		}catch (IOException e) {
+			System.err.println("[ERROR] \" " + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+		} catch (IllegalArgumentException e) {
+			System.err.println("[ERROR] \" " + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+		}
+		
+		return result;
+	}
+	
+	public BufferedImage[][] scaleArray(BufferedImage[][] array, int rows, int cols, int width, int height) {
+		BufferedImage[][] result = new BufferedImage[array.length][array.length];
+		
+		for (int x = 0; x < rows; x++) {
+			for (int y = 0; y < cols; y++) {
+				result[x][y] = UtilityBox.scaleImage(array[y][x], width, height);
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	public BufferedImage[][] scaleArray(BufferedImage[][] array, int rows, int cols) {
+		return scaleArray(array, rows, cols, gp.tileSize, gp.tileSize);
+	}
+	
+	public BufferedImage setup(int index) {
+		BufferedImage image = null;
+		
+		System.out.println(index);
+		
+		image = sprites[index];
+		image = UtilityBox.scaleImage(image, gp.tileSize, gp.tileSize);
+		
+		return image;
+	}
+	
+	boolean isNotType() {
+		return this.entityType != EntityType.Object && this.entityType != EntityType.Player && this.entityType != EntityType.Test;
 	}
 }

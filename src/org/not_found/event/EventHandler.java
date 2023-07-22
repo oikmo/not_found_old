@@ -1,5 +1,6 @@
 package org.not_found.event;
 
+import org.not_found.entity.Entity.Direction;
 import org.not_found.main.GamePanel;
 
 public class EventHandler {
@@ -42,15 +43,15 @@ public class EventHandler {
 			canTouchEvent = true;
 		}
 		if(canTouchEvent) {
-			if(hit(2,2,"any")) {damagePit(2,2, gp.dialogueState, 1, true);}
-			if(hit(1,1, "any")) {healPool(1,1, gp.dialogueState, false);}
+			if(hit(2,2, Direction.Any)) {damagePit(2,2, gp.dialogueState, 1, true);}
+			if(hit(1,1, Direction.Any)) {healPool(1,1, gp.dialogueState, false);}
 		}
 		
 		
 		//if(hit(3,3, "any") == true) {tp(gp.dialogueState, 10, 10);}
 	}
 	
-	public boolean hit(int col, int row, String reqDir) {
+	public boolean hit(int col, int row, Direction reqDir) {
 		boolean hit = false;
 		
 		gp.player.hitBox.x += gp.player.worldX;
@@ -59,7 +60,7 @@ public class EventHandler {
 		eventRect[col][row].y = row*gp.tileSize + eventRect[col][row].y;
 		
 		if(gp.player.hitBox.intersects(eventRect[col][row]) && !eventRect[col][row].eventDone) {
-			if(gp.player.direction.contentEquals(reqDir) || reqDir.contentEquals("any")) {
+			if(gp.player.direction == reqDir || reqDir.equals(Direction.Any)) {
 				hit = true;
 				
 				previousEventX = gp.player.worldX;

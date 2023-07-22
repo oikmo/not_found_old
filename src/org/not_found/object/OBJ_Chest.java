@@ -6,9 +6,9 @@ public class OBJ_Chest extends OBJ {
 	
 	public OBJ_Chest(GamePanel gp) {
 		super(gp);
-		entityType = EntityType.Chest;
+		objType = OBJType.Chest;
 		name = "Chest";
-		idle1 = setup("/objects/chest", gp.tileSize, gp.tileSize);
+		image = setup("/objects/chest");
 		collision = true;
 	}
 }

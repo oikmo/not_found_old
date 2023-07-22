@@ -1,26 +1,29 @@
 package org.not_found.main;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
+
 import javax.swing.JPanel;
 
 import org.not_found.entity.*;
+import org.not_found.entity.monster.MONSTER;
+import org.not_found.entity.npc.NPC;
 import org.not_found.event.EventHandler;
 import org.not_found.object.OBJ;
 import org.not_found.tile.TileManager;
 
-@SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
+	private static final long serialVersionUID = 1L;
 	//SCREEN SETTINGS
 	final int originalTileSize = 16;
 	final int scale = 3;
 	public String fpsCount = "60";
-	//private ReentrantLock updateLock = new ReentrantLock();
 
 	public final int tileSize = originalTileSize * scale;
-	public final int maxScreenCol = 17;
-	public final int maxScreenRow = 13;
+	public final int maxScreenCol = 17; //17
+	public final int maxScreenRow = 13; //13
 	public final int screenWidth = tileSize * maxScreenCol;
 	public final int screenHeight = tileSize * maxScreenRow;
 	//WORLD SETTINGS
@@ -28,14 +31,19 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int maxWorldRow = 32;
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
+	
+	public boolean isFullScreen = false;
+	
+	int screenWidth2 = screenWidth;
+	int screenHeight2 = screenHeight;
+	BufferedImage tempScreen;
+	
 	boolean music1, music2;
 	public String version;
 	
 	//DEBUG BOOLEANS
 	public boolean debug;
 	public boolean fps;
-	
-	Image image;
 	
 	//SYSTEM
 	int FPSLock = 60;
@@ -44,16 +52,16 @@ public class GamePanel extends JPanel implements Runnable {
 	Sound music = new Sound();
 	Sound se = new Sound();
 	
-	
 	public Thread gameThread;
+	Graphics2D g2;
 	
 	//ENTITIES AND OBJECTS
 	ArrayList<Entity> entityList = new ArrayList<>();
 	public Player player = new Player(this);
-	public static OBJ itemList[] = new OBJ[10];
-	public OBJ obj[] = new OBJ[10];
-	public Entity npc[] = new Entity[5];
-	public Entity monster[] = new Entity[20];
+	public static OBJ itemList[] = new OBJ[128];
+	public OBJ obj[] = new OBJ[128];
+	public NPC npc[] = new NPC[128];
+	public MONSTER monster[] = new MONSTER[128];
 	
 	public KeyHandler keyH = new KeyHandler(this);
 	public AssetSetter aSetter = new AssetSetter(this);
@@ -70,6 +78,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int pauseState = 3;
 	public final int dialogueState = 4;
 	public final int characterState = 5;
+	public final int optionsState = 6;
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -77,19 +86,27 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
-		this.addMouseListener(keyH);
+		//this.addMouseListener(keyH);
 	}
 	
 	public void setupGame() throws IOException {
-		
+		se.volumeScale = 2;
 		//set objs, npcs, mons, gamestate etc
 		aSetter.setObject();
 		aSetter.setNPC();
 		aSetter.setMonster();
-		//player.setDefaultValues();
-		gameState = loadingState;
-		 Tmusic.setFile(0);
-		 
+		if(gameThread != null) {
+			gameState = titleState;
+		} else {
+			gameState = loadingState;
+		}
+		
+		Tmusic.setFile(0);
+		
+		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+		g2 = (Graphics2D)tempScreen.getGraphics();
+		//setFullScreen();
+		
 		//System.out.println(SoundEnum.Espionage.ordinal());
 		if(!Tmusic.isPlaying()) { Tmusic.setFile(SoundEnum.Espionage);} else { Tmusic.stop(); Tmusic.setFile(SoundEnum.Espionage); }
 		if(!music.isPlaying()) { music.setFile(SoundEnum.JEALOUS); } else { music.stop(); music.setFile(SoundEnum.JEALOUS);}
@@ -119,7 +136,8 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			if(delta >= 1) {
 				update();
-				repaint();
+				paintToTempScreen();
+				drawToScreen();
 				delta--;
 				drawCount++;
 			}
@@ -145,14 +163,12 @@ public class GamePanel extends JPanel implements Runnable {
 				music1 = true;
 			} 
 			
-			
 			player.update();
-			for(int i=0;i<npc.length;i++) {
+			for(int i=0;i<128;i++) {
 				if(npc[i] != null) {
 					npc[i].update();
 				}
-			}
-			for(int i=0;i<monster.length;i++) {
+				
 				if(monster[i] != null) {
 					if(monster[i].alive) {
 						monster[i].update();
@@ -160,7 +176,6 @@ public class GamePanel extends JPanel implements Runnable {
 					else {
 						monster[i] = null;
 					}
-					
 				}
 			}
 		}
@@ -185,30 +200,29 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 	
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D)g;
-		RenderingHints rh = new RenderingHints(
-	             RenderingHints.KEY_RENDERING,
-	             RenderingHints.VALUE_RENDER_SPEED);
-	    g2.setRenderingHints(rh);
-	    //g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	public void drawToScreen() {
+		Graphics g = this.getGraphics();
+		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
+		g.dispose();
+	}
+	
+	public void paintToTempScreen() {
+		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+	    g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        //g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        //g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-		
-        //updateLock.lock();
-        
-        //try {
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);        
         
         //title screen
         if(gameState == titleState) {
         	ui.draw(g2);
-        } else {
+        } 
+        //literally every other state :(
+        else {
         	tileM.draw(g2);
 
         	entityList.add(player);
@@ -224,11 +238,6 @@ public class GamePanel extends JPanel implements Runnable {
         	entityList.clear();
         	ui.draw(g2);
         }
-        
-    	/*} finally {
-        	updateLock.unlock();*/
-		
-		g2.dispose();
 	}
 	
 	public void playMusic(int i) {
@@ -240,6 +249,7 @@ public class GamePanel extends JPanel implements Runnable {
 		music.stop();
 	}
 	public void playSE(int i) {
+		
 		se.setFile(i);
 		se.play();
 	}

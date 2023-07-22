@@ -1,15 +1,21 @@
 package org.not_found.object;
 
-import org.not_found.entity.Entity;
+import java.awt.image.BufferedImage;
+
 import org.not_found.main.GamePanel;
 
-public class OBJ_Heart extends Entity {
-
+public class OBJ_Heart extends OBJ {
+	
+	public BufferedImage image1, image2, image3;
+	
 	public OBJ_Heart(GamePanel gp) {
 		super(gp);
 		name = "heart";
-		image1 = setup("/player/heart/full", gp.tileSize, gp.tileSize);
-		image2 = setup("/player/heart/half", gp.tileSize, gp.tileSize);
-		image3 = setup("/player/heart/blank", gp.tileSize, gp.tileSize);
+		
+		sprites = setupSheet("player/heartSheet", 3, 1);
+		
+		image1 = sprites[0];
+		image2 = sprites[1];
+		image3 = sprites[2];
 	}
 }

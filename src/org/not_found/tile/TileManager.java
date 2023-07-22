@@ -1,56 +1,62 @@
 package org.not_found.tile;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 import javax.imageio.ImageIO;
 
 import org.not_found.main.GamePanel;
+import org.not_found.main.Main;
 import org.not_found.toolbox.UtilityBox;
 
-public class TileManager {
+public class TileManager  {
 	GamePanel gp;
 	public Tile[] tile;
 	public int mapTileNum[][];
+	BufferedImage defaultPack = null;
+	BufferedImage[] images = new BufferedImage[256];
+	int squareLine = 16;
 	
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
 		tile = new Tile[11];
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+		try {
+			defaultPack = ImageIO.read(new File(Main.tempDir + "/res/defaultPack.png"));
+			images = UtilityBox.fromSheet(defaultPack, 16, 16);
+		} catch(IOException e) {
+			System.err.println("[ERROR] \"/res/defaultPack.png\" could not be loaded!");
+			//getClass()
+		}
+		
 		getTileImage();
-		loadMap("/res/maps/map_sample.txt");
+		loadMap(new File(Main.tempDir + "/res/maps/map_sample.txt"));
 	}
 	public void getTileImage() {
-		setup(0, "ground", false);
-		setup(1, "wall", true);
-		setup(2, "water", false);
-		setup(3, "g_w/g_wbl", false);
-		setup(4, "g_w/g_wmb", false);
-		setup(5, "g_w/g_wbr", false);
-		setup(6, "g_w/g_wml", false);
-		setup(7, "g_w/g_wmr", false);
-		setup(8, "g_w/g_wtl", false);
-		setup(9, "g_w/g_wmt", false);
-		setup(10, "g_w/g_wtr", false);
-		//setup(0, "ground", false);
-		
+		setup(0, false); //ground
+		setup(1, true);
+		setup(2, false);
+		setup(3, false);
+		setup(4, false);
+		setup(5, false);
+		setup(6, false);
+		setup(7, false);
+		setup(8, false);
+		setup(9, false);
+		setup(10, false);
 	}
 	
-	public void setup(int index, String imagePath, boolean collision) {
-		try {
+	public void setup(int index, boolean collision) {
 			tile[index] = new Tile();
-			tile[index].image = ImageIO.read(getClass().getResource("/res/tiles/" + imagePath + ".png"));
+			tile[index].image = images[index];
 			tile[index].image = UtilityBox.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
 			tile[index].collision = collision;
-			
-		} catch (IOException e) {
-			
-		}
 	}
 	
-	public void loadMap(String mapPath) {
+	public void loadMap(File mapPath) {
 		try {
-			InputStream is = getClass().getResourceAsStream(mapPath);
+			InputStream is = new FileInputStream(mapPath);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			
 			int col = 0;
@@ -77,6 +83,7 @@ public class TileManager {
 			e.printStackTrace();
 		}
 	}
+	
 	public void draw(Graphics2D g2) {
 		int worldCol = 0;
 		int worldRow = 0;

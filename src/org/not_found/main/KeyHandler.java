@@ -3,11 +3,10 @@ package org.not_found.main;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class KeyHandler implements KeyListener, MouseListener{
+public class KeyHandler implements KeyListener {
 	
 	GamePanel gp;
 	ImageIcon icon = new ImageIcon("question.png");
-
 	
 	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
 	
@@ -22,7 +21,6 @@ public class KeyHandler implements KeyListener, MouseListener{
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		
 		int code = e.getKeyCode();
 		
 		if(gp.gameState == gp.titleState) {
@@ -39,6 +37,8 @@ public class KeyHandler implements KeyListener, MouseListener{
 		}
 		else if(gp.gameState == gp.characterState) {
 			charState(code);
+		} else if(gp.gameState == gp.optionsState) {
+			optionsState(code);
 		}
 		
 	}
@@ -88,15 +88,18 @@ public class KeyHandler implements KeyListener, MouseListener{
 		}
 		else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 			rightPressed = true;
-		}
-		else if(code == KeyEvent.VK_ESCAPE) {
+		} 
+		else if(code == KeyEvent.VK_ENTER) {
+			enterPressed = true;
+		} 
+		else if(code == KeyEvent.VK_P) {
 			gp.gameState = gp.pauseState;
 		}
 		else if(code == KeyEvent.VK_C) {
 			gp.gameState = gp.characterState;
-		}
-		if(code == KeyEvent.VK_ENTER) {
-			enterPressed = true;
+		} 
+		else if(code == KeyEvent.VK_ESCAPE)  {
+			gp.gameState = gp.optionsState;
 		}
 	}
 	
@@ -146,6 +149,89 @@ public class KeyHandler implements KeyListener, MouseListener{
 		}
 	}
 	
+	public void optionsState(int code) {
+		if(code == KeyEvent.VK_ESCAPE) {
+			gp.gameState = gp.playState;
+		}
+		
+		if(code == KeyEvent.VK_ENTER) {
+			enterPressed = true;
+		}
+		
+		if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+			gp.ui.commandNum--;
+			gp.playSE(SoundEnum.cursor);
+			if(gp.ui.commandNum < 0) {
+				gp.ui.commandNum = 4;
+			}
+		}
+		if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+			gp.ui.commandNum++;
+			gp.playSE(SoundEnum.cursor);
+			if(gp.ui.commandNum > 4) {
+				gp.ui.commandNum = 0;
+			}
+		}
+		
+		if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+			if(gp.ui.subState == 0) {
+				if(gp.ui.commandNum == 0) {
+					if(gp.Tmusic.volumeScale > 0) {
+						gp.Tmusic.volumeScale--;
+						gp.Tmusic.checkVolume();
+						gp.playSE(SoundEnum.cursor);
+					}
+					if(gp.Pmusic.volumeScale > 0) {
+						gp.Pmusic.volumeScale--;
+						gp.Pmusic.checkVolume();
+						gp.playSE(SoundEnum.cursor);
+					}
+					if(gp.music.volumeScale > 0) {
+						gp.music.volumeScale--;
+						gp.music.checkVolume();
+						gp.playSE(SoundEnum.cursor);
+					}
+				
+				}
+				if(gp.ui.commandNum == 1) {
+					if(gp.se.volumeScale > 0) {
+						gp.se.volumeScale--;
+						gp.playSE(SoundEnum.cursor);
+					}
+				}
+			}
+		}
+		
+		if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+			if(gp.ui.subState == 0) {
+				if(gp.ui.commandNum == 0) {
+					
+					if(gp.music.volumeScale < 5) {
+						gp.music.volumeScale++;
+						gp.music.checkVolume();
+						gp.playSE(SoundEnum.cursor);
+					}
+					if(gp.Tmusic.volumeScale < 5) {
+						gp.Tmusic.volumeScale++;
+						gp.Tmusic.checkVolume();
+						gp.playSE(SoundEnum.cursor);
+					}
+					if(gp.Pmusic.volumeScale < 5) {
+						gp.Pmusic.volumeScale++;
+						gp.Pmusic.checkVolume();
+						gp.playSE(SoundEnum.cursor);
+					}
+				}
+				if(gp.ui.commandNum == 1) {
+					if(gp.se.volumeScale < 5) {
+						gp.se.volumeScale++;
+						gp.playSE(SoundEnum.cursor);
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();
@@ -165,46 +251,6 @@ public class KeyHandler implements KeyListener, MouseListener{
 		else if(code == KeyEvent.VK_ENTER) {
 			enterPressed = false;
 		}
-		
-
-		
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		int code = e.getButton();
-		
-		if(code == MouseEvent.BUTTON1) {
-			upPressed = false;
-			downPressed = false;
-			leftPressed = false;
-			rightPressed = false;
-		}
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stubd
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

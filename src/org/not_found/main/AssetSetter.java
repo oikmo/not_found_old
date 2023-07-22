@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.not_found.entity.npc.*;
 import org.not_found.entity.monster.*;
 import org.not_found.object.*;
+import org.not_found.object.tools.OBJ_Syringe;
 
 public class AssetSetter {
 	GamePanel gp;
@@ -27,20 +28,25 @@ public class AssetSetter {
 		gp.obj[1].ID = "Key2";
 		gp.itemList[1] = gp.obj[1];
 		
-		gp.obj[2] = new OBJ_Door(gp);
-		gp.obj[2].worldX = 24 * gp.tileSize;
-		gp.obj[2].worldY = 12 * gp.tileSize;
-		gp.obj[2].ID = "Door1";
+		gp.obj[2] = new OBJ_Syringe(gp);
+		gp.obj[2].worldX = 2 * gp.tileSize;
+		gp.obj[2].worldY = 6 * gp.tileSize;
+		gp.itemList[2] = gp.obj[2];
 		
 		gp.obj[3] = new OBJ_Door(gp);
-		gp.obj[3].worldX = 22 * gp.tileSize;
-		gp.obj[3].worldY = 19 * gp.tileSize;
-		gp.obj[3].ID = "Door2";
+		gp.obj[3].worldX = 24 * gp.tileSize;
+		gp.obj[3].worldY = 12 * gp.tileSize;
+		gp.obj[3].ID = "Door1";
 		
-		gp.obj[4] = new OBJ_Chest(gp);
-		gp.obj[4].worldX = 13 * gp.tileSize;
-		gp.obj[4].worldY = 13 * gp.tileSize;
-		gp.obj[4].ID = "Chest0";
+		gp.obj[4] = new OBJ_Door(gp);
+		gp.obj[4].worldX = 22 * gp.tileSize;
+		gp.obj[4].worldY = 19 * gp.tileSize;
+		gp.obj[4].ID = "Door2";
+		
+		gp.obj[5] = new OBJ_Chest(gp);
+		gp.obj[5].worldX = 13 * gp.tileSize;
+		gp.obj[5].worldY = 13 * gp.tileSize;
+		gp.obj[5].ID = "Chest0";
 	}
 
 	public void setNPC() throws IOException {
@@ -55,6 +61,8 @@ public class AssetSetter {
 		gp.npc[1].npcName = "TEST";
 		
 		gp.npc[2] = new NPC_BLANK(gp);
+		gp.npc[2].worldX = gp.tileSize*1;
+		gp.npc[2].worldY = gp.tileSize*1;
 		gp.npc[2].npcName = "";
 		
 	}
