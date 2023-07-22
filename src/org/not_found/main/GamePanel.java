@@ -81,12 +81,17 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int characterState = 5;
 	public final int optionsState = 6;
 	
+	private GraphicsDevice device;
+	
+	public double aspectRatio;
+	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.blue);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+		aspectRatio = (double) screenWidth / (double) screenHeight;
 		//this.addMouseListener(keyH);
 	}
 	
@@ -113,12 +118,32 @@ public class GamePanel extends JPanel implements Runnable {
 		if(!Tmusic.isPlaying()) { Tmusic.setFile(SoundEnum.Espionage);} else { Tmusic.stop(); Tmusic.setFile(SoundEnum.Espionage); }
 		if(!music.isPlaying()) { music.setFile(SoundEnum.JEALOUS); } else { music.stop(); music.setFile(SoundEnum.JEALOUS);}
 		if(!Pmusic.isPlaying()) { Pmusic.setFile(SoundEnum.IntenseMoments);} else { Pmusic.stop(); Pmusic.setFile(SoundEnum.IntenseMoments); }
+		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        device = environment.getDefaultScreenDevice();
+        toggleFullScreen();
 	}
 	
 	public void startGameThread() {
 		gameThread = new Thread(this);
 		gameState = titleState;
 		gameThread.start();
+	}
+	
+	public void toggleFullScreen() {
+	    if (!isFullScreen) {
+	        // Switch to full-screen
+	        this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
+	    } else {
+	        // Switch back to non-full-screen
+	        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+	    }
+
+	    // Revalidate the panel and repaint
+	    this.revalidate();
+	    this.repaint();
+
+	    // Update the full-screen flag
+	    isFullScreen = !isFullScreen;
 	}
 	
 	@Override
@@ -202,22 +227,16 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 	
+	public int width = this.getWidth();
+	
 	public void drawToScreen() {
 		Graphics g = this.getGraphics();
-		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
+		//System.out.println((this.getWidth() - screenWidth2)/2);
+		g.drawImage(tempScreen, (this.getWidth() - screenWidth2)/2, 0, screenWidth2, screenHeight2, null);
 		g.dispose();
 	}
 	
-	public void paintToTempScreen() {
-		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
-	    g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);        
+	public void paintToTempScreen() {    
         
         //title screen
         if(gameState == titleState) {

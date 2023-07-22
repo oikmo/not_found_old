@@ -1,6 +1,9 @@
 package org.not_found.main;
 
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.*;
@@ -15,11 +18,11 @@ public class Main {
 	public static JFrame window = new JFrame();
 	
 	String userDir = System.getProperty("user.dir");
+	public static boolean isFullScreen = false;
 	public static String tempDir = System.getProperty("java.io.tmpdir") + "not_found";
+	static GamePanel gamePanel = new GamePanel();
 	public static void main(String[] args) throws IOException {	
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
-				
-		
 		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(true);
@@ -66,7 +69,7 @@ public class Main {
     		}
     	}
     	
-		GamePanel gamePanel = new GamePanel();
+		
 		window.add(gamePanel);
 		window.pack();
 		window.setLocationRelativeTo(null);
@@ -85,12 +88,63 @@ public class Main {
 				}
 			}
 		}
-
+		toggleFullScreen();
 		gamePanel.setupGame();
 		gamePanel.startGameThread();
 		
 		
 	}
+	
+	// Method to toggle between full-screen and windowed mode
+	public static void toggleFullScreen() {
+		updateTempScreenAndGraphics();
+	    if (isFullScreen) {
+	        // Switch back to windowed mode
+	        window.dispose();
+	        window.setUndecorated(false);
+	        window.setSize(new Dimension(gamePanel.screenWidth, gamePanel.screenHeight));
+	        window.setLocationRelativeTo(null);
+	        window.setVisible(true);
+	    } else {
+	        // Switch to full-screen
+	        window.dispose();
+	        window.setUndecorated(true);
+	        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	        window.setVisible(true);
+	    }
+	    updateTempScreenAndGraphics();
+	    // Update the full-screen flag
+	    isFullScreen = !isFullScreen;
+	}
+	
+	private static void updateTempScreenAndGraphics() {
+		System.out.println("MY GOD");
+	    int windowWidth = window.getWidth();
+	    int windowHeight = window.getHeight();
+
+	    double windowAspectRatio = (double) windowWidth / (double) windowHeight;
+
+	    int tempScreenWidth;
+	    int tempScreenHeight;
+
+	    if (windowAspectRatio < gamePanel.aspectRatio) {
+	        // The window is taller than the original aspect ratio
+	        tempScreenWidth = (int) (windowHeight * gamePanel.aspectRatio);
+	        tempScreenHeight = windowHeight;
+	    } else {
+	        // The window is wider than the original aspect ratio
+	        tempScreenWidth =  (int) (windowHeight * gamePanel.aspectRatio);
+	        tempScreenHeight = windowHeight;
+	    }
+
+	    // Update the size of the tempScreen and g2
+	    gamePanel.screenWidth2 = tempScreenWidth;
+	    gamePanel.screenHeight2 = tempScreenHeight;
+	    gamePanel.tempScreen = new BufferedImage(gamePanel.screenWidth2, tempScreenHeight, BufferedImage.TYPE_INT_ARGB);
+	    gamePanel.g2 = (Graphics2D) gamePanel.tempScreen.getGraphics();
+	}
+
+
 	
 	private static void download(String urlStr, String file) throws IOException {
         URL url = new URL(urlStr);
