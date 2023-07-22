@@ -32,9 +32,9 @@ public class Achievement {
 		g2.setColor(Color.white);
 		int imageY = (int)(frameHeight/2) + y - 15;
 		g2.setStroke(new BasicStroke(1));
-		g2.drawRect(x+17, imageY, image.getWidth(), image.getHeight());
+		g2.drawRect(x+16, imageY-1, image.getWidth() + 1, image.getHeight());
 		g2.setColor(new Color(1f,1f,1f,0.5f));
-		g2.fillRect(x+17, imageY, image.getWidth(), image.getHeight());
+		g2.fillRect(x+16, imageY-1, image.getWidth() + 1, image.getHeight());
 		g2.drawImage(image, x+17, imageY, gp);
 		g2.setColor(Color.white);
 		

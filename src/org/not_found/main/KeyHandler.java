@@ -158,20 +158,23 @@ public class KeyHandler implements KeyListener {
 			enterPressed = true;
 		}
 		
-		if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-			gp.ui.commandNum--;
-			gp.playSE(SoundEnum.cursor);
-			if(gp.ui.commandNum < 0) {
-				gp.ui.commandNum = 4;
+		if(gp.ui.subState == 0) {
+			if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+				gp.ui.commandNum--;
+				gp.playSE(SoundEnum.cursor);
+				if(gp.ui.commandNum < 0) {
+					gp.ui.commandNum = 3;
+				}
+			}
+			if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+				gp.ui.commandNum++;
+				gp.playSE(SoundEnum.cursor);
+				if(gp.ui.commandNum > 3) {
+					gp.ui.commandNum = 0;
+				}
 			}
 		}
-		if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-			gp.ui.commandNum++;
-			gp.playSE(SoundEnum.cursor);
-			if(gp.ui.commandNum > 4) {
-				gp.ui.commandNum = 0;
-			}
-		}
+		
 		
 		if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 			if(gp.ui.subState == 0) {

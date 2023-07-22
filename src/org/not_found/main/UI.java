@@ -297,7 +297,7 @@ public class UI {
 		g2.drawString(text, x, y);
 		
 		//System.out.println((gp.screenWidth/2) - (gp.tileSize + (gp.tileSize*2) + 16));
-		x = (gp.getWidth() - gp.tileSize*5)/2;
+		x = (gp.getTWidth() - gp.tileSize*5)/2;
 		y += gp.tileSize;
 		g2.drawImage(gp.player.shadow, x,(int) (y - gp.tileSize), gp.tileSize*5, gp.tileSize*5, null);
 		
@@ -498,7 +498,7 @@ public class UI {
 		//sub window :3
 		int frameWidth = gp.tileSize*8;
 		int frameHeight = gp.tileSize*10;
-		int frameX = (gp.getWidth() - frameWidth) / 2;
+		int frameX = (gp.getTWidth() - frameWidth) / 2;
 		int frameY = gp.tileSize;
 		
 		
@@ -540,26 +540,32 @@ public class UI {
 		
 		//control
 		textY += gp.tileSize;
-		g2.drawString("Control", textX, textY);
+		g2.drawString("Controls", textX, textY);
 		if(commandNum == 2) {
 			g2.drawString(">", textX-15, textY);
 			if(gp.keyH.enterPressed) {
 				subState = 1;
 				commandNum = 0;
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
 		//end game
-		textY += gp.tileSize;
+		/*textY += gp.tileSize;
 		g2.drawString("End Game", textX, textY);
 		if(commandNum == 3) {
 			g2.drawString(">", textX-15, textY);
-		}
+		}*/
 		
 		//back
 		textY += gp.tileSize * 3;
 		g2.drawString("Back", textX, textY);
-		if(commandNum == 4) {
+		if(commandNum == 3) {
 			g2.drawString(">", textX-15, textY);
 			if(gp.keyH.enterPressed) {
 				gp.gameState = gp.playState;
@@ -615,6 +621,17 @@ public class UI {
 		g2.drawString("C", textX, textY); textY += gp.tileSize;
 		g2.drawString("P", textX, textY); textY += gp.tileSize;
 		g2.drawString("ESC", textX, textY); textY += gp.tileSize;
+		
+		//back
+		textX = frameX + gp.tileSize;
+		textY = frameY + gp.tileSize * 9;
+		g2.drawString("Back", textX, textY);
+		if(commandNum == 0) {
+			g2.drawString(">", textX - 25, textY);
+			if(gp.keyH.enterPressed) {
+				subState = 0;
+			}
+		}
 	}
 	
 	public void drawSubWindow(int x, int y, int width, int height) {
