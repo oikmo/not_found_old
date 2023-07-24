@@ -24,16 +24,6 @@ public class UtilityBox  {
 		return scaledImage;
 	}
 	
-	public static String[] getDialogueFromTXT(String filepath) throws IOException {
-		List<String> listOfStrings = new ArrayList<String>();
-		BufferedReader bf = new BufferedReader(new FileReader(Main.tempDir + "/res/" + filepath + ".txt"));
-		String line = bf.readLine();
-		while (line != null) {listOfStrings.add(line);line = bf.readLine();}
-		bf.close();
-		String[] array= listOfStrings.toArray(new String[0]);
-		return array;
-	}
-	
 	private static BufferedImage toCompatibleImage(BufferedImage image)
 	{
 	    // obtain the current system graphical settings
@@ -66,7 +56,6 @@ public class UtilityBox  {
 
 		int chunkWidth = 16; // determines the chunk width and height
 		int chunkHeight = 16;
-		System.out.println(chunkWidth + " " + chunkHeight);
 		int count = 0;
 		BufferedImage imgs[] = new BufferedImage[chunks]; //Image array to hold image chunks
 		for (int x = 0; x < cols; x++) {
@@ -154,5 +143,15 @@ public class UtilityBox  {
 
 		return imgs;
 
+	}
+
+	public static String[] getDialogueFromTXT(String filepath) throws IOException {
+		List<String> listOfStrings = new ArrayList<String>();
+		BufferedReader bf = new BufferedReader(new FileReader(Main.gameDir + "/res/" + filepath + ".txt"));
+		String line = bf.readLine();
+		while (line != null) {listOfStrings.add(line);line = bf.readLine();}
+		bf.close();
+		String[] array= listOfStrings.toArray(new String[0]);
+		return array;
 	}
 }

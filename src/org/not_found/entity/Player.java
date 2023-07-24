@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.not_found.achievements.AchieveManager;
-import org.not_found.main.GamePanel;
-import org.not_found.main.SoundEnum;
+import org.not_found.main.*;
 import org.not_found.object.*;
-import org.not_found.object.tools.OBJ_Consumable;
-import org.not_found.object.tools.OBJ_Shield_Wood;
-import org.not_found.object.tools.OBJ_Sword_Normal;
+import org.not_found.object.tools.*;
 
 public class Player extends Entity {
 	public BufferedImage shadow;
@@ -40,8 +37,6 @@ public class Player extends Entity {
 	}
 
 	public void setDefaultValues() {
-		
-		
 		worldX = gp.tileSize * 16;
 		worldY = gp.tileSize * 16;
 		speed = 4;
@@ -65,11 +60,16 @@ public class Player extends Entity {
 	public void setItems() {
 		inventory.add(currentWeapon);
 		inventory.add(currentShield);
+		inventory.add(new OBJ_Bow(gp));
 	}
 	
 	public int getAttack() {
 		attackArea = currentWeapon.attackArea;
 		return attack = strength * currentWeapon.attackValue;
+	}
+	
+	public int getShootableAttack() {
+		return attack = strength * projectile.attack;
 	}
 	
 	public int getDefense() {
@@ -118,6 +118,7 @@ public class Player extends Entity {
 		if (attacking) {
 			attacking();
 		}
+		
 		else if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed || gp.keyH.enterPressed) {
 			if (gp.keyH.upPressed) {
 				direction = Direction.Up;
@@ -167,21 +168,43 @@ public class Player extends Entity {
 			} else {
 				direction = Direction.Idle;
 			}
-			if(gp.keyH.enterPressed && !stopAttacking && !collisionOn && direction != Direction.Idle)  {
-				gp.playSE(SoundEnum.swingWeapon);
-				attacking = true;
-				spriteCounter = 0;
+			if(gp.keyH.enterPressed && !stopAttacking && !collisionOn) {
+				if(currentWeapon.objType == OBJType.Weapon && direction != Direction.Idle)  {
+					gp.playSE(SoundEnum.swingWeapon);
+					attacking = true;
+					spriteCounter = 0;
+				} else if(currentWeapon.objType == OBJType.Shootable) {
+					OBJ_Shootable item = (OBJ_Shootable) currentWeapon;
+					if(item.amount != 0) {
+						if(projectile != null) {
+							if(!projectile.alive) {
+									gp.playSE(SoundEnum.swingWeapon);
+									//set projectile
+									projectile.set(worldX, worldY, direction, true, (Entity)this);
+									gp.projectiles.add(projectile);
+									item.amount--;
+							}
+						
+						}
+					} else {
+						gp.ui.showMessage("No arrows!", 40, 1);
+					}
+					
+					
+					
+				}
 			}
+			
 			
 			stopAttacking = false;
 			gp.keyH.enterPressed = false;
 			
 			spriteCounter++;
-			if (spriteCounter > 8) {
+			if (spriteCounter > 7) {
 				if (spriteNum > 0) {
 					spriteNum++;
 				}
-				if (spriteNum > 6) {
+				if (spriteNum > 5) {
 					spriteNum = 1;
 				}
 				spriteCounter = 0;
@@ -193,7 +216,7 @@ public class Player extends Entity {
 			spriteCounter++;
 			if (spriteCounter > 12) {
 				if (spriteNum > 0) {
-						spriteNum++;
+					spriteNum++;
 				}
 				if (spriteNum > 6) {
 					spriteNum = 1;
@@ -229,7 +252,7 @@ public class Player extends Entity {
 		}
 	}
 	
-	public void damageMonster(int i) {
+	public void damageMonster(int i, int attack) {
 		if (i != 999) {
 			if (!gp.monster[i].isInvince) {
 				gp.playSE(SoundEnum.swingWeapon);
@@ -246,56 +269,81 @@ public class Player extends Entity {
 				gp.monster[i].damageReaction();
 
 				if (gp.monster[i].life <= 0) {
+					if(!AchieveManager.achievements.get("first-kill").completed) {
+						gp.ui.addAchievement(AchieveManager.achievements.get("first-kill"));
+					}
+					
 					gp.monster[i].dying = true;
+					exp += gp.monster[i].exp;
+					checkLevelUP();
 				}
 			}
 		}
 	}
 
-	public void attacking() {
-		spriteCounter++;
-		if(spriteCounter <= 5) {
-			atkSpriteNum = 1;
-		}
-		if (spriteCounter > 5 && spriteCounter <= 20) { // SHOW SECOND ATTACK IMAGE FOR 25 FRAMES
-			atkSpriteNum = 2;
-
-			// TEMP VARIABLES - Save the current worldX/Y, solidArea
-			int currentWorldX = worldX;
-			int currentWorldY = worldY;
-			int solidAreaWidth = hitBox.width;
-			int solidAreaHeight = hitBox.height;
-
-			// Adjust player's worldX/Y for the attackArea
-			switch (direction) {
-			case Up: worldY -= attackArea.height; break;
-			case Down: worldY += attackArea.height; break;
-			case Left: worldX -= attackArea.width; break;
-			case Right: worldX += attackArea.width; break;
-			default:
-				break;
-			}
-
-			// attackArea becomes solidArea
-			hitBox.width = attackArea.width;
-			hitBox.height = attackArea.height;
-
-			// Check monster collison with the updated worldX/Y, solidArea
-			int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-			damageMonster(monsterIndex);
-
-			// Restore worldX/Y, solidArea
-			worldX = currentWorldX;
-			worldY = currentWorldY;
-			hitBox.width = solidAreaWidth;
-			hitBox.height = solidAreaHeight;
+	void checkLevelUP() {
+		if(exp >= nextLevelExp) {
+			gp.playSE(SoundEnum.powerUp);
+			level++;
+			nextLevelExp = nextLevelExp*2;
+			maxLife += 2;
+			strength++;
+			dexterity++;
+			attack = getAttack();
+			defense = getDefense();
 		}
 		
-		if(spriteCounter > 20) {
-			atkSpriteNum = 1;
-			spriteCounter = 0;
+	}
+
+	public void attacking() {
+		if(currentWeapon.objType == OBJType.Weapon) {
+			spriteCounter++;
+			if(spriteCounter <= 5) {
+				atkSpriteNum = 1;
+			}
+			if (spriteCounter > 5 && spriteCounter <= 20) { // SHOW SECOND ATTACK IMAGE FOR 25 FRAMES
+				atkSpriteNum = 2;
+
+				// TEMP VARIABLES - Save the current worldX/Y, solidArea
+				int currentWorldX = worldX;
+				int currentWorldY = worldY;
+				int solidAreaWidth = hitBox.width;
+				int solidAreaHeight = hitBox.height;
+
+				// Adjust player's worldX/Y for the attackArea
+				switch (direction) {
+				case Up: worldY -= attackArea.height; break;
+				case Down: worldY += attackArea.height; break;
+				case Left: worldX -= attackArea.width; break;
+				case Right: worldX += attackArea.width; break;
+				default:
+					break;
+				}
+
+				// attackArea becomes solidArea
+				hitBox.width = attackArea.width;
+				hitBox.height = attackArea.height;
+
+				// Check monster collison with the updated worldX/Y, solidArea
+				int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+				damageMonster(monsterIndex, attack);
+
+				// Restore worldX/Y, solidArea
+				worldX = currentWorldX;
+				worldY = currentWorldY;
+				hitBox.width = solidAreaWidth;
+				hitBox.height = solidAreaHeight;
+			}
+			
+			if(spriteCounter > 20) {
+				atkSpriteNum = 1;
+				spriteCounter = 0;
+				attacking = false;
+			}
+		} else {
 			attacking = false;
 		}
+		
 	}
 	
 	void displayMessage(int i, OBJ item) {
@@ -305,11 +353,11 @@ public class Player extends Entity {
 		case Key:
 			gp.playSE(SoundEnum.key);
 			inventory.add(object);
-			gp.ui.showMessage("you have key", 120, 1);
+			//gp.ui.showMessage("you have key", 120, 1);
 			break;
 		case Door:
 			gp.playSE(SoundEnum.door);
-			gp.ui.showMessage("you opened door", 120, 1);
+			//gp.ui.showMessage("you opened door", 120, 1);
 			if(item != null) {
 				inventory.remove(item);
 			}
@@ -377,9 +425,18 @@ public class Player extends Entity {
 		if(itemIndex < inventory.size()) {
 			OBJ selectedItem = inventory.get(itemIndex);
 			
-			if(selectedItem.objType == OBJType.Weapon) {
+			if(selectedItem.objType == OBJType.Weapon || selectedItem.objType == OBJType.Shootable) {
 				currentWeapon = selectedItem;
-				attack = getAttack();
+				if(selectedItem.objType == OBJType.Weapon) {
+					attack = getAttack();
+					projectile = null;
+				} else {
+					OBJ_Shootable shootable = (OBJ_Shootable) selectedItem;
+					projectile = shootable.projectile;
+					attack = getShootableAttack();
+				}
+				
+				
 			}
 			
 			if(selectedItem.objType == OBJType.Shield) {
@@ -397,12 +454,8 @@ public class Player extends Entity {
 				} else {
 					item.warn();
 				}
-				
 			}
-			
-			
 		}
-		
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -423,10 +476,7 @@ public class Player extends Entity {
 				} else {
 					try {
 						image = atkSprites[atkSpriteNum - 1];
-					} catch(ArrayIndexOutOfBoundsException e) {
-						
-					}
-					
+					} catch(ArrayIndexOutOfBoundsException e) {}
 				}
 				break;
 			case Up:

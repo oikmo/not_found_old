@@ -7,4 +7,5 @@ public enum OBJType {
 	Weapon,
 	Shield,
 	Eatable, 
+	Shootable, 
 }

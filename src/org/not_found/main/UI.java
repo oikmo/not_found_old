@@ -35,7 +35,7 @@ public class UI {
 	public UI(GamePanel gp) {
 		this.gp = gp;
 		try {
-			File is = new File(Main.tempDir + "/res/fonts/VCR.ttf");
+			File is = new File(Main.gameDir + "/res/fonts/VCR.ttf");
 			VCR = Font.createFont(Font.TRUETYPE_FONT, is);
 		} catch (FontFormatException e) {
 			e.printStackTrace();
@@ -103,19 +103,23 @@ public class UI {
 		int messageYY = 10;
 		
 		for(int i = 0; i < achievements.size(); i++) {
-			if(achievements.get(i) != null) {
-				achievements.get(i).drawAchievement(gp, messageYY);
-				achievements.get(i).completed = true;
-				
-				int counter = achieveCounter.get(i) + 1;
-				
-				achieveCounter.set(i, counter);
-				messageYY += gp.tileSize*2 + 10;
-				
-				if(achieveCounter.get(i) > 120) {
-					achievements.remove(i);
-					achieveCounter.remove(i);
+			if(achievements.get(i) != null) { 
+				if(!achievements.get(i).completed) {
+					achievements.get(i).drawAchievement(gp, messageYY);
+					
+					
+					int counter = achieveCounter.get(i) + 1;
+					
+					achieveCounter.set(i, counter);
+					messageYY += gp.tileSize*2 + 10;
+					
+					if(achieveCounter.get(i) > 120) {
+						achievements.get(i).completed = true;
+						achievements.remove(i);
+						achieveCounter.remove(i);
+					}
 				}
+				
 			}
 		}
 	}
@@ -211,7 +215,7 @@ public class UI {
 				g2.setColor(new Color(240,190,90));
 				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
 			}
-			
+			gp.player.inventory.get(i).update();
 			g2.drawImage(gp.player.inventory.get(i).image, slotX, slotY, null);
 			
 			slotX += slotSize;
@@ -345,12 +349,50 @@ public class UI {
 	}
 	
 	public void drawPauseScreen() {
+		g2.setColor(new Color(0,0,0, 0.2f));
+		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
 		g2.setColor(Color.white);
-		g2.setFont(g2.getFont().deriveFont(30F));
+		g2.setFont(g2.getFont().deriveFont(48F));
 		String text = "PAUSED";
 		int x = getXforCenteredText(text);
 		int y = gp.screenHeight/12;
 		g2.drawString(text, x, y);
+		
+		//menu
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
+		text = "ACHIEVEMENTS";
+		x = getXforCenteredText(text);
+		y += (gp.tileSize*4) + 16;
+		g2.drawString(text, x, y);
+		if(commandNum == 0) {
+			g2.drawString(">", x-gp.tileSize, y);
+			
+			if(gp.keyH.enterPressed) {
+				drawERR("not yet.");
+				g2.setColor(Color.white);
+				g2.setFont(g2.getFont().deriveFont(30F));
+			}
+		}
+		
+		text = "OPTIONS";
+		x = getXforCenteredText(text);
+		y += gp.tileSize;
+		g2.drawString(text, x, y);
+		if(commandNum == 1) {
+			g2.drawString(">", x-gp.tileSize, y);
+			gp.config.loadConfig();
+			if(gp.keyH.enterPressed) {
+				gp.gameState = gp.optionsState;
+			}
+		}
+		text = "QUIT";
+		x = getXforCenteredText(text);
+		y += gp.tileSize;
+		g2.drawString(text, x, y);
+		if(commandNum == 2) {
+			g2.drawString(">", x-gp.tileSize, y);
+		}
 	}
 
 	public void drawDialogueScreen(int i) {
@@ -547,7 +589,7 @@ public class UI {
 				subState = 1;
 				commandNum = 0;
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -568,7 +610,14 @@ public class UI {
 		if(commandNum == 3) {
 			g2.drawString(">", textX-15, textY);
 			if(gp.keyH.enterPressed) {
-				gp.gameState = gp.playState;
+				commandNum = 1;
+				gp.gameState = gp.pauseState;
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -590,6 +639,8 @@ public class UI {
 		g2.drawRect(textX, textY, 120, 24);
 		volumeWidth = 24 * gp.se.volumeScale;
 		g2.fillRect(textX, textY, volumeWidth, 24);
+		
+		gp.config.saveConfig();
 	}
 	
 	public void optionsControl(int frameX, int frameY) {
@@ -630,6 +681,7 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			if(gp.keyH.enterPressed) {
 				subState = 0;
+				gp.config.loadConfig();
 			}
 		}
 	}

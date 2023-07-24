@@ -8,14 +8,15 @@ import java.nio.file.*;
 import java.util.Comparator;
 import javax.swing.*;
 
+import org.not_found.os.EnumOS;
+import org.not_found.os.EnumOSMappingHelper;
 import org.not_found.toolbox.UnzipUtility;
 
 public class Main {
 	public static JFrame window = new JFrame();
 	
-	String userDir = System.getProperty("user.dir");
 	public static boolean isFullScreen = false;
-	public static String tempDir = System.getProperty("java.io.tmpdir") + "not_found\\";
+	public static String gameDir = getNotFoundDir().getPath() + "/";
 	static GamePanel gamePanel;
 	public static void main(String[] args) throws IOException {	
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
@@ -26,30 +27,29 @@ public class Main {
 		window.setTitle("not_found");
 		Image icon = Toolkit.getDefaultToolkit().getImage("/icon.png");
 	    window.setIconImage(icon);
-	    //window.setUndecorated(true);
 		
 	    JOptionPane.showConfirmDialog(window, "Just saying this will take a while depending on your connection or disk speeds.", "POP-UP", JOptionPane.PLAIN_MESSAGE);
 	    
-		String version = "alpha 0.1.3";
+		String version = "alpha 0.1.4";
 
-		File theDir = new File(tempDir);
+		File theDir = new File(gameDir);
 		if (!theDir.exists()){
 		    theDir.mkdirs();
 		}
 		
-		File dir = new File(tempDir + "/res/");
+		File dir = new File(gameDir + "/res/");
 		if(!dir.exists()) {
-			download("https://chappie-webpages.werdimduly.repl.co/not_found/res.zip", tempDir + "/res.zip");
+			download("https://chappie-webpages.werdimduly.repl.co/not_found/res.zip", gameDir + "/res.zip");
 			UnzipUtility unzipper = new UnzipUtility();
 			
-			unzipper.unzip(tempDir + "/res.zip", tempDir);
+			unzipper.unzip(gameDir + "/res.zip", gameDir);
 		}
-		System.out.println(version.replaceAll("[^0-9]", ""));
+		//System.out.println(version.replaceAll("[^0-9]", ""));
 		try {
-			File versionTXT = new File(tempDir + "version.txt");
+			File versionTXT = new File(gameDir + "version.txt");
 			if (versionTXT.createNewFile()) {
 				System.out.println("File created: " + versionTXT.getName());
-				FileWriter myWriter = new FileWriter(tempDir + "version.txt");
+				FileWriter myWriter = new FileWriter(gameDir + "version.txt");
 				
 				myWriter.write(version.replaceAll("[^0-9]", ""));
 				myWriter.close();
@@ -58,11 +58,11 @@ public class Main {
 			} else {
 				System.out.println("File already exists.");
 				
-				BufferedReader brr = new BufferedReader(new FileReader(tempDir + "version.txt"));     
+				BufferedReader brr = new BufferedReader(new FileReader(gameDir + "version.txt"));     
 				String temp = brr.readLine();
 				if (temp == null) {
 					System.out.println("yeah");
-					FileWriter myWriter = new FileWriter(tempDir + "version.txt");
+					FileWriter myWriter = new FileWriter(gameDir + "version.txt");
 					myWriter.write(version.replaceAll("[^0-9]", ""));
 					myWriter.close();
 				} else {
@@ -70,7 +70,7 @@ public class Main {
 					else {
 						if(Integer.parseInt(temp.replaceAll("[^0-9]", "")) < Integer.parseInt(version.replaceAll("[^0-9]", ""))) {
 							if(dir.exists()) {
-								Files.walk(Paths.get(tempDir + "/res/")).sorted(Comparator.reverseOrder()) .forEach(path -> {
+								Files.walk(Paths.get(gameDir + "/res/")).sorted(Comparator.reverseOrder()) .forEach(path -> {
 				                    try {
 				                        //System.out.println("Deleting: " + path);
 				                        Files.delete(path);  //delete each file or directory
@@ -80,13 +80,13 @@ public class Main {
 				                });
 							}
 							
-							download("https://chappie-webpages.werdimduly.repl.co/not_found/res.zip", tempDir + "/res.zip");
+							download("https://chappie-webpages.werdimduly.repl.co/not_found/res.zip", gameDir + "/res.zip");
 							//unzip(tempDir + "/0.1.zip", tempDir+"/res/");
 							UnzipUtility unzipper = new UnzipUtility();
 							
-							unzipper.unzip(tempDir + "/res.zip", tempDir);
+							unzipper.unzip(gameDir + "/res.zip", gameDir);
 							
-							FileWriter myWriter = new FileWriter(tempDir + "version.txt");
+							FileWriter myWriter = new FileWriter(gameDir + "version.txt");
 							myWriter.write(version.replaceAll("[^0-9]", ""));
 							myWriter.close();
 						} else {
@@ -102,7 +102,12 @@ public class Main {
 			}
 			
 		} catch (IOException e) {
-			System.err.println("An error occurred.");
+			System.err.println("[ERROR] Version could NOT be verified!");
+		}
+		
+		File zipFile = new File(gameDir + "res.zip");
+		if(zipFile.exists()) {
+			zipFile.delete();
 		}
 		
 		if(window != null) {
@@ -112,6 +117,7 @@ public class Main {
 			window.setLocationRelativeTo(null);
 			window.setVisible(true);
 			
+			gamePanel.config.loadConfig();
 			gamePanel.debug = false;
 			gamePanel.fps = false;
 			gamePanel.version = version;
@@ -127,35 +133,47 @@ public class Main {
 			}
 			gamePanel.setupGame();
 			gamePanel.startGameThread();
-		}
-		
-    	
-		
-		
-		
+		}	
 	}
 	
-	public static String removeCharacters(String sentence, char[] letters) {
-	    String output = "";
-	    boolean wasChanged = false;
+	public static File getNotFoundDir() {
+		File notFoundDir = getAppDir("not_found");
+		return notFoundDir;
+	}
 
-	    for (int i = 0; i < sentence.length(); i++) {
-	        char ch = sentence.charAt(i);
+	public static File getAppDir(String var0) {
+		String var1 = System.getProperty("user.home", ".");
+		File var2;
+		switch(EnumOSMappingHelper.os[getOs().ordinal()]) {
+		case 1:
+		case 2:
+			var2 = new File(var1, '.' + var0 + '/');
+			break;
+		case 3:
+			String var3 = System.getenv("APPDATA");
+			if(var3 != null) {
+				var2 = new File(var3, "." + var0 + '/');
+			} else {
+				var2 = new File(var1, '.' + var0 + '/');
+			}
+			break;
+		case 4:
+			var2 = new File(var1, "Library/Application Support/" + var0);
+			break;
+		default:
+			var2 = new File(var1, var0 + '/');
+		}
 
-	        for (int j = 0; j < letters.length; j++)
-	            if (ch == letters[j]) {
-	                ch = '\0';
-	                wasChanged = true;
-	                break;
-	            }
+		if(!var2.exists() && !var2.mkdirs()) {
+			throw new RuntimeException("The working directory could not be created: " + var2);
+		} else {
+			return var2;
+		}
+	}
 
-	        output += ch;
-	    }
-
-	    if (wasChanged)
-	        return output;
-	    else
-	        return "No changes necessary";
+	private static EnumOS getOs() {
+		String var0 = System.getProperty("os.name").toLowerCase();
+		return var0.contains("win") ? EnumOS.windows : (var0.contains("mac") ? EnumOS.linux : (var0.contains("solaris") ? EnumOS.solaris : (var0.contains("sunos") ? EnumOS.unknown : (var0.contains("linux") ? EnumOS.linux : (var0.contains("unix") ? EnumOS.linux : EnumOS.unknown)))));
 	}
 	
 	private static void download(String urlStr, String file) throws IOException {

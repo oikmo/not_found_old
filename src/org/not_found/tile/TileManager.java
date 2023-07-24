@@ -23,7 +23,7 @@ public class TileManager  {
 		tile = new Tile[11];
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 		try {
-			defaultPack = ImageIO.read(new File(Main.tempDir + "/res/defaultPack.png"));
+			defaultPack = ImageIO.read(new File(Main.gameDir + "/res/defaultPack.png"));
 			images = UtilityBox.fromSheet(defaultPack, 16, 16);
 		} catch(IOException e) {
 			System.err.println("[ERROR] \"/res/defaultPack.png\" could not be loaded!");
@@ -31,7 +31,7 @@ public class TileManager  {
 		}
 		
 		getTileImage();
-		loadMap(new File(Main.tempDir + "/res/maps/map_sample.txt"));
+		loadMap(new File(Main.gameDir + "/res/maps/map_sample.txt"));
 	}
 	public void getTileImage() {
 		setup(0, false); //ground

@@ -26,11 +26,9 @@ public class NPC_TEST extends NPC {
 	}
 	
 	public void setDialogue() throws IOException {
-		for(int i=0; i < UtilityBox.getDialogueFromTXT("dialogue/test").length; i++) {
-			dialogues[i] = UtilityBox.getDialogueFromTXT("dialogue/test")[i];
-		}
-		
+		dialogues = UtilityBox.getDialogueFromTXT("dialogue/test");
 	}
+	
 	public void setAction() {
 		Random random = new Random();
 		actionLockCounter++;
@@ -55,7 +53,6 @@ public class NPC_TEST extends NPC {
 		}
 		
 		if(actionLockCounter > 120) {
-			
 			direction = Direction.Idle;
 		}
 

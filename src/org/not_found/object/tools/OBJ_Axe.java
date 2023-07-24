@@ -7,14 +7,16 @@ public class OBJ_Axe extends OBJ {
 
 	public OBJ_Axe(GamePanel gp) {
 		super(gp);
-		objType = OBJType.Weapon;
+		objType = OBJType.Shootable;
 		ID = "WoodAxe";
 		name = "Woodcutter's Axe";
-		image = getImage(0, 1);
+		image = getImage(0, 2);
 		attackValue = 2;
 		description = "[" + name + "] \nAn axe for wood cutting";
 		attackArea.width = 30;
 		attackArea.height = 30;
 	}
+	
+	public void update() {}
 
 }

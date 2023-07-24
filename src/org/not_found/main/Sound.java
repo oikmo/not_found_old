@@ -17,17 +17,17 @@ public class Sound {
 	@SuppressWarnings("deprecation")
 	public Sound() {
 		try {
-			soundURL[0] = new File(Main.tempDir +"/res/sound/music/Espionage.wav").toURL(); //main menu
-			soundURL[1] = new File(Main.tempDir +"/res/sound/music/JEALOUS.wav").toURL(); //in game
-			soundURL[2] = new File(Main.tempDir +"/res/sound/music/intense-moments.wav").toURL(); //pause menu
-			soundURL[3] = new File(Main.tempDir +"/res/sound/sfx/door.wav").toURL();
-			soundURL[4] = new File(Main.tempDir +"/res/sound/sfx/key.wav").toURL();
-			soundURL[5] = new File(Main.tempDir +"/res/sound/sfx/fanfare.wav").toURL();
-			soundURL[6] = new File(Main.tempDir +"/res/sound/sfx/hitmonster.wav").toURL();
-			soundURL[7] = new File(Main.tempDir +"/res/sound/sfx/receivedamage.wav").toURL();
-			soundURL[8] = new File(Main.tempDir +"/res/sound/sfx/swingweapon.wav").toURL();
-			soundURL[9] = new File(Main.tempDir +"/res/sound/sfx/powerup.wav").toURL();
-			soundURL[10] = new File(Main.tempDir +"/res/sound/sfx/cursor.wav").toURL();
+			soundURL[0] = new File(Main.gameDir +"/res/sound/music/Espionage.wav").toURL(); //main menu
+			soundURL[1] = new File(Main.gameDir +"/res/sound/music/JEALOUS.wav").toURL(); //in game
+			soundURL[2] = new File(Main.gameDir +"/res/sound/music/intense-moments.wav").toURL(); //pause menu
+			soundURL[3] = new File(Main.gameDir +"/res/sound/sfx/door.wav").toURL();
+			soundURL[4] = new File(Main.gameDir +"/res/sound/sfx/key.wav").toURL();
+			soundURL[5] = new File(Main.gameDir +"/res/sound/sfx/fanfare.wav").toURL();
+			soundURL[6] = new File(Main.gameDir +"/res/sound/sfx/hitmonster.wav").toURL();
+			soundURL[7] = new File(Main.gameDir +"/res/sound/sfx/receivedamage.wav").toURL();
+			soundURL[8] = new File(Main.gameDir +"/res/sound/sfx/swingweapon.wav").toURL();
+			soundURL[9] = new File(Main.gameDir +"/res/sound/sfx/powerup.wav").toURL();
+			soundURL[10] = new File(Main.gameDir +"/res/sound/sfx/cursor.wav").toURL();
 		} catch(MalformedURLException e) {
 			
 		}

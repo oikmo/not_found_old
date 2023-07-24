@@ -32,16 +32,37 @@ public class Achievement {
 		g2.setColor(Color.white);
 		int imageY = (int)(frameHeight/2) + y - 15;
 		g2.setStroke(new BasicStroke(1));
-		g2.drawRect(x+16, imageY-1, image.getWidth() + 1, image.getHeight());
+		g2.drawRect(x+16, imageY-1, image.getWidth() + 1, image.getHeight() + 1);
 		g2.setColor(new Color(1f,1f,1f,0.5f));
-		g2.fillRect(x+16, imageY-1, image.getWidth() + 1, image.getHeight());
+		g2.fillRect(x+16, imageY-1, image.getWidth() + 1, image.getHeight() + 1);
 		g2.drawImage(image, x+17, imageY, gp);
 		g2.setColor(Color.white);
 		
 		int textY = imageY + 17;
 		for(String line : name.split("\n")) {
-			g2.drawString(line, x + 20 + image.getWidth() + 5, textY);
-			textY += 16;
+			if(line.contains("<b> ")) {
+				g2.setFont(g2.getFont().deriveFont(Font.BOLD).deriveFont(17f));
+				g2.drawString(line.replace("<b> ", ""), x + 20 + image.getWidth() + 5, textY);
+				textY += 16;
+			} else if(line.contains("<i> ")) {
+				g2.setFont(g2.getFont().deriveFont(Font.ITALIC).deriveFont(17f));
+				g2.drawString(line.replace("<i> ", ""), x + 20 + image.getWidth() + 5, textY);
+				textY += 16;
+			} else if(line.contains("<i>") && line.contains("<b>")) {
+				g2.setFont(g2.getFont().deriveFont(Font.ITALIC | Font.BOLD).deriveFont(17f));
+				String boldR = line.replace("<i>", "");
+				String text = boldR.replace("<b>", "");
+				g2.drawString(text, x + 20 + image.getWidth() + 5, textY);
+				textY += 16;
+			} 
+			if(!(line.contains("<b>") || line.contains("<i>"))) {
+				g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(17f));
+				g2.drawString(line, x + 20 + image.getWidth() + 5, textY);
+				textY += 16;
+			}
+			
+			
+			
 		}
 	}
 	

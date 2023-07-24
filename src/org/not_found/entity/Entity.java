@@ -34,7 +34,6 @@ public class Entity {
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	
 	public EntityType entityType;
-	
 	// state
 	public int worldX, worldY;
 	public Direction direction = Direction.Idle;
@@ -128,6 +127,7 @@ public class Entity {
 				} 
 				spriteCounter = 0; 
 			}
+			
 		}
 		else {
 			direction = Direction.Idle;
@@ -191,6 +191,28 @@ public class Entity {
 		} else if(this.entityType == EntityType.Object){
 			OBJ obj = (OBJ) this;
 			image = obj.image;
+		} else if(this.entityType == EntityType.Projectile) {
+			if(sprites != null) {
+				switch (direction) {
+				case Idle:
+					image = sprites[spriteNum - 1];
+					break;
+				case Down:
+					image = sprites[spriteNum - 1];
+					break;
+				case Up:
+					image = sprites[spriteNum + 1];
+					break;
+				case Left:
+					image = sprites[spriteNum + 3];
+					break;
+				case Right:
+					image = sprites[spriteNum + 5];
+					break;
+				default:
+					break;
+				}
+			}
 		}
 		
 		//monster health bar
@@ -271,7 +293,7 @@ public class Entity {
 		BufferedImage image = null;
 
 		try {
-			image = ImageIO.read(new File(Main.tempDir + "/res/" + imageName + ".png"));
+			image = ImageIO.read(new File(Main.gameDir + "/res/" + imageName + ".png"));
 			image = UtilityBox.scaleImage(image, width, height);
 
 		} catch (IOException e) {
@@ -288,12 +310,12 @@ public class Entity {
 	public BufferedImage[] setupSheet(String filePath, int row, int col) {
 		BufferedImage[] result = null;
 		try {
-			BufferedImage spriteSheet = ImageIO.read(new File(Main.tempDir + "/res/" + filePath + ".png"));
+			BufferedImage spriteSheet = ImageIO.read(new File(Main.gameDir + "/res/" + filePath + ".png"));
 			result = new BufferedImage[row * col];
 			result = UtilityBox.fromSheet(spriteSheet, row, col);
 			result = scaleArray(result);
 		} catch (IOException e) {
-			System.err.println("[ERROR] \"" + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+			System.err.println("[ERROR] \"" + Main.gameDir + "/res/"+ filePath + ".png\" could not be loaded!");
 		}
 		
 		return result;
@@ -302,13 +324,12 @@ public class Entity {
 	public BufferedImage[] setupSheet(String filePath, int row, int col, int width, int height) {
 		BufferedImage[] result = null;
 		try {
-			System.out.println(Main.tempDir + "/res/" + filePath + ".png");
-			BufferedImage spriteSheet = ImageIO.read(new File(Main.tempDir + "/res/" + filePath + ".png"));
+			BufferedImage spriteSheet = ImageIO.read(new File(Main.gameDir + "/res/" + filePath + ".png"));
 			result = new BufferedImage[row * col];
 			result = UtilityBox.fromSheet(spriteSheet, row, col, width, height);
 			result = scaleArray(result, width, height);
 		} catch (IOException e) {
-			System.err.println("[ERROR] \"" + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+			System.err.println("[ERROR] \"" + Main.gameDir + "/res/"+ filePath + ".png\" could not be loaded!");
 		}
 		
 		return result;
@@ -331,14 +352,14 @@ public class Entity {
 	public BufferedImage[][] setupSheet2D(String filePath, int row, int col) {
 		BufferedImage[][] result = null;
 		try {
-			BufferedImage spriteSheet = ImageIO.read(new File(Main.tempDir + "/res/" + filePath + ".png"));
+			BufferedImage spriteSheet = ImageIO.read(new File(Main.gameDir + "/res/" + filePath + ".png"));
 			result = new BufferedImage[row * col][row * col];
 			result = UtilityBox.fromSheet2D(spriteSheet, row, col);
 			result = scaleArray(result, row, col);
 		}catch (IOException e) {
-			System.err.println("[ERROR] \" " + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+			System.err.println("[ERROR] \" " + Main.gameDir + "/res/"+ filePath + ".png\" could not be loaded!");
 		} catch (IllegalArgumentException e) {
-			System.err.println("[ERROR] \" " + Main.tempDir + "/res/"+ filePath + ".png\" could not be loaded!");
+			System.err.println("[ERROR] \" " + Main.gameDir + "/res/"+ filePath + ".png\" could not be loaded!");
 		}
 		
 		return result;
@@ -373,6 +394,6 @@ public class Entity {
 	}
 	
 	boolean isNotType() {
-		return this.entityType != EntityType.Object && this.entityType != EntityType.Player && this.entityType != EntityType.Test;
+		return this.entityType != EntityType.Object && this.entityType != EntityType.Player && this.entityType != EntityType.Projectile;
 	}
 }

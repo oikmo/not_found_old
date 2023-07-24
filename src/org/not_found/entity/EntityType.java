@@ -5,5 +5,5 @@ public enum EntityType {
 	NPC,
 	Monster,
 	Object,
-	Test
+	Projectile,
 }
