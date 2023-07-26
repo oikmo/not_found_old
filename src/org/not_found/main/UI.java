@@ -5,8 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 import org.not_found.achievements.Achievement;
-import org.not_found.object.OBJ_Heart;
+import org.not_found.object.ui.*;
 
 public class UI {
 	Graphics2D g2;
@@ -14,7 +16,8 @@ public class UI {
 	
 	public Font VCR;
 	
-	BufferedImage hFull, hHalf, hBlank;
+	BufferedImage heartFull, heartHalf, heartBlank;
+	BufferedImage manaFull, manaBlank;
 	
 	public boolean messageOn = false;
 	public ArrayList<String> message = new ArrayList<>();
@@ -45,9 +48,13 @@ public class UI {
 		
 		//create HUD objs
 		OBJ_Heart heart = new OBJ_Heart(gp);
-		hFull = heart.image1;
-		hHalf = heart.image2;
-		hBlank = heart.image3;
+		heartFull = heart.image0;
+		heartHalf = heart.image1;
+		heartBlank = heart.image2;
+		
+		OBJ_Mana mana = new OBJ_Mana(gp);
+		manaFull = mana.image0;
+		manaBlank = mana.image1;
 	}
 	public void showMessage(String text, int messageCMax, int messageY) {
 		message.add(text);
@@ -68,7 +75,7 @@ public class UI {
 			drawTitleScreen();
 		}
 		else if (gp.gameState == gp.playState) {
-			drawPlayerLife();
+			drawPlayerThings();
 			drawMessages();
 			drawAchievements();
 			if(gp.debug || gp.fps) {
@@ -152,6 +159,11 @@ public class UI {
 		}
 	}
 	
+	public void drawPlayerThings() {
+		drawPlayerLife();
+		drawPlayerMana();
+	}
+	
 	public void drawPlayerLife() {
 		//gp.player.life = 3;
 		int x = gp.tileSize/2;
@@ -159,7 +171,7 @@ public class UI {
 		int i = 0;
 		//draw max life
 		while(i < gp.player.maxLife/2) {
-			g2.drawImage(hBlank, x, y, null);
+			g2.drawImage(heartBlank, x, y, null);
 			i++;
 			x += gp.tileSize;
 		}
@@ -169,11 +181,36 @@ public class UI {
 		i = 0;
 		//draw current life
 		while(i<gp.player.life) {
-			g2.drawImage(hHalf, x, y, null);
+			g2.drawImage(heartHalf, x, y, null);
 			i++;
-			if(i<gp.player.life) { g2.drawImage(hFull, x, y, null); }
+			if(i<gp.player.life) { g2.drawImage(heartFull, x, y, null); }
 			i++;
 			x += gp.tileSize;
+		}
+	}
+	
+	public void drawPlayerMana() {
+		if(gp.player.mana == 0) { return; }
+		
+		//gp.player.life = 3;
+		int x = gp.tileSize/2;
+		int y = (int)((int)gp.tileSize*1.5f);
+		int i = 0;
+		//draw max life
+		while(i < gp.player.maxMana) {
+			g2.drawImage(manaBlank, x, y, null);
+			i++;
+			x += gp.tileSize;
+		}
+		//reset
+		x = gp.tileSize/2;
+		y = (int)((int)gp.tileSize*1.5f);
+		i = 0;
+		//draw current life
+		while(i<gp.player.mana) {
+			if(i<gp.player.mana) { g2.drawImage(manaFull, x, y, null); }
+			i++;
+			x += 35;
 		}
 	}
 	
@@ -347,7 +384,7 @@ public class UI {
 			g2.drawString(">", x-gp.tileSize, y);
 		}
 	}
-	
+	JFrame frame = new JFrame();
 	public void drawPauseScreen() {
 		g2.setColor(new Color(0,0,0, 0.2f));
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
@@ -443,7 +480,7 @@ public class UI {
 		final int frameX = gp.tileSize*2;
 		final int frameY = gp.tileSize;
 		final int frameWidth = gp.tileSize*5;
-		final int frameHeight = gp.tileSize*10;
+		final int frameHeight = gp.tileSize*11;
 		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 		
 		//text
@@ -454,9 +491,17 @@ public class UI {
 		final int lineHeight = 32;
 		
 		//names
+		g2.setFont(g2.getFont().deriveFont(30f));
+		g2.drawString("Stats", frameX + getXforCenteredText("Stats", frameWidth), textY);
+		textY += lineHeight * 1.25f;
+		
+		g2.setFont(g2.getFont().deriveFont(24f));
+		
 		g2.drawString("Level", textX, textY);
 		textY += lineHeight;
 		g2.drawString("Life", textX, textY);
+		textY += lineHeight;
+		g2.drawString("Mana", textX, textY);
 		textY += lineHeight;
 		g2.drawString("Strength", textX, textY);
 		textY += lineHeight;
@@ -479,7 +524,7 @@ public class UI {
 		//values
 		int tailX = (frameX + frameWidth) - 30;
 		//reset textY
-		textY = frameY + gp.tileSize;
+		textY = (int) (frameY + (gp.tileSize * 1.5f) + 16);
 		String value;
 		
 		value = String.valueOf(gp.player.level);
@@ -488,6 +533,11 @@ public class UI {
 		textY += lineHeight;
 		
 		value = String.valueOf(gp.player.life + "/" + gp.player.maxLife);
+		textX = getXforAlignToRightText(value, tailX);
+		g2.drawString(value, textX, textY);
+		textY += lineHeight;
+		
+		value = String.valueOf(gp.player.mana + "/" + gp.player.maxMana);
 		textX = getXforAlignToRightText(value, tailX);
 		g2.drawString(value, textX, textY);
 		textY += lineHeight;
@@ -727,6 +777,12 @@ public class UI {
 	public int getXforCenteredText(String text) {
 		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 		int x = (gp.screenWidth - length)/2;
+		return x;
+	}
+	
+	public int getXforCenteredText(String text, int width) {
+		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+		int x = (width - length)/2;
 		return x;
 	}
 	

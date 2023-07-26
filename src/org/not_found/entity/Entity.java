@@ -7,11 +7,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.not_found.entity.monster.MONSTER;
 import org.not_found.main.GamePanel;
 import org.not_found.main.Main;
 import org.not_found.main.SoundEnum;
 import org.not_found.object.OBJ;
-import org.not_found.projectiles.Projectile;
+import org.not_found.projectile.Projectile;
 import org.not_found.toolbox.UtilityBox;
 
 public class Entity {
@@ -49,7 +50,8 @@ public class Entity {
 	// counters
 	public int spriteCounter = 0;
 	public int invinceCounter = 0;
-	int pixelCounter = 0;
+	public int shotAvailableCounter;
+	public int shotCounterLimit = 30;
 	int dyingCounter = 0;
 	int healthCounter = 0;
 	
@@ -72,6 +74,11 @@ public class Entity {
 	public OBJ currentWeapon;
 	public OBJ currentShield;
 	public Projectile projectile;
+	
+	public int screenX = 0;
+	public int screenY = 0;
+	
+	public int useCost;
 
 	public Entity(GamePanel gp) {
 		this.gp = gp;
@@ -96,16 +103,7 @@ public class Entity {
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 
 		if (this.entityType == EntityType.Monster && contactPlayer && !this.dying) {
-			if (!gp.player.isInvince && !gp.player.attacking && !this.dying) {
-				gp.playSE(SoundEnum.swingWeapon);
-				int damage = attack - gp.player.defense;
-				if(damage < 0) {
-					damage = 0;
-				}
-				
-				gp.player.life -= damage;
-				gp.player.isInvince = true;
-			}
+			damagePlayer(attack);
 		}
 			
 		if (!collisionOn) {
@@ -132,10 +130,29 @@ public class Entity {
 		else {
 			direction = Direction.Idle;
 		}
+		if(this.entityType == EntityType.Monster) {
+			gp.cChecker.checkEntity(this, gp.monster);
+		} else if(this.entityType == EntityType.NPC ) {
+			gp.cChecker.checkEntity(this, gp.npc);
+		}
+		
 		
 		if (isInvince) { invinceCounter++; if (invinceCounter > 40) { isInvince = false; invinceCounter = 0; } }
 		
 		update_alt();
+	}
+	
+	public void damagePlayer(int attack) {
+		if (!gp.player.isInvince && !gp.player.attacking && !this.dying) {
+			gp.playSE(SoundEnum.hit);
+			int damage = attack - gp.player.defense;
+			if(damage < 0) {
+				damage = 0;
+			}
+			
+			gp.player.life -= damage;
+			gp.player.isInvince = true;
+		}
 	}
 	
 	public void update_alt() {}
@@ -147,8 +164,8 @@ public class Entity {
 	public void draw(Graphics2D g2) {
 
 		BufferedImage image = null;
-		int screenX = worldX - gp.player.worldX + gp.player.screenX;
-		int screenY = worldY - gp.player.worldY + gp.player.screenY;
+		screenX = worldX - gp.player.worldX + gp.player.screenX;
+		screenY = worldY - gp.player.worldY + gp.player.screenY;
 
 		// STOP MOVING CAMERA
 		if (gp.player.worldX < gp.player.screenX) {
@@ -165,6 +182,8 @@ public class Entity {
 		if (bottomOffset > gp.worldHeight - gp.player.worldY) {
 			screenY = gp.screenHeight - (gp.worldHeight - worldY);
 		}
+		
+		
 		
 		if(isNotType()) {
 			if(sprites != null)  {
@@ -263,6 +282,19 @@ public class Entity {
 			g2.drawRect(screenX + hitBox.x, screenY+ hitBox.y, hitBox.width, hitBox.height);
 			
 			g2.setStroke(oldStroke);
+		}
+		
+		if(this.entityType == EntityType.Monster) {
+			MONSTER mon = (MONSTER) this;
+			if(gp.debug) {
+				if(mon.patrolBox != null) {
+					g2.setColor(Color.white);
+					g2.draw(mon.patrolBox);
+				}
+				
+			}
+			
+			
 		}
 	}
 

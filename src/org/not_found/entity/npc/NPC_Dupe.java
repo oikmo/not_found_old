@@ -25,23 +25,33 @@ public class NPC_Dupe extends NPC {
 		dialogues[3] = "DUPE%YOU ARE ME AND I AM YOU HOW DO YOU \nNOT FUCKING GET IT YOU SACK OF SHIT";
 	}
 	public void setAction() {
+		if(!collisionOn) { return; }
+		
 		Random random = new Random();
 		actionLockCounter++;
 		
 		if(actionLockCounter == 125) {
 			
-			int i = random.nextInt(100)+1;
+			int i = random.nextInt(100)+1 + speed;
 			direction = Direction.Idle;
-			if(i <= 25) {
+			int vlow = new Random().nextInt(25);
+			int low = new Random().nextInt(50);
+			if(low < vlow) { low = vlow + 25; }
+			int medium = new Random().nextInt(75);
+			if(medium < low) { medium = low + 25; }
+			int high = new Random().nextInt(100);
+			if(high < medium) { high = medium + 25; }
+			
+			if(i <= vlow) {
 				direction = Direction.Up;
 			}
-			if(i > 25 && i <= 50) {
+			if(i > vlow && i <= low) {
 				direction = Direction.Down;
 			}
-			if(i > 50 && i <= 75) {
+			if(i > low && i <= medium) {
 				direction = Direction.Left;
 			}
-			if(i > 75 && i <= 100) {
+			if(i > medium && i <= high) {
 				direction = Direction.Right;
 			}
 			actionLockCounter = 0;
@@ -55,10 +65,7 @@ public class NPC_Dupe extends NPC {
 	}
 	
 	@Override
-	public void update_alt() {
-		gp.cChecker.checkEntity(this, gp.npc);
-		gp.cChecker.checkEntity(this, gp.monster);
-	}
+	public void update_alt() {}
 	
 	public void speak() {
 		gp.ui.npcCounter = 0;

@@ -2,8 +2,9 @@ package org.not_found.entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import org.not_found.achievements.AchieveManager;
 import org.not_found.main.*;
@@ -45,6 +46,8 @@ public class Player extends Entity {
 		level = 1;
 		maxLife = 6;
 		life = maxLife;
+		maxMana = 4;
+		mana = 0;
 		strength = 1; // the higher the strength. the higher the damage
 		dexterity = 1; // the higher the uh (what is it? oh dex- dexitrry? no? dexterity? oh ok.) dexterity the lesser the damage
 		exp = 0;
@@ -106,13 +109,8 @@ public class Player extends Entity {
 			}
 		}
 		if(life <= 0) {
-			try {
-				gp.setupGame();
-				setDefaultValues();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			JOptionPane.showMessageDialog(Main.window, "You died lmao", "ERROR", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		
 		if (attacking) {
@@ -168,33 +166,35 @@ public class Player extends Entity {
 			} else {
 				direction = Direction.Idle;
 			}
-			if(gp.keyH.enterPressed && !stopAttacking && !collisionOn) {
-				if(currentWeapon.objType == OBJType.Weapon && direction != Direction.Idle)  {
-					gp.playSE(SoundEnum.swingWeapon);
-					attacking = true;
-					spriteCounter = 0;
+			if(gp.keyH.enterPressed && !collisionOn) {
+				if(currentWeapon.objType == OBJType.Weapon)  {
+					if(direction != Direction.Idle) {
+						if(!stopAttacking) {
+							gp.playSE(SoundEnum.swingWeapon);
+							attacking = true;
+							spriteCounter = 0;
+						}
+					}
+					
 				} else if(currentWeapon.objType == OBJType.Shootable) {
 					OBJ_Shootable item = (OBJ_Shootable) currentWeapon;
 					if(item.amount != 0) {
 						if(projectile != null) {
-							if(!projectile.alive) {
-									gp.playSE(SoundEnum.swingWeapon);
-									//set projectile
-									projectile.set(worldX, worldY, direction, true, (Entity)this);
-									gp.projectiles.add(projectile);
-									item.amount--;
+							if(shotAvailableCounter == shotCounterLimit) {
+								gp.playSE(SoundEnum.swingWeapon);
+								//set projectile
+								projectile.set(worldX, worldY, direction, true, (Entity)this);
+								shotAvailableCounter = 0;
+								gp.projectiles.add(projectile);
+								item.amount--;
 							}
-						
+
 						}
 					} else {
 						gp.ui.showMessage("No arrows!", 40, 1);
 					}
-					
-					
-					
 				}
 			}
-			
 			
 			stopAttacking = false;
 			gp.keyH.enterPressed = false;
@@ -222,6 +222,14 @@ public class Player extends Entity {
 					spriteNum = 1;
 				}
 				spriteCounter = 0;
+			}
+		}
+		
+		if(shotAvailableCounter < shotCounterLimit) {
+			shotAvailableCounter++;
+		} else {
+			if(shotAvailableCounter > shotCounterLimit) {
+				shotAvailableCounter = shotCounterLimit;
 			}
 		}
 		

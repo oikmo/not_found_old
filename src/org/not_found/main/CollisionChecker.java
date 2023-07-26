@@ -1,6 +1,9 @@
 package org.not_found.main;
 
-import org.not_found.entity.Entity;
+import java.awt.geom.Rectangle2D;
+
+import org.not_found.entity.*;
+import org.not_found.entity.monster.MONSTER;
 
 public class CollisionChecker {
 	GamePanel gp;
@@ -29,6 +32,9 @@ public class CollisionChecker {
 				tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
 				if(gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 					entity.collisionOn = true;
+					if(entity.entityType == EntityType.Projectile) {
+						entity.alive = false;
+					}
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {}
 			break;
@@ -39,6 +45,9 @@ public class CollisionChecker {
 				tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
 				if(gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 					entity.collisionOn = true;
+					if(entity.entityType == EntityType.Projectile) {
+						entity.alive = false;
+					}
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {}
 			
@@ -50,6 +59,9 @@ public class CollisionChecker {
 				tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
 				if(gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 					entity.collisionOn = true;
+					if(entity.entityType == EntityType.Projectile) {
+						entity.alive = false;
+					}
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {}
 			
@@ -61,6 +73,9 @@ public class CollisionChecker {
 				tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
 				if(gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 					entity.collisionOn = true;
+					if(entity.entityType == EntityType.Projectile) {
+						entity.alive = false;
+					}
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {}
 			
@@ -160,52 +175,98 @@ public class CollisionChecker {
 	public boolean checkPlayer(Entity entity) {
 		boolean contactPlayer = false;
 		if(gp.player != null) {
-			entity.hitBox.x = entity.worldX + entity.hitBox.x;
-			entity.hitBox.y = entity.worldY + entity.hitBox.y;
-			
-			gp.player.hitBox.x = gp.player.worldX + gp.player.hitBox.x;
-			gp.player.hitBox.y = gp.player.worldY + gp.player.hitBox.y;
-			
-			switch(entity.direction) {
-			case Up:
-				entity.hitBox.y -= entity.speed;
-				if(entity.hitBox.intersects(gp.player.hitBox)) {
-					entity.collisionOn = true;
+			if(entity.entityType == EntityType.Projectile) {
+				entity.hitBox.x = entity.worldX + entity.hitBox.x;
+				entity.hitBox.y = entity.worldY + entity.hitBox.y;
+				
+				gp.player.hitBox.x = gp.player.worldX + gp.player.hitBox.x;
+				gp.player.hitBox.y = gp.player.worldY + gp.player.hitBox.y;
+				
+				switch(entity.direction) {
+				case Up:
+					entity.hitBox.y -= entity.speed;
+					break;
+				case Down:
+					entity.hitBox.y += entity.speed;
+					break;
+				case Left:
+					entity.hitBox.x -= entity.speed;
+					break;
+				case Right:
+					entity.hitBox.x += entity.speed;
+					break;
+				default:
+					break;
 				}
-				break;
-			case Down:
-				entity.hitBox.y += entity.speed;
-				if(entity.hitBox.intersects(gp.player.hitBox)) {
-					entity.collisionOn = true;
-				}
-				break;
-			case Left:
-				entity.hitBox.x -= entity.speed;
-				if(entity.hitBox.intersects(gp.player.hitBox)) {
-					entity.collisionOn = true;
-				}
-				break;
-			case Right:
-				entity.hitBox.x += entity.speed;
 				if(entity.hitBox.intersects(gp.player.hitBox)) {
 					entity.collisionOn = true;
 					contactPlayer = true;
 				}
-				break;
-			default:
-				break;
+				
+				entity.hitBox.x = entity.solidAreaDefaultX;
+				entity.hitBox.y = entity.solidAreaDefaultY;
+				gp.player.hitBox.x = gp.player.solidAreaDefaultX;
+				gp.player.hitBox.y = gp.player.solidAreaDefaultY;
+			} else {
+				entity.hitBox.x = entity.worldX + entity.hitBox.x;
+				entity.hitBox.y = entity.worldY + entity.hitBox.y;
+				
+				gp.player.hitBox.x = gp.player.worldX + gp.player.hitBox.x;
+				gp.player.hitBox.y = gp.player.worldY + gp.player.hitBox.y;
+				
+				switch(entity.direction) {
+				case Up:
+					entity.hitBox.y -= entity.speed;
+					break;
+				case Down:
+					entity.hitBox.y += entity.speed;
+					break;
+				case Left:
+					entity.hitBox.x -= entity.speed;
+					break;
+				case Right:
+					entity.hitBox.x += entity.speed;
+					break;
+				default:
+					break;
+				}
+				if(entity.hitBox.intersects(gp.player.hitBox)) {
+					entity.collisionOn = true;
+					contactPlayer = true;
+				}
+				entity.hitBox.x = entity.solidAreaDefaultX;
+				entity.hitBox.y = entity.solidAreaDefaultY;
+				gp.player.hitBox.x = gp.player.solidAreaDefaultX;
+				gp.player.hitBox.y = gp.player.solidAreaDefaultY;
 			}
-			//if(entity.hitBox.intersects(gp.player.hitBox)) {
-			//	entity.collisionOn = true;
-			//}
-			entity.hitBox.x = entity.solidAreaDefaultX;
-			entity.hitBox.y = entity.solidAreaDefaultY;
-			gp.player.hitBox.x = gp.player.solidAreaDefaultX;
-			gp.player.hitBox.y = gp.player.solidAreaDefaultY;
+			
+			
 		}
 		
 		return contactPlayer;
 	}
+	
+	public boolean checkPlayerPatrolBox(MONSTER entity) {
+	    boolean contactPlayer = false;
+	    if (gp.player != null) {
+	        Rectangle2D playerHitbox = new Rectangle2D.Double(
+	        		gp.player.worldX + gp.player.hitBox.getX(), 
+	        		gp.player.worldY + gp.player.hitBox.getY(), 
+	        		gp.player.hitBox.getWidth(), 
+	        		gp.player.hitBox.getHeight()
+	        );
+	        
+	        if (entity.patrolBox.intersects(playerHitbox)) {
+	        	
+	        	
+	            contactPlayer = true;
+	        }
+
+	    }
+
+	    return contactPlayer;
+	}
+
 	
 	public boolean checkEntity(Entity checkedOn, Entity checkFor) {
 		boolean contactPlayer = false;

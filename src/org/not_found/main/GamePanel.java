@@ -13,7 +13,7 @@ import org.not_found.entity.monster.MONSTER;
 import org.not_found.entity.npc.NPC;
 import org.not_found.event.EventHandler;
 import org.not_found.object.OBJ;
-import org.not_found.projectiles.Projectile;
+import org.not_found.projectile.Projectile;
 import org.not_found.tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -68,8 +68,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public MONSTER monster[] = new MONSTER[maxEntities];
 	public ArrayList<Projectile> projectiles = new ArrayList<>();
 	
+	public AssetSetter assetSetter = new AssetSetter(this);
 	public KeyHandler keyH = new KeyHandler(this);
-	public AssetSetter aSetter = new AssetSetter(this);
 	TileManager tileM = new TileManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public UI ui = new UI(this);
@@ -100,9 +100,7 @@ public class GamePanel extends JPanel implements Runnable {
 		AchieveManager.setAchievements(this);
 		se.volumeScale = 2;
 		//set objs, npcs, mons, gamestate etc
-		aSetter.setObject();
-		aSetter.setNPC();
-		aSetter.setMonster();
+		assetSetter.setAll();
 		if(gameThread != null) {
 			gameState = titleState;
 		} else {
