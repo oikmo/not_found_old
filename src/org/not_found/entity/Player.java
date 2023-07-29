@@ -18,7 +18,9 @@ public class Player extends Entity {
 	public final int maxInventorySize = 20;
 	int atkSpriteNum;
 	public boolean stopAttacking = false;
-
+	int wallCounter = 0;
+	
+	
 	public Player(GamePanel gp) {
 		super(gp);
 		
@@ -46,8 +48,8 @@ public class Player extends Entity {
 		level = 1;
 		maxLife = 6;
 		life = maxLife;
-		maxMana = 4;
-		mana = 0;
+		maxMana = 10;
+		mana = maxMana;
 		strength = 1; // the higher the strength. the higher the damage
 		dexterity = 1; // the higher the uh (what is it? oh dex- dexitrry? no? dexterity? oh ok.) dexterity the lesser the damage
 		exp = 0;
@@ -134,11 +136,14 @@ public class Player extends Entity {
 			// check obj collision
 			int objIndex = gp.cChecker.checkObject(this, true);
 			pickUpObject(objIndex);
+			
 			int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
 			interactNPC(npcIndex);
 			// check monster collision
 			int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
 			contactMonster(monsterIndex);
+			int wallIndex = gp.cChecker.checkWalls(this, false);
+			contactWall(wallIndex);
 			// check event
 			gp.eHandler.checkEvent();
 			
@@ -196,6 +201,8 @@ public class Player extends Entity {
 				}
 			}
 			
+			
+			
 			stopAttacking = false;
 			gp.keyH.enterPressed = false;
 			
@@ -233,12 +240,27 @@ public class Player extends Entity {
 			}
 		}
 		
+		if(wallCounter < 30) {
+			wallCounter++;
+		} else {
+			if(wallCounter > 30) {
+				wallCounter = 30;
+			}
+		}
+		
+		
 		if (isInvince) {
 			invinceCounter++;
 			if (invinceCounter > 30) {
 				isInvince = false;
 				invinceCounter = 0;
 			}
+		}
+		
+		if(gp.keyH.shotKeyPressed && wallCounter == 30) {
+			OBJ_Wall wall = new OBJ_Wall(gp);
+			wall.use(this);
+			wallCounter = 0;
 		}
 	}
 	
@@ -283,6 +305,51 @@ public class Player extends Entity {
 					
 					gp.monster[i].dying = true;
 					exp += gp.monster[i].exp;
+					checkLevelUP();
+				}
+			}
+		}
+	}
+	
+	public void contactWall(int i) {
+		if (i != 99) {
+			if (!isInvince && !gp.walls.get(i).dying) {
+				if (invinceCounter <= 0) {
+					gp.playSE(SoundEnum.recieveDmg);
+					
+					int damage = gp.walls.get(i).attack - defense;
+					if(damage < 0) {
+						damage = 0;
+					}
+					
+					life -= damage;
+					isInvince = true;
+				}
+			}
+		}
+	}
+	
+	public void damageWall(int i, int attack) {
+		if (i != 99) {
+			if (!gp.walls.get(i).isInvince) {
+				gp.playSE(SoundEnum.swingWeapon);
+				
+				int damage = attack - gp.walls.get(i).defense;
+				if(damage < 0) {
+					damage = 0;
+				}
+				//System.out.println(damage);
+				
+				gp.walls.get(i).life -= damage;
+				gp.playSE(SoundEnum.hit);
+				gp.walls.get(i).isInvince = true;
+
+				if (gp.walls.get(i).life <= 0) {
+					if(!AchieveManager.achievements.get("first-kill").completed) {
+						gp.ui.addAchievement(AchieveManager.achievements.get("first-kill"));
+					}
+					
+					gp.walls.get(i).dying = true;
 					checkLevelUP();
 				}
 			}
@@ -335,6 +402,9 @@ public class Player extends Entity {
 				// Check monster collison with the updated worldX/Y, solidArea
 				int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
 				damageMonster(monsterIndex, attack);
+				
+				int wall = gp.cChecker.checkWalls(this, true);
+				damageWall(wall, attack);
 
 				// Restore worldX/Y, solidArea
 				worldX = currentWorldX;
@@ -384,36 +454,48 @@ public class Player extends Entity {
 	
 	public void pickUpObject(int i) {
 		if (i != 99) {
-			if(inventory.size() != maxInventorySize) {
-				switch (gp.obj[i].ID) {
-				case "Key1":
-					gp.ui.addAchievement(AchieveManager.achievements.get("key-pickup"));
-					displayMessage(i, null);
-					break;
-				case "Key2":
-					displayMessage(i, null);
-					break;
-				case "Door1":
-					if (inventory.contains(OBJItems.Key1)) {
-						gp.ui.addAchievement(AchieveManager.achievements.get("door-open"));
-						displayMessage(i, OBJItems.Key1);
+			if(gp.obj[i].objType != OBJType.Chest || gp.obj[i].objType != OBJType.Wall || gp.obj[i].objType != OBJType.Door) {
+				if(gp.obj[i].objType == OBJType.PickupAble) {
+					gp.obj[i].use(this);
+					gp.obj[i] = null;
+				} else {
+					if(inventory.size() != maxInventorySize) {
+						switch (gp.obj[i].ID) {
+						case "Key1":
+							gp.ui.addAchievement(AchieveManager.achievements.get("key-pickup"));
+							displayMessage(i, null);
+							break;
+						default:
+							displayMessage(i, null);
+							break;
+						}
+					} else {
+						if(!lockCarry) {
+							gp.ui.showMessage("You cant carry anymo", 40, 1);
+							lockCarry = true;
+						}	
 					}
-					break;
-				case "Door2":
-					if (inventory.contains(OBJItems.Key2)) {
-						displayMessage(i, OBJItems.Key2);
-					}
-					break;
-				default:
-					displayMessage(i, null);
-					break;
 				}
+				
 			} else {
-				if(!lockCarry) {
-					gp.ui.showMessage("You cant carry anymo", 40, 1);
-					lockCarry = true;
-				}	
+				interactObject(i);
 			}
+		}
+	}
+	
+	public void interactObject(int i) {
+		switch(gp.obj[i].ID) {
+		case "Door1":
+			if (inventory.contains(OBJItems.Key1)) {
+				gp.ui.addAchievement(AchieveManager.achievements.get("door-open"));
+				displayMessage(i, OBJItems.Key1);
+			}
+			break;
+		case "Door2":
+			if (inventory.contains(OBJItems.Key2)) {
+				displayMessage(i, OBJItems.Key2);
+			}
+			break;
 		}
 	}
 

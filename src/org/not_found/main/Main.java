@@ -28,7 +28,11 @@ public class Main {
 		Image icon = Toolkit.getDefaultToolkit().getImage("/icon.png");
 	    window.setIconImage(icon);
 		
-	    JOptionPane.showConfirmDialog(window, "Just saying this will take a while depending on your connection or disk speeds.", "POP-UP", JOptionPane.PLAIN_MESSAGE);
+	    int options = JOptionPane.showConfirmDialog(window, "Just saying this will take a while depending on your connection or disk speeds.", "POP-UP", JOptionPane.PLAIN_MESSAGE);
+	    
+	    if(options == -1) {
+	    	System.exit(0);
+	    }
 	    
 		String version = "alpha 0.1.4";
 
@@ -61,7 +65,6 @@ public class Main {
 				BufferedReader brr = new BufferedReader(new FileReader(gameDir + "version.txt"));     
 				String temp = brr.readLine();
 				if (temp == null) {
-					System.out.println("yeah");
 					FileWriter myWriter = new FileWriter(gameDir + "version.txt");
 					myWriter.write(version.replaceAll("[^0-9]", ""));
 					myWriter.close();

@@ -165,7 +165,6 @@ public class UI {
 	}
 	
 	public void drawPlayerLife() {
-		//gp.player.life = 3;
 		int x = gp.tileSize/2;
 		int y = gp.tileSize/2;
 		int i = 0;
@@ -192,7 +191,6 @@ public class UI {
 	public void drawPlayerMana() {
 		if(gp.player.mana == 0) { return; }
 		
-		//gp.player.life = 3;
 		int x = gp.tileSize/2;
 		int y = (int)((int)gp.tileSize*1.5f);
 		int i = 0;
@@ -210,7 +208,7 @@ public class UI {
 		while(i<gp.player.mana) {
 			if(i<gp.player.mana) { g2.drawImage(manaFull, x, y, null); }
 			i++;
-			x += 35;
+			x += gp.tileSize;
 		}
 	}
 	

@@ -9,7 +9,7 @@ import org.not_found.object.OBJType;
 public class OBJ_Consumable extends OBJ {
 
 	GamePanel gp ;
-	int value;
+	
 	public int uses;
 	
 	public OBJ_Consumable(GamePanel gp) {

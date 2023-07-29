@@ -17,7 +17,7 @@ public class OBJ extends Entity {
 	//item attributes
 	public int attackValue;
 	public int defenseValue;
-	
+	public int value;
 	
 	public OBJ(GamePanel gp) {
 		super(gp);
@@ -29,5 +29,6 @@ public class OBJ extends Entity {
 	public BufferedImage getImage(int row, int col) {
 		return images[row][col];
 	}
-
+	
+	public void use(Entity entity) {}
 }

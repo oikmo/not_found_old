@@ -12,6 +12,7 @@ import org.not_found.main.GamePanel;
 import org.not_found.main.Main;
 import org.not_found.main.SoundEnum;
 import org.not_found.object.OBJ;
+import org.not_found.object.OBJType;
 import org.not_found.projectile.Projectile;
 import org.not_found.toolbox.UtilityBox;
 
@@ -99,11 +100,18 @@ public class Entity {
 		collisionOn = false;
 		gp.cChecker.checkTile(this);
 		gp.cChecker.checkObject(this, false);
+		gp.cChecker.checkWalls(this, false);
 		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
+		int wall = gp.cChecker.checkWalls(this, true);
+		boolean contactWall = gp.cChecker.checkWallsB(this);
 
 		if (this.entityType == EntityType.Monster && contactPlayer && !this.dying) {
 			damagePlayer(attack);
+		}
+		
+		if (this.entityType == EntityType.Monster && contactWall && !this.dying) {
+			damageWall(wall, attack);
 		}
 			
 		if (!collisionOn) {
@@ -157,9 +165,29 @@ public class Entity {
 	
 	public void update_alt() {}
 	
-	public void getSpriteSheet() {}
+	public void damageWall(int i, int attack) {
+		if (i != 99) {
+			if (!gp.walls.get(i).isInvince) {
+				gp.playSE(SoundEnum.swingWeapon);
+				
+				int damage = attack - gp.walls.get(i).defense;
+				if(damage < 0) {
+					damage = 0;
+				}
+				//System.out.println(damage);
+				
+				gp.walls.get(i).life -= damage;
+				gp.playSE(SoundEnum.hit);
+				gp.walls.get(i).isInvince = true;
+
+				if (gp.walls.get(i).life <= 0) {
+					gp.walls.get(i).dying = true;
+				}
+			}
+		}
+	}
 	
-	public void use(Entity entity) {}
+	public void getSpriteSheet() {}
 	
 	public void draw(Graphics2D g2) {
 
@@ -182,8 +210,6 @@ public class Entity {
 		if (bottomOffset > gp.worldHeight - gp.player.worldY) {
 			screenY = gp.screenHeight - (gp.worldHeight - worldY);
 		}
-		
-		
 		
 		if(isNotType()) {
 			if(sprites != null)  {
@@ -254,6 +280,26 @@ public class Entity {
 			}
 		}
 		
+		if(this.entityType == EntityType.Object) {
+			OBJ obj = (OBJ) this;
+			if(obj.objType == OBJType.Wall) {
+				double oneScale = (double)gp.tileSize/maxLife;
+				double hpBarValue = oneScale * life;
+				
+				if(life < maxLife) {
+					healthCounter++;
+					g2.setColor(Color.DARK_GRAY);
+					g2.fillRect(screenX-1, screenY-16, gp.tileSize+2, 12);
+					g2.setColor(new Color(255,0,30));
+					g2.fillRect(screenX, screenY-15, (int)hpBarValue, 10);
+				}
+				if(healthCounter > 120) {
+					healthCounter = 0;
+					healthBar = false;
+				}
+			}
+		}
+		
 		if (isInvince) {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 			healthBar = true;
@@ -265,13 +311,13 @@ public class Entity {
 				&& worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
 				&& worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
 				&& worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.drawImage(image, screenX, screenY, null);
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
 		// if player is around the edg basically just draw everything
 		else if (gp.player.worldX < gp.player.screenX || gp.player.worldY < gp.player.screenY
 				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.drawImage(image, screenX, screenY, null);
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
 		
@@ -337,6 +383,12 @@ public class Entity {
 	
 	public BufferedImage setup(String imageName) {
 		return setup(imageName, gp.tileSize, gp.tileSize);
+	}
+	
+	public void setHitbox(int x, int y, int width, int height) {
+		hitBox = new Rectangle(x, y, width, height);
+		solidAreaDefaultX = hitBox.x;
+		solidAreaDefaultY = hitBox.y;
 	}
 	
 	public BufferedImage[] setupSheet(String filePath, int row, int col) {

@@ -60,13 +60,14 @@ public class GamePanel extends JPanel implements Runnable {
 	final static int maxEntities = 128;
 	
 	//ENTITIES AND OBJECTS
-	ArrayList<Entity> entityList = new ArrayList<>();
+	public ArrayList<Entity> entityList = new ArrayList<>();
 	public Player player = new Player(this);
 	public static OBJ itemList[] = new OBJ[maxEntities];
 	public OBJ obj[] = new OBJ[maxEntities];
 	public NPC npc[] = new NPC[maxEntities];
 	public MONSTER monster[] = new MONSTER[maxEntities];
 	public ArrayList<Projectile> projectiles = new ArrayList<>();
+	public ArrayList<OBJ> walls = new ArrayList<>();
 	
 	public AssetSetter assetSetter = new AssetSetter(this);
 	public KeyHandler keyH = new KeyHandler(this);
@@ -196,6 +197,17 @@ public class GamePanel extends JPanel implements Runnable {
 					}
 				}
 			}
+			
+			for(int i = 0; i < walls.size(); i++) {
+				if(walls.get(i) != null) {
+					if(walls.get(i).alive) {
+						walls.get(i).update();
+					}
+					else {
+						walls.remove(i);
+					}
+				}
+			}
 		}
 		//music stuff
 		if(gameState == pauseState) {
@@ -262,6 +274,9 @@ public class GamePanel extends JPanel implements Runnable {
         	}
         	for(int i = 0; i < projectiles.size(); i++) {
         		if(projectiles.get(i) != null) { entityList.add(projectiles.get(i)); }
+        	}
+        	for(int i = 0; i < walls.size(); i++) {
+        		if(walls.get(i) != null) { entityList.add(walls.get(i)); }
         	}
         	Collections.sort(entityList, new Comparator<Entity>() { @Override public int compare(Entity o1, Entity o2) { int result = Integer.compare(o1.worldX, o2.worldY); return result; } });
 

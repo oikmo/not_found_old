@@ -8,4 +8,6 @@ public enum OBJType {
 	Shield,
 	Eatable, 
 	Shootable, 
+	Wall, 
+	PickupAble, 
 }
