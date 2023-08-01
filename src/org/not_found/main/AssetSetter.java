@@ -6,6 +6,8 @@ import org.not_found.entity.npc.*;
 import org.not_found.entity.monster.*;
 import org.not_found.object.*;
 import org.not_found.object.tools.OBJ_Syringe;
+import org.not_found.object.ui.OBJ_Heart;
+import org.not_found.object.ui.OBJ_Mana;
 
 public class AssetSetter {
 	GamePanel gp;
@@ -52,6 +54,10 @@ public class AssetSetter {
 		gp.obj[5].worldX = 13 * gp.tileSize;
 		gp.obj[5].worldY = 13 * gp.tileSize;
 		gp.obj[5].ID = "Chest0";
+		
+		gp.obj[6] = new OBJ_Mana(gp);
+		gp.obj[6].worldX = 11 * gp.tileSize;
+		gp.obj[6].worldY = 8 * gp.tileSize;
 	}
 
 	public void setNPC() throws IOException {

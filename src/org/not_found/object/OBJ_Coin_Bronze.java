@@ -1,6 +1,8 @@
 package org.not_found.object;
 
 import org.not_found.main.GamePanel;
+import org.not_found.main.SoundEnum;
+import org.not_found.entity.*;
 
 public class OBJ_Coin_Bronze extends OBJ {
 
@@ -16,4 +18,9 @@ public class OBJ_Coin_Bronze extends OBJ {
 		image = getImage(0,4);
 	}
 	
+	public void use(Entity entity) {
+		gp.playSE(SoundEnum.key);
+		gp.ui.addMessage("Coin + " + value);
+		gp.player.coin += value;
+	}
 }

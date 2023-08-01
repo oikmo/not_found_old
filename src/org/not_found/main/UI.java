@@ -26,7 +26,7 @@ public class UI {
 	public ArrayList<Achievement> achievements = new ArrayList<>();
 	public ArrayList<Integer> achieveCounter = new ArrayList<>();
 	
-	int messageCMax, messageY;
+	int messageCMax, messageX, messageY;
 	
 	public String currentDialogue = "";
 	public int npcCounter;
@@ -56,7 +56,7 @@ public class UI {
 		manaFull = mana.image0;
 		manaBlank = mana.image1;
 	}
-	public void showMessage(String text, int messageCMax, int messageY) {
+	public void addMessage(String text, int messageCMax, int messageY) {
 		message.add(text);
 		messageCounter.add(0);
 		mCounterLimit.add(messageCMax);
@@ -64,6 +64,28 @@ public class UI {
 		messageOn = true;
 		this.messageCMax = messageCMax;
 		this.messageY = messageY;
+	}
+	
+	public void addMessage(String text, int messageCMax) {
+		message.add(text);
+		messageCounter.add(0);
+		mCounterLimit.add(messageCMax);
+		
+		messageOn = true;
+		this.messageCMax = messageCMax;
+		this.messageX = gp.tileSize;
+		this.messageY = gp.tileSize * 2;
+	}
+	
+	public void addMessage(String text) {
+		message.add(text);
+		messageCounter.add(0);
+		mCounterLimit.add(120);
+		
+		messageOn = true;
+		this.messageCMax = 120;
+		this.messageX = gp.tileSize;
+		this.messageY = gp.tileSize * 2;
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -139,20 +161,38 @@ public class UI {
 		//System.out.println("yeah");
 		for(int i = 0; i < message.size(); i++) {
 			if(message.get(i) != null) {
-				g2.setColor(Color.gray);
-				g2.drawString(message.get(i), getXforCenteredText(message.get(i))+2, (messageYY)+2);
-				g2.setColor(Color.white);
-				g2.drawString(message.get(i), getXforCenteredText(message.get(i)), messageYY);
-				
-				int counter = messageCounter.get(i) + 1;
-				
-				messageCounter.set(i, counter);
-				messageYY += 50;
-				
-				if(messageCounter.get(i) > mCounterLimit.get(i)) {
-					message.remove(i);
-					messageCounter.remove(i);
+				if(messageX == 0) {
+					g2.setColor(Color.gray);
+					g2.drawString(message.get(i), getXforCenteredText(message.get(i))+2, (messageYY)+2);
+					g2.setColor(Color.white);
+					g2.drawString(message.get(i), getXforCenteredText(message.get(i)), messageYY);
+					
+					int counter = messageCounter.get(i) + 1;
+					
+					messageCounter.set(i, counter);
+					messageYY += 50;
+					
+					if(messageCounter.get(i) > mCounterLimit.get(i)) {
+						message.remove(i);
+						messageCounter.remove(i);
+					}
+				} else {
+					g2.setColor(Color.gray);
+					g2.drawString(message.get(i), messageX+2, (messageYY)+2);
+					g2.setColor(Color.white);
+					g2.drawString(message.get(i), messageX, messageYY);
+					
+					int counter = messageCounter.get(i) + 1;
+					
+					messageCounter.set(i, counter);
+					messageYY += 50;
+					
+					if(messageCounter.get(i) > mCounterLimit.get(i)) {
+						message.remove(i);
+						messageCounter.remove(i);
+					}
 				}
+				
 			}
 			
 			

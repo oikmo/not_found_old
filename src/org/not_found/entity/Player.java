@@ -196,7 +196,7 @@ public class Player extends Entity {
 
 						}
 					} else {
-						gp.ui.showMessage("No arrows!", 40, 1);
+						gp.ui.addMessage("No arrows!", 40, 1);
 					}
 				}
 			}
@@ -261,6 +261,14 @@ public class Player extends Entity {
 			OBJ_Wall wall = new OBJ_Wall(gp);
 			wall.use(this);
 			wallCounter = 0;
+		}
+		
+		if(life > maxLife) {
+			life = maxLife;
+		}
+		
+		if(mana > maxMana) {
+			mana = maxMana;
 		}
 	}
 	
@@ -443,7 +451,7 @@ public class Player extends Entity {
 		case Eatable:
 			gp.playSE(SoundEnum.key);
 			inventory.add(object);
-			gp.ui.showMessage("you picked up SYRINGE", 120, 1);
+			gp.ui.addMessage("you picked up SYRINGE", 120, 1);
 			break;
 		default:
 			return;
@@ -457,7 +465,10 @@ public class Player extends Entity {
 			if(gp.obj[i].objType != OBJType.Chest || gp.obj[i].objType != OBJType.Wall || gp.obj[i].objType != OBJType.Door) {
 				if(gp.obj[i].objType == OBJType.PickupAble) {
 					gp.obj[i].use(this);
-					gp.obj[i] = null;
+					if(!gp.obj[i].didntWork) {
+						gp.obj[i] = null;
+					}
+					
 				} else {
 					if(inventory.size() != maxInventorySize) {
 						switch (gp.obj[i].ID) {
@@ -471,7 +482,7 @@ public class Player extends Entity {
 						}
 					} else {
 						if(!lockCarry) {
-							gp.ui.showMessage("You cant carry anymo", 40, 1);
+							gp.ui.addMessage("You cant carry anymo", 40, 1);
 							lockCarry = true;
 						}	
 					}

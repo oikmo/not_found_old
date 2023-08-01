@@ -12,12 +12,14 @@ public class OBJ extends Entity {
 	public OBJType objType;
 	public boolean collision = false;
 	
-	public String ID = null;
+	public String ID = "";
 	public String description = "";
 	//item attributes
 	public int attackValue;
 	public int defenseValue;
 	public int value;
+	
+	public boolean didntWork = false;
 	
 	public OBJ(GamePanel gp) {
 		super(gp);
