@@ -6,8 +6,7 @@ import org.not_found.entity.npc.*;
 import org.not_found.entity.monster.*;
 import org.not_found.object.*;
 import org.not_found.object.tools.OBJ_Syringe;
-import org.not_found.object.ui.OBJ_Heart;
-import org.not_found.object.ui.OBJ_Mana;
+import org.not_found.object.ui.*;
 
 public class AssetSetter {
 	GamePanel gp;
@@ -19,6 +18,7 @@ public class AssetSetter {
 	public void setAll() throws IOException {
 		setObject();
 		setNPC();
+		setMonster();
 	}
 	
 	@SuppressWarnings("static-access")

@@ -3,6 +3,9 @@ package org.not_found.entity.monster;
 import java.util.Random;
 
 import org.not_found.main.GamePanel;
+import org.not_found.object.OBJ_Coin_Bronze;
+import org.not_found.object.ui.OBJ_Heart;
+import org.not_found.object.ui.OBJ_Mana;
 import org.not_found.projectile.PROJ_Arrow;
 
 public class MON_EYE extends MONSTER {
@@ -77,12 +80,19 @@ public class MON_EYE extends MONSTER {
 		direction = gp.player.direction;
 	}
 	
-	@Override
-	public void update_alt() {
-
-		if(shotAvailableCounter < shotCounterLimit) {
-			shotAvailableCounter++;
-		}
+	public void checkDrop() {
+		//cast a die
+		int i = new Random().nextInt(100)+1;
 		
+		//set the monster drop
+		if(i < 50) {
+			dropItem(new OBJ_Coin_Bronze(gp));
+		}
+		if(i >= 50 && i < 50) {
+			dropItem(new OBJ_Heart(gp));
+		}
+		if(i >= 75 && i < 100) {
+			dropItem(new OBJ_Mana(gp));
+		}
 	}
 }

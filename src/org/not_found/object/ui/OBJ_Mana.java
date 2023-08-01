@@ -6,6 +6,7 @@ import org.not_found.entity.Entity;
 import org.not_found.main.GamePanel;
 import org.not_found.main.SoundEnum;
 import org.not_found.object.OBJ;
+import org.not_found.object.OBJType;
 
 public class OBJ_Mana extends OBJ {
 	
@@ -16,6 +17,7 @@ public class OBJ_Mana extends OBJ {
 		this.gp = gp;
 		name = "heart";
 		
+		objType = OBJType.PickupAble;
 		sprites = setupSheet("player/manaSheet", 2, 1);
 		value = 1;
 		collision = true;

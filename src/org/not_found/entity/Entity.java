@@ -86,16 +86,10 @@ public class Entity {
 		
 		getSpriteSheet();
 	}
-
-	public void setAction() {}
-
-	public void speak() {}
 	
-	public void damageReaction() {}
-
 	public void update() {
 		
-		setAction();
+		update_alt();
 		
 		collisionOn = false;
 		gp.cChecker.checkTile(this);
@@ -147,8 +141,11 @@ public class Entity {
 		
 		if (isInvince) { invinceCounter++; if (invinceCounter > 40) { isInvince = false; invinceCounter = 0; } }
 		
-		update_alt();
+		
 	}
+	
+	public void update_alt() {}	
+	
 	
 	public void damagePlayer(int attack) {
 		if (!gp.player.isInvince && !gp.player.attacking && !this.dying) {
@@ -162,8 +159,6 @@ public class Entity {
 			gp.player.isInvince = true;
 		}
 	}
-	
-	public void update_alt() {}
 	
 	public void damageWall(int i, int attack) {
 		if (i != 99) {
@@ -183,6 +178,19 @@ public class Entity {
 				if (gp.walls.get(i).life <= 0) {
 					gp.walls.get(i).dying = true;
 				}
+			}
+		}
+	}
+	
+	public void checkDrop() {}
+	
+	public void dropItem(OBJ droppedItem) {
+		for(int i = 0; i < gp.obj.length; i++) {
+			if(gp.obj[i] == null) {
+				gp.obj[i] = droppedItem;
+				gp.obj[i].worldX = worldX;
+				gp.obj[i].worldY = worldY;
+				break;
 			}
 		}
 	}
@@ -366,7 +374,13 @@ public class Entity {
 	public void changeAlpha(Graphics2D g2, float alphaValue) {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
-
+	
+	public void setHitbox(int x, int y, int width, int height) {
+		hitBox = new Rectangle(x, y, width, height);
+		solidAreaDefaultX = hitBox.x;
+		solidAreaDefaultY = hitBox.y;
+	}
+	
 	public BufferedImage setup(String imageName, int width, int height) {
 		BufferedImage image = null;
 
@@ -383,12 +397,6 @@ public class Entity {
 	
 	public BufferedImage setup(String imageName) {
 		return setup(imageName, gp.tileSize, gp.tileSize);
-	}
-	
-	public void setHitbox(int x, int y, int width, int height) {
-		hitBox = new Rectangle(x, y, width, height);
-		solidAreaDefaultX = hitBox.x;
-		solidAreaDefaultY = hitBox.y;
 	}
 	
 	public BufferedImage[] setupSheet(String filePath, int row, int col) {
@@ -419,20 +427,6 @@ public class Entity {
 		return result;
 	}
 	
-	public BufferedImage[] scaleArray(BufferedImage[] array, int width, int height) {
-		BufferedImage[] result = new BufferedImage[array.length];
-		
-	    for (int i = 0; i < array.length; i++) {
-	        result[i] = UtilityBox.scaleImage(array[i], width, height);
-	    }
-		
-	    return result;
-	}
-	
-	public BufferedImage[] scaleArray(BufferedImage[] array) {
-		return scaleArray(array, gp.tileSize, gp.tileSize);
-	}
-	
 	public BufferedImage[][] setupSheet2D(String filePath, int row, int col) {
 		BufferedImage[][] result = null;
 		try {
@@ -447,6 +441,20 @@ public class Entity {
 		}
 		
 		return result;
+	}
+	
+	public BufferedImage[] scaleArray(BufferedImage[] array, int width, int height) {
+		BufferedImage[] result = new BufferedImage[array.length];
+		
+	    for (int i = 0; i < array.length; i++) {
+	        result[i] = UtilityBox.scaleImage(array[i], width, height);
+	    }
+		
+	    return result;
+	}
+	
+	public BufferedImage[] scaleArray(BufferedImage[] array) {
+		return scaleArray(array, gp.tileSize, gp.tileSize);
 	}
 	
 	public BufferedImage[][] scaleArray(BufferedImage[][] array, int rows, int cols, int width, int height) {
@@ -468,8 +476,6 @@ public class Entity {
 	
 	public BufferedImage setup(int index) {
 		BufferedImage image = null;
-		
-		System.out.println(index);
 		
 		image = sprites[index];
 		image = UtilityBox.scaleImage(image, gp.tileSize, gp.tileSize);

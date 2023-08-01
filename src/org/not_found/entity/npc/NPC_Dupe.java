@@ -64,9 +64,6 @@ public class NPC_Dupe extends NPC {
 
 	}
 	
-	@Override
-	public void update_alt() {}
-	
 	public void speak() {
 		gp.ui.npcCounter = 0;
 		if(dialogues[dialogueIndex] == null) {

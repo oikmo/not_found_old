@@ -29,4 +29,6 @@ public class MONSTER extends NPC {
 	    patrolBox = new Rectangle((int)circle.getX(),(int)circle.getY(), (int) circle.getWidth(), (int)circle.getHeight());
 		
 	}
+	
+	public void damageReaction() {}
 }

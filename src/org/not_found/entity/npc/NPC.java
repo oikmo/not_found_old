@@ -26,5 +26,17 @@ public class NPC extends Entity {
 		hitBox.width = 32;
 		hitBox.height = 46;
 	}
+	
+	public void update_alt() {
+		setAction();
+		
+		if(shotAvailableCounter < shotCounterLimit) {
+			shotAvailableCounter++;
+		}
+	}
+	
+	public void setAction() {}
+	
+	public void speak() {}
 
 }
