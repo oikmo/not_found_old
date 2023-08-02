@@ -121,7 +121,7 @@ public class Main {
 			window.setVisible(true);
 			
 			gamePanel.config.loadConfig();
-			gamePanel.debug = true;
+			gamePanel.debug = false;
 			gamePanel.fps = false;
 			gamePanel.version = version;
 			
