@@ -34,7 +34,7 @@ public class Main {
 	    	System.exit(0);
 	    }
 	    
-		String version = "alpha 0.1.4";
+		String version = "alpha 0.1.5";
 
 		File theDir = new File(gameDir);
 		if (!theDir.exists()){

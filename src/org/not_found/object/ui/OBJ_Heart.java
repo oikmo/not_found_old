@@ -38,8 +38,10 @@ public class OBJ_Heart extends OBJ {
 			if(gp.player.life + value < gp.player.maxLife){
 				gp.player.life += value;
 			}
+			collision = true;
 			didntWork = false;
 		} else {
+			collision = false;
 			didntWork = true;
 		}
 	}

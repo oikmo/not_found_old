@@ -86,6 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int dialogueState = 4;
 	public final int characterState = 5;
 	public final int optionsState = 6;
+	public final int gameOverState = 7;
 	public double delta = 0;
 	
 	public GamePanel() {
@@ -127,36 +128,75 @@ public class GamePanel extends JPanel implements Runnable {
 		gameThread.start();
 	}
 	
+	public void retry() {
+		player.setDefaultPositions();
+		player.restoreLifeAndMana();
+		try {
+			assetSetter.setNPC();
+			assetSetter.setMonster();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		player.invinceCounter = 0;
+		player.isInvince = false;
+	}
+	
+	public void restart() {
+		player.setDefaultValues();
+		player.setItems();
+		try {
+			assetSetter.setNPC();
+			assetSetter.setMonster();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		player.invinceCounter = 0;
+		player.isInvince = false;
+	}
+	
 	@Override
-	public void run() { //gameloop
-		double drawInterval = 1000000000 / FPSLock;
-		
-		long lastTime = System.nanoTime();
-		long currentTime = 0;
-		int drawCount = 0;
-		long timer = 0;
-
-		while(gameThread != null) {
-			currentTime = System.nanoTime();
-			delta += (currentTime - lastTime) / drawInterval;
-			timer += (currentTime - lastTime);
-			lastTime = currentTime;
-			
-			if(delta >= 1) {
-				update();
+    public void run() {
+        long lastTime = System.nanoTime();
+        double nsPerTick = 1000000000D / 64;
+        
+        int frames = 0;
+        
+        long lastTimer = System.currentTimeMillis();
+        double delta = 0;
+        
+        while (gameThread != null) {
+            long now = System.nanoTime();
+            delta += (now - lastTime) / nsPerTick;
+            lastTime = now;
+            boolean shouldRender = true;
+            
+            while (delta >= 1) {
+                delta -= 1;
+                shouldRender = true;
+            }
+            
+            try {
+                Thread.sleep(2);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            
+            if (shouldRender) {
+                frames++;
+                update();
 				paintToTempScreen();
 				drawToScreen();
-				delta--;
-				drawCount++;
-			}
-			
-			if (timer >= 1000000000) {
-				fpsCount = Integer.toString(drawCount);
-				drawCount = 0;
-				timer = 0;
-			}
-		}
-	}
+            }
+            
+            if (System.currentTimeMillis() - lastTimer >= 1000) {
+                lastTimer += 1000;
+                fpsCount = Integer.toString(frames);
+                frames = 0;
+            }
+        }
+    }
 	
 	public void update() {
 		
@@ -230,7 +270,6 @@ public class GamePanel extends JPanel implements Runnable {
 			
 		}
 	}
-
 	
 	public void drawToScreen() {
 		Graphics g = this.getGraphics();

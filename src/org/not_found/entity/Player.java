@@ -62,7 +62,19 @@ public class Player extends Entity {
 		setItems();
 	}
 	
+	public void setDefaultPositions() {
+		worldX = gp.tileSize * 16;
+		worldY = gp.tileSize * 16;
+		direction = Direction.Idle;
+	}
+	
+	public void restoreLifeAndMana() {
+		life = maxLife;
+		mana = maxMana;
+	}
+	
 	public void setItems() {
+		inventory.clear();
 		inventory.add(currentWeapon);
 		inventory.add(currentShield);
 		inventory.add(new OBJ_Bow(gp));
@@ -111,8 +123,8 @@ public class Player extends Entity {
 			}
 		}
 		if(life <= 0) {
-			JOptionPane.showMessageDialog(Main.window, "You died lmao", "ERROR", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
+			gp.gameState = gp.gameOverState;
+			gp.ui.commandNum = -1;
 		}
 		
 		if (attacking) {
@@ -462,7 +474,7 @@ public class Player extends Entity {
 	
 	public void pickUpObject(int i) {
 		if (i != 99) {
-			if(gp.obj[i].objType != OBJType.Chest || gp.obj[i].objType != OBJType.Wall || gp.obj[i].objType != OBJType.Door) {
+			if(gp.obj[i].objType != OBJType.Chest && gp.obj[i].objType != OBJType.Wall && gp.obj[i].objType != OBJType.Door) {
 				if(gp.obj[i].objType == OBJType.PickupAble) {
 					gp.obj[i].use(this);
 					if(!gp.obj[i].didntWork) {

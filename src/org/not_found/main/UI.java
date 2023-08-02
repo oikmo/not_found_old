@@ -56,38 +56,7 @@ public class UI {
 		manaFull = mana.image0;
 		manaBlank = mana.image1;
 	}
-	public void addMessage(String text, int messageCMax, int messageY) {
-		message.add(text);
-		messageCounter.add(0);
-		mCounterLimit.add(messageCMax);
-		
-		messageOn = true;
-		this.messageCMax = messageCMax;
-		this.messageY = messageY;
-	}
-	
-	public void addMessage(String text, int messageCMax) {
-		message.add(text);
-		messageCounter.add(0);
-		mCounterLimit.add(messageCMax);
-		
-		messageOn = true;
-		this.messageCMax = messageCMax;
-		this.messageX = gp.tileSize;
-		this.messageY = gp.tileSize * 2;
-	}
-	
-	public void addMessage(String text) {
-		message.add(text);
-		messageCounter.add(0);
-		mCounterLimit.add(120);
-		
-		messageOn = true;
-		this.messageCMax = 120;
-		this.messageX = gp.tileSize;
-		this.messageY = gp.tileSize * 2;
-	}
-	
+
 	public void draw(Graphics2D g2) {
 		this.g2 = g2;
 		g2.setFont(VCR);
@@ -115,6 +84,8 @@ public class UI {
 			drawInventory();
 		} else if(gp.gameState == gp.optionsState) {
 			drawOptionsScreen();
+		} else if(gp.gameState == gp.gameOverState) {
+			drawGAMEOVERScreen();
 		}
 		
 		g2.setColor(Color.white);
@@ -151,6 +122,38 @@ public class UI {
 				
 			}
 		}
+	}
+	
+	public void addMessage(String text, int messageCMax, int messageY) {
+		message.add(text);
+		messageCounter.add(0);
+		mCounterLimit.add(messageCMax);
+		
+		messageOn = true;
+		this.messageCMax = messageCMax;
+		this.messageY = messageY;
+	}
+	
+	public void addMessage(String text, int messageCMax) {
+		message.add(text);
+		messageCounter.add(0);
+		mCounterLimit.add(messageCMax);
+		
+		messageOn = true;
+		this.messageCMax = messageCMax;
+		this.messageX = gp.tileSize;
+		this.messageY = gp.tileSize * 2;
+	}
+	
+	public void addMessage(String text) {
+		message.add(text);
+		messageCounter.add(0);
+		mCounterLimit.add(120);
+		
+		messageOn = true;
+		this.messageCMax = 120;
+		this.messageX = getXforCenteredText(text);
+		this.messageY = gp.tileSize * 2;
 	}
 	
 	public void drawMessages() {
@@ -774,6 +777,40 @@ public class UI {
 		}
 	}
 	
+	public void drawGAMEOVERScreen() {
+		g2.setColor(new Color(0,0,0, 0.2f));
+		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
+		int x, y;
+		String text;
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, 110f));
+		text = "Game Over";
+		
+		g2.setColor(Color.gray);
+		x = getXforCenteredText(text)+5;
+		y = gp.tileSize*4+5;
+		g2.drawString(text, x, y);
+		g2.setColor(Color.white);
+		g2.drawString(text, x-5, y-5);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 50f));
+		text = "Retry";
+		x = getXforCenteredText(text);
+		y += gp.tileSize*4;
+		g2.drawString(text, x, y);
+		if(commandNum == 0) {
+			g2.drawString(">", x-40, y);
+		}
+		
+		text = "Quit";
+		x = getXforCenteredText(text);
+		y += 55;
+		g2.drawString(text, x, y);
+		if(commandNum == 1) {
+			g2.drawString(">", x-40, y);
+		}
+		
+	}
 	public void drawSubWindow(int x, int y, int width, int height) {
 		Color c = new Color(0,0,0, 210);
 		g2.setColor(c);

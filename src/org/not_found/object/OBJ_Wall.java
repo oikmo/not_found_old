@@ -20,7 +20,7 @@ public class OBJ_Wall extends OBJ {
 		ID = "Wall";
 		alive = true;
 		maxLife = 40;
-		life = 20;
+		life = maxLife;
 	}
 	
 	public void use(Entity entity) {

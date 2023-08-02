@@ -22,6 +22,8 @@ public class OBJ_Mana extends OBJ {
 		value = 1;
 		collision = true;
 		
+		setHitbox(4,10,38,28);
+		
 		image = sprites[0];
 		image0 = sprites[0];
 		image1 = sprites[1];
@@ -29,14 +31,23 @@ public class OBJ_Mana extends OBJ {
 	
 	public void use(Entity entity) {
 		if(gp.player.mana < gp.player.maxMana) {
-			gp.playSE(SoundEnum.powerUp);
-			gp.ui.addMessage("Mana  + " + value);
-			if(gp.player.mana + value < gp.player.maxMana){
+			
+			if(gp.player.mana + value <= gp.player.maxMana){
+				gp.playSE(SoundEnum.powerUp);
+				gp.ui.addMessage("Mana  + " + value);
 				gp.player.mana += value;
+				collision = true;
+				didntWork = false;
+			} else {
+				System.out.println((gp.player.mana + value) + " " + gp.player.mana + " " + gp.player.maxMana);
+				collision = false;
+				didntWork = true;
 			}
-			didntWork = false;
+			
 		} else {
+			collision = false;
 			didntWork = true;
+			
 		}
 	}
 }
