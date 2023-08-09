@@ -29,7 +29,7 @@ public class Player extends Entity {
 		screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 		
-		hitBox = new Rectangle(8, 1, 32, 46);
+		hitBox = new Rectangle(8, 2, 32, 40);
 		solidAreaDefaultX = hitBox.x;
 		solidAreaDefaultY = hitBox.y;
 		
@@ -40,8 +40,8 @@ public class Player extends Entity {
 	}
 
 	public void setDefaultValues() {
-		worldX = gp.tileSize * 16;
-		worldY = gp.tileSize * 16;
+		worldX = gp.tileSize * 13;
+		worldY = gp.tileSize * 24;
 		speed = 4;
 		
 		// player status
@@ -286,11 +286,11 @@ public class Player extends Entity {
 	
 	public void contactMonster(int i) {
 		if (i != 999) {
-			if (!isInvince && !gp.monster[i].dying) {
+			if (!isInvince && !gp.monster[gp.currentMap][i].dying) {
 				if (invinceCounter <= 0) {
 					gp.playSE(SoundEnum.recieveDmg);
 					
-					int damage = gp.monster[i].attack - defense;
+					int damage = gp.monster[gp.currentMap][i].attack - defense;
 					if(damage < 0) {
 						damage = 0;
 					}
@@ -304,27 +304,27 @@ public class Player extends Entity {
 	
 	public void damageMonster(int i, int attack) {
 		if (i != 999) {
-			if (!gp.monster[i].isInvince) {
+			if (!gp.monster[gp.currentMap][i].isInvince) {
 				gp.playSE(SoundEnum.swingWeapon);
 				
-				int damage = attack - gp.monster[i].defense;
+				int damage = attack - gp.monster[gp.currentMap][i].defense;
 				if(damage < 0) {
 					damage = 0;
 				}
 				//System.out.println(damage);
 				
-				gp.monster[i].life -= damage;
+				gp.monster[gp.currentMap][i].life -= damage;
 				gp.playSE(SoundEnum.hit);
-				gp.monster[i].isInvince = true;
-				gp.monster[i].damageReaction();
+				gp.monster[gp.currentMap][i].isInvince = true;
+				gp.monster[gp.currentMap][i].damageReaction();
 
-				if (gp.monster[i].life <= 0) {
+				if (gp.monster[gp.currentMap][i].life <= 0) {
 					if(!AchieveManager.achievements.get("first-kill").completed) {
 						gp.ui.addAchievement(AchieveManager.achievements.get("first-kill"));
 					}
 					
-					gp.monster[i].dying = true;
-					exp += gp.monster[i].exp;
+					gp.monster[gp.currentMap][i].dying = true;
+					exp += gp.monster[gp.currentMap][i].exp;
 					checkLevelUP();
 				}
 			}
@@ -445,7 +445,7 @@ public class Player extends Entity {
 	}
 	
 	void displayMessage(int i, OBJ item) {
-		OBJ object = gp.obj[i];
+		OBJ object = gp.obj[gp.currentMap][i];
 		OBJType type = object.objType;
 		switch(type) {
 		case Key:
@@ -469,21 +469,21 @@ public class Player extends Entity {
 			return;
 		}
 		
-		gp.obj[i] = null;
+		gp.obj[gp.currentMap][i] = null;
 	}
 	
 	public void pickUpObject(int i) {
 		if (i != 99) {
-			if(gp.obj[i].objType != OBJType.Chest && gp.obj[i].objType != OBJType.Wall && gp.obj[i].objType != OBJType.Door) {
-				if(gp.obj[i].objType == OBJType.PickupAble) {
-					gp.obj[i].use(this);
-					if(!gp.obj[i].didntWork) {
-						gp.obj[i] = null;
+			if(gp.obj[gp.currentMap][i].objType != OBJType.Chest && gp.obj[gp.currentMap][i].objType != OBJType.Wall && gp.obj[gp.currentMap][i].objType != OBJType.Door) {
+				if(gp.obj[gp.currentMap][i].objType == OBJType.PickupAble) {
+					gp.obj[gp.currentMap][i].use(this);
+					if(!gp.obj[gp.currentMap][i].didntWork) {
+						gp.obj[gp.currentMap][i] = null;
 					}
 					
 				} else {
 					if(inventory.size() != maxInventorySize) {
-						switch (gp.obj[i].ID) {
+						switch (gp.obj[gp.currentMap][i].ID) {
 						case "Key1":
 							gp.ui.addAchievement(AchieveManager.achievements.get("key-pickup"));
 							displayMessage(i, null);
@@ -507,16 +507,22 @@ public class Player extends Entity {
 	}
 	
 	public void interactObject(int i) {
-		switch(gp.obj[i].ID) {
+		switch(gp.obj[gp.currentMap][i].ID) {
 		case "Door1":
-			if (inventory.contains(OBJItems.Key1)) {
-				gp.ui.addAchievement(AchieveManager.achievements.get("door-open"));
-				displayMessage(i, OBJItems.Key1);
+			for(int index = 0; index < inventory.size(); index++) {
+				OBJ item = inventory.get(index);
+				if(item.ID == "Key1") {
+					gp.ui.addAchievement(AchieveManager.achievements.get("door-open"));
+					displayMessage(i, item);
+				}
 			}
 			break;
 		case "Door2":
-			if (inventory.contains(OBJItems.Key2)) {
-				displayMessage(i, OBJItems.Key2);
+			for(int index = 0; index < inventory.size(); index++) {
+				OBJ item = inventory.get(index);
+				if(item.ID == "Key2") {
+					displayMessage(i, item);
+				}
 			}
 			break;
 		}
@@ -527,7 +533,7 @@ public class Player extends Entity {
 			if (i != 999) {
 				stopAttacking = true;
 				gp.gameState = gp.dialogueState;
-				gp.npc[i].speak();
+				gp.npc[gp.currentMap][i].speak();
 			}
 		}
 	}

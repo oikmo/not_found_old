@@ -7,6 +7,7 @@ import java.nio.channels.*;
 import java.nio.file.*;
 import java.util.Comparator;
 import javax.swing.*;
+import org.not_found.main.GamePanel;
 
 import org.not_found.os.EnumOS;
 import org.not_found.os.EnumOSMappingHelper;
@@ -121,8 +122,8 @@ public class Main {
 			window.setVisible(true);
 			
 			gamePanel.config.loadConfig();
-			gamePanel.debug = false;
-			gamePanel.fps = false;
+			gamePanel.debug = true;
+			gamePanel.fps = true;
 			gamePanel.version = version;
 			
 			if(args.length != 0) {

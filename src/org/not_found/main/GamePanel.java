@@ -21,7 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
 	//SCREEN SETTINGS
 	final int originalTileSize = 16;
 	final int scale = 3;
-	public String fpsCount = "60";
+	public String fpsCount = "NONE";
 
 	public final int tileSize = originalTileSize * scale;
 	public final int maxScreenCol = 17; //17
@@ -29,16 +29,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int screenWidth = tileSize * maxScreenCol;
 	public final int screenHeight = tileSize * maxScreenRow;
 	//WORLD SETTINGS
-	public final int maxWorldCol = 32;
-	public final int maxWorldRow = 32;
+	public final int maxWorldCol = 50;
+	public final int maxWorldRow = 50;
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
-	
-	public boolean isFullScreen = false;
-	
-	int screenWidth2 = screenWidth;
-	int screenHeight2 = screenHeight;
-	BufferedImage tempScreen;
+	public final int maxMaps = 10;
+	public int currentMap = 0;
 	
 	boolean music1, music2;
 	public String version;
@@ -62,10 +58,9 @@ public class GamePanel extends JPanel implements Runnable {
 	//ENTITIES AND OBJECTS
 	public ArrayList<Entity> entityList = new ArrayList<>();
 	public Player player = new Player(this);
-	public static OBJ itemList[] = new OBJ[maxEntities];
-	public OBJ obj[] = new OBJ[maxEntities];
-	public NPC npc[] = new NPC[maxEntities];
-	public MONSTER monster[] = new MONSTER[maxEntities];
+	public OBJ obj[][] = new OBJ[maxMaps][maxEntities];
+	public NPC npc[][] = new NPC[maxMaps][maxEntities];
+	public MONSTER monster[][] = new MONSTER[maxMaps][maxEntities];
 	public ArrayList<Projectile> projectiles = new ArrayList<>();
 	public ArrayList<OBJ> walls = new ArrayList<>();
 	
@@ -87,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int characterState = 5;
 	public final int optionsState = 6;
 	public final int gameOverState = 7;
-	public double delta = 0;
+	public long deltaTime = 0;
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -110,10 +105,6 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 		
 		Tmusic.setFile(0);
-		
-		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-		g2 = (Graphics2D)tempScreen.getGraphics();
-		//setFullScreen();
 		
 		//System.out.println(SoundEnum.Espionage.ordinal());
 		if(!Tmusic.isPlaying()) { Tmusic.setFile(SoundEnum.Espionage);} else { Tmusic.stop(); Tmusic.setFile(SoundEnum.Espionage); }
@@ -157,46 +148,35 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	@Override
-    public void run() {
-        long lastTime = System.nanoTime();
-        double nsPerTick = 1000000000D / 64;
-        
-        int frames = 0;
-        
-        long lastTimer = System.currentTimeMillis();
-        double delta = 0;
-        
-        while (gameThread != null) {
-            long now = System.nanoTime();
-            delta += (now - lastTime) / nsPerTick;
-            lastTime = now;
-            boolean shouldRender = true;
-            
-            while (delta >= 1) {
-                delta -= 1;
-                shouldRender = true;
-            }
-            
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            
-            if (shouldRender) {
-                frames++;
-                update();
-				paintToTempScreen();
-				drawToScreen();
-            }
-            
-            if (System.currentTimeMillis() - lastTimer >= 1000) {
-                lastTimer += 1000;
-                fpsCount = Integer.toString(frames);
-                frames = 0;
-            }
-        }
-    }
+	public void run() { //gameloop
+		double drawInterval = 1000000000 / FPSLock;
+		double delta = 0;
+		long lastTime = System.nanoTime();
+		long currentTime = 0;
+		int drawCount = 0;
+		long timer = 0;
+
+		while(gameThread != null) {
+			currentTime = System.nanoTime();
+			delta += (currentTime - lastTime) / drawInterval;
+			timer += (currentTime - lastTime);
+			lastTime = currentTime;
+
+			if(delta >= 1) {
+				update();
+				repaint();
+				delta--;
+				drawCount++;
+			}
+
+			if (timer >= 1000000000) {
+				fpsCount = Integer.toString(drawCount);
+				//drawCount = drawCount;
+				drawCount = 0;
+				timer = 0;
+			}
+		}
+	}
 	
 	public void update() {
 		
@@ -213,17 +193,17 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			player.update();
 			for(int i = 0; i < maxEntities; i++) {
-				if(npc[i] != null) {
-					npc[i].update();
+				if(getNPC(i) != null) {
+					getNPC(i).update();
 				}
 				
-				if(monster[i] != null) {
-					if(monster[i].alive && !monster[i].dying) {
-						monster[i].update();
+				if(getMONSTER(i) != null) {
+					if(getMONSTER(i).alive && !getMONSTER(i).dying) {
+						getMONSTER(i).update();
 					}
-					if(!monster[i].alive) {
-						monster[i].checkDrop();
-						monster[i] = null;
+					if(!getMONSTER(i).alive) {
+						getMONSTER(i).checkDrop();
+						monster[currentMap][i] = null;
 					}
 				}
 			}
@@ -271,24 +251,12 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 	
-	public void drawToScreen() {
-		Graphics g = this.getGraphics();
-		//System.out.println((this.getWidth() - screenWidth2)/2);
-		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
-		g.dispose();
-	}
-	
-	public int getTWidth() {
-		return tempScreen.getWidth();
-	}
-	
-	public int getTHeight() {
-		return tempScreen.getHeight();
-	}
-	
-	
-	public void paintToTempScreen() {    
-        
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if(g2 != (Graphics2D)g) {
+			g2 = (Graphics2D)g;
+		}
+		
 		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 	    g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -308,9 +276,9 @@ public class GamePanel extends JPanel implements Runnable {
         	entityList.add(player);
 
         	for(int i=0; i<maxEntities; i++) {
-        		if(obj[i] != null) { entityList.add(obj[i]); } 
-        		if(monster[i] != null) { entityList.add(monster[i]); }
-        		if(npc[i] != null) { entityList.add(npc[i]); }
+        		if(getOBJ(i) != null) { entityList.add(getOBJ(i)); } 
+        		if(getMONSTER(i) != null) { entityList.add(getMONSTER(i)); }
+        		if(getNPC(i) != null) { entityList.add(getNPC(i)); }
         	}
         	for(int i = 0; i < projectiles.size(); i++) {
         		if(projectiles.get(i) != null) { entityList.add(projectiles.get(i)); }
@@ -324,6 +292,7 @@ public class GamePanel extends JPanel implements Runnable {
         	entityList.clear();
         	ui.draw(g2);
         }
+        g2.dispose();
 	}
 	
 	public void playMusic(int i) {
@@ -346,6 +315,30 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	public void stopTMusic() {
 		music.stop();
+	}
+	
+	public void setOBJ(OBJ object, int i) {
+		obj[currentMap][i] = object;
+	}
+	
+	public OBJ getOBJ(int i) {
+		return obj[currentMap][i];
+	}
+	
+	public NPC getNPC(int i) {
+		return npc[currentMap][i];
+	}
+	
+	public void setNPC(NPC object, int i) {
+		npc[currentMap][i] = object;
+	}
+	
+	public MONSTER getMONSTER(int i) {
+		return monster[currentMap][i];
+	}
+	
+	public void setMONSTER(MONSTER object, int i) {
+		monster[currentMap][i] = object;
 	}
 }
 

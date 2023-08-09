@@ -379,7 +379,7 @@ public class UI {
 		g2.drawString(text, x, y);
 		
 		//System.out.println((gp.screenWidth/2) - (gp.tileSize + (gp.tileSize*2) + 16));
-		x = (gp.getTWidth() - gp.tileSize*5)/2;
+		x = (gp.getWidth() - gp.tileSize*5)/2;
 		y += gp.tileSize;
 		g2.drawImage(gp.player.shadow, x,(int) (y - gp.tileSize), gp.tileSize*5, gp.tileSize*5, null);
 		
@@ -631,7 +631,7 @@ public class UI {
 		//sub window :3
 		int frameWidth = gp.tileSize*8;
 		int frameHeight = gp.tileSize*10;
-		int frameX = (gp.getTWidth() - frameWidth) / 2;
+		int frameX = (gp.getWidth() - frameWidth) / 2;
 		int frameY = gp.tileSize;
 		
 		
