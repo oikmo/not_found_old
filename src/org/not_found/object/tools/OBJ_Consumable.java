@@ -8,7 +8,7 @@ import org.not_found.object.OBJType;
 
 public class OBJ_Consumable extends OBJ {
 
-	GamePanel gp ;
+	GamePanel gp;
 	
 	public int uses;
 	
@@ -17,11 +17,16 @@ public class OBJ_Consumable extends OBJ {
 		this.gp = gp;
 		objType = OBJType.Eatable;
 		collision = true;
+		setDialogue();
+	}
+	
+	public void setDialogue() {
+		dialogues[0][0] = "Your health is full. There is no point.";
+		dialogues[1][0] = "You used the " + name + "!\nYour life has been recovered by " + value + ".";
 	}
 	
 	public void warn() {
-		gp.gameState = gp.dialogueState;
-		gp.ui.currentDialogue = "Your health is full. There is no point.";
+		startDialogue(this, 0);
 	}
 	
 	public void use(Entity player) {
@@ -30,8 +35,7 @@ public class OBJ_Consumable extends OBJ {
 		System.out.println("no way");
 		
 		uses--;
-		gp.gameState = gp.dialogueState;
-		gp.ui.currentDialogue = "You used the " + name + "!\nYour life has been recovered by " + value + ".";
+		startDialogue(this, 1);
 		gp.playSE(SoundEnum.powerUp);
 		player.life += this.value;
 		

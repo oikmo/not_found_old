@@ -19,6 +19,8 @@ public class OBJ extends Entity {
 	public int defenseValue;
 	public int value;
 	
+	public int lockID;
+	
 	public boolean didntWork = false;
 	
 	public OBJ(GamePanel gp) {

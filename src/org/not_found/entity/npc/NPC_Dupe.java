@@ -3,6 +3,7 @@ package org.not_found.entity.npc;
 import java.util.Random;
 
 import org.not_found.main.GamePanel;
+import org.not_found.entity.Entity;
 
 public class NPC_Dupe extends NPC {
 	GamePanel gp;
@@ -19,10 +20,12 @@ public class NPC_Dupe extends NPC {
 		sprites = setupSheet("player/playerSheet", 6, 5);
 	}
 	public void setDialogue() {
-		dialogues[0] = "DUPE%im you";
-		dialogues[1] = "YOU%what do you mean?";
-		dialogues[2] = "DUPE%do you not fucking get it.";
-		dialogues[3] = "DUPE%YOU ARE ME AND I AM YOU HOW DO YOU \nNOT FUCKING GET IT YOU SACK OF SHIT";
+		dialogues[0][0] = "DUPE%im you";
+		dialogues[0][1] = "YOU%what do you mean?";
+		dialogues[0][2] = "DUPE%do you not fucking get it.";
+		dialogues[0][3] = "DUPE%YOU ARE ME AND I AM YOU HOW DO YOU \nNOT FUCKING GET IT YOU SACK OF SHIT";
+		
+		dialogues[1][0] = "DUPE%leave me the fuck alone please.";
 	}
 	public void setAction() {
 		if(!collisionOn) { return; }
@@ -65,29 +68,17 @@ public class NPC_Dupe extends NPC {
 	}
 	
 	public void speak() {
-		gp.ui.npcCounter = 0;
-		if(dialogues[dialogueIndex] == null) {
-			dialogueIndex = 0;
-		}
-		gp.ui.currentDialogue = dialogues[dialogueIndex];
-		dialogueIndex++;
 		
-		switch(gp.player.direction) {
-		case Up:
-			direction = Direction.Down;
-			break;
-		case Down:
-			direction = Direction.Up;
-			break;
-		case Left:
-			direction = Direction.Right;
-			break;
-		case Right:
-			direction = Direction.Left;
-			break;
-		default:
-			break;
+		facePlayer();
+		
+		
+		if(dialogueSetCompleted) {
+			dialogueSet = 1;
+			dialogueIndex = 0;
+			dialogueSetCompleted = false;
 		}
+		startDialogue((Entity)this, dialogueSet);
+		
 		
 	}
 

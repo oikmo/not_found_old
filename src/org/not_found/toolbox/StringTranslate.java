@@ -1,5 +1,6 @@
 package org.not_found.toolbox;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,8 +13,20 @@ public class StringTranslate {
 	private Properties translateTable = new Properties();
 
 	private StringTranslate() {
+		File file = new File(Main.gameDir + "config.txt");
+		if(!file.exists()) {
+			try {
+				file.createNewFile();
+				setValue("sound.SFXVolume", String.valueOf(2));	
+				setValue("sound.musicVolume", String.valueOf(2));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		try {
-			this.translateTable.load(new FileInputStream(Main.gameDir + "res/config.txt"));
+			this.translateTable.load(new FileInputStream(Main.gameDir + "config.txt"));
 			//this.translateTable.load(StringTranslate.class.getResourceAsStream("/lang/stats_US.lang"));
 		} catch (IOException var2) {
 			var2.printStackTrace();
@@ -24,7 +37,7 @@ public class StringTranslate {
 	public void setValue(String name, String value) {
 		this.translateTable.setProperty(name, value);
 		try {
-			this.translateTable.store(new FileOutputStream(Main.gameDir + "res/config.txt"), null);
+			this.translateTable.store(new FileOutputStream(Main.gameDir + "config.txt"), null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

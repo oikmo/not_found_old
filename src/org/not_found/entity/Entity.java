@@ -28,6 +28,7 @@ public class Entity {
 		Right,
 	}
 	
+	public int spriteNum = 1;
 	public BufferedImage[] sprites = null;
 	public BufferedImage[] atkSprites = null;
 	public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, atkRight2;
@@ -39,8 +40,7 @@ public class Entity {
 	// state
 	public int worldX, worldY;
 	public Direction direction = Direction.Idle;
-	public int spriteNum = 1;
-	public boolean moving = false;
+	
 	public boolean collisionOn = false;
 	public boolean isInvince = false;
 	boolean attacking = false;
@@ -80,7 +80,14 @@ public class Entity {
 	public int screenY = 0;
 	
 	public int useCost;
-
+	
+	//was for npcs
+	public String dialogues[][] = new String[100][100];
+	public int dialogueIndex = 0;
+	public int dialogueSet = 0;
+	public boolean dialogueSetCompleted = false;
+	
+	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 		
@@ -147,6 +154,12 @@ public class Entity {
 	public void update_alt() {}	
 	
 	
+	public void startDialogue(Entity entity, int setNum) {
+		gp.gameState = gp.dialogueState;
+		gp.ui.entity = entity;
+		dialogueSet = setNum;
+	}
+	
 	public void damagePlayer(int attack) {
 		if (!gp.player.isInvince && !gp.player.attacking && !this.dying) {
 			gp.playSE(SoundEnum.hit);
@@ -202,22 +215,7 @@ public class Entity {
 		BufferedImage image = null;
 		screenX = worldX - gp.player.worldX + gp.player.screenX;
 		screenY = worldY - gp.player.worldY + gp.player.screenY;
-
-		// STOP MOVING CAMERA
-		if (gp.player.worldX < gp.player.screenX) {
-			screenX = worldX;
-		}
-		if (gp.player.worldY < gp.player.screenY) {
-			screenY = worldY;
-		}
-		int rightOffset = gp.screenWidth - gp.player.screenX;
-		if (rightOffset > gp.worldWidth - gp.player.worldX) {
-			screenX = gp.screenWidth - (gp.worldWidth - worldX);
-		}
-		int bottomOffset = gp.screenHeight - gp.player.screenY;
-		if (bottomOffset > gp.worldHeight - gp.player.worldY) {
-			screenY = gp.screenHeight - (gp.worldHeight - worldY);
-		}
+		
 		
 		if(isNotType()) {
 			if(sprites != null)  {
@@ -315,19 +313,9 @@ public class Entity {
 		if (dying) {
 			dieAnim(g2);
 		}
-		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
-				&& worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
-				&& worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
-				&& worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-			g2.drawImage(image, screenX, screenY, null);
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
-		}
-		// if player is around the edg basically just draw everything
-		else if (gp.player.worldX < gp.player.screenX || gp.player.worldY < gp.player.screenY
-				|| rightOffset > gp.worldWidth - gp.player.worldX || bottomOffset > gp.worldHeight - gp.player.worldY) {
-			g2.drawImage(image, screenX, screenY, null);
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
-		}
+		
+		g2.drawImage(image, screenX, screenY, null);
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		
 		if(gp.debug) {
 			Stroke oldStroke = g2.getStroke();

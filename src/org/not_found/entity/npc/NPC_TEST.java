@@ -3,6 +3,7 @@ package org.not_found.entity.npc;
 import java.io.IOException;
 import java.util.Random;
 
+import org.not_found.entity.Entity;
 import org.not_found.main.GamePanel;
 import org.not_found.toolbox.UtilityBox;
 
@@ -26,7 +27,8 @@ public class NPC_TEST extends NPC {
 	}
 	
 	public void setDialogue() throws IOException {
-		dialogues = UtilityBox.getDialogueFromTXT("dialogue/test");
+		dialogues[0] = UtilityBox.getDialogueFromTXT("dialogue/test");
+		System.out.println(dialogues[0][0]);
 	}
 	
 	public void setAction() {
@@ -72,29 +74,9 @@ public class NPC_TEST extends NPC {
 	}
 	
 	public void speak() {
-		gp.ui.npcCounter = 1;
-		if(dialogues[dialogueIndex] == null) {
-			dialogueIndex = 0;
-		}
-		gp.ui.currentDialogue = dialogues[dialogueIndex];
-		dialogueIndex++;
 		
-		switch(gp.player.direction) {
-		case Up:
-			direction = Direction.Down;
-			break;
-		case Down:
-			direction = Direction.Up;
-			break;
-		case Left:
-			direction = Direction.Right;
-			break;
-		case Right:
-			direction = Direction.Left;
-			break;
-		default:
-			break;
-		}
+		facePlayer();
+		startDialogue((Entity)this, dialogueSet);
 		
 	}
 

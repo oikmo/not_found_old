@@ -10,4 +10,6 @@ public class OBJ_Shootable extends OBJ {
 		super(gp);
 		objType = OBJType.Shootable;
 	}
+	
+	public void shot() {}
 }

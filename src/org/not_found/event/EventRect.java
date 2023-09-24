@@ -5,5 +5,5 @@ import java.awt.Rectangle;
 @SuppressWarnings("serial")
 public class EventRect extends Rectangle {
 	int eRectDefaultX, eRectDefaultY;
-	 boolean eventDone = false;
+	boolean eventDone = false;
 }

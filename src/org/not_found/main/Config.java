@@ -12,7 +12,7 @@ public class Config {
 
 	public void saveConfig() {
 		trans.setValue("sound.SFXVolume", String.valueOf(gp.se.volumeScale));	
-		trans.setValue("sound.musicVolume", String.valueOf(gp.music.volumeScale));	
+		trans.setValue("sound.musicVolume", String.valueOf(gp.music.volumeScale));
 	}
 	
 	public void setValue(String key, String value) {
@@ -24,9 +24,10 @@ public class Config {
 	}
 	
 	public void loadConfig() {
-		gp.music.volumeScale = Integer.parseInt(getValue("sound.musicVolume"));
-		gp.Tmusic.volumeScale = Integer.parseInt(getValue("sound.musicVolume"));
-		gp.Pmusic.volumeScale = Integer.parseInt(getValue("sound.musicVolume"));
+		int yeah = Integer.parseInt(getValue("sound.musicVolume"));
+		gp.music.volumeScale = yeah;
+		gp.Tmusic.volumeScale = yeah;
+		gp.Pmusic.volumeScale = yeah;
 		gp.se.volumeScale = Integer.parseInt(getValue("sound.SFXVolume"));
 	}
 	

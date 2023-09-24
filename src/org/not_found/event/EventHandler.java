@@ -1,16 +1,20 @@
 package org.not_found.event;
 
+import org.not_found.entity.Entity;
 import org.not_found.entity.Entity.Direction;
 import org.not_found.main.GamePanel;
 
 public class EventHandler {
 	GamePanel gp;
+	Entity eventMaster;
 	EventRect eventRect[][][];
 	int previousEventX, previousEventY;
 	boolean canTouchEvent = true;
 	
 	public EventHandler(GamePanel gp) {
 		this.gp = gp;
+		
+		eventMaster = new Entity(gp);
 		
 		eventRect= new EventRect[gp.maxMaps][gp.maxWorldCol][gp.maxWorldRow];
 		
@@ -37,7 +41,7 @@ public class EventHandler {
 			}
 		}
 		
-		
+		setDialogue();
 	}
 	
 	public void checkEvent() {
@@ -49,8 +53,9 @@ public class EventHandler {
 			canTouchEvent = true;
 		}
 		if(canTouchEvent) {
-			if(hit(0,2,2, Direction.Any)) {damagePit(0,2,2, 1, true);}
-			if(hit(0,1,1, Direction.Any)) {healPool(0,1,1, false);}
+			if(hit(1,2,2, Direction.Any)) { damagePit(0,2,2, 1, true); }
+			if(hit(1,1,1, Direction.Any)) { healPool(0,1,1, false); }
+			if(hit(0,26,48, Direction.Any)) { tp(1, 13, 24); }
 		}
 		
 		
@@ -86,13 +91,23 @@ public class EventHandler {
 		return hit;
 	}
 	
+	public void setDialogue() {
+		eventMaster.dialogues[0][0] = "you fall in pit idiot";
+		eventMaster.dialogues[1][0] = "you uh drank the liquid \nand you are good";
+		eventMaster.dialogues[2][0] = "you got tp'd loser";
+	}
+	
 	public void damagePit(int map, int col, int row, int dmg, boolean isOnce) {
-		gp.gameState = gp.dialogueState;
-		gp.playSE(7);
-		gp.ui.currentDialogue = "you fall in pit idiot";
-		gp.ui.npcCounter = 2;
-		gp.player.life -= dmg;
-		eventRect[map][col][row].eventDone = isOnce;
+		if(eventRect[map][col][row].eventDone != isOnce) {
+			gp.gameState = gp.dialogueState;
+			gp.playSE(7);
+			eventMaster.startDialogue(eventMaster, 0);
+			
+			gp.player.life -= dmg;
+			eventRect[map][col][row].eventDone = isOnce;
+		}
+		
+		
 	}
 	
 	public void healPool(int map, int col, int row, boolean isOnce) {
@@ -100,16 +115,17 @@ public class EventHandler {
 			gp.gameState = gp.dialogueState;
 			gp.playSE(9);
 			gp.player.stopAttacking = true;
-			gp.ui.currentDialogue = "you uh drank the liquid \nand you are good";
+			eventMaster.startDialogue(eventMaster, 1);
+			
 			gp.player.life = gp.player.maxLife;
 			eventRect[map][col][row].eventDone = isOnce;
 		}
-		gp.keyH.enterPressed = false;
 	}
 	
 	public void tp(int map, int col, int row) {
 		gp.gameState = gp.dialogueState;
-		gp.ui.currentDialogue = "you got tp'd loser";
+		gp.currentMap = map;
+		eventMaster.startDialogue(eventMaster, 2);
 		gp.player.worldX = gp.tileSize*col;
 		gp.player.worldY = gp.tileSize*row;
 		previousEventX = gp.player.worldX;
@@ -117,3 +133,6 @@ public class EventHandler {
 		canTouchEvent = false;
 	}
 }
+
+
+

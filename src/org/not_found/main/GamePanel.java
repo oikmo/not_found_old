@@ -1,7 +1,6 @@
 package org.not_found.main;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 
@@ -15,6 +14,7 @@ import org.not_found.event.EventHandler;
 import org.not_found.object.OBJ;
 import org.not_found.projectile.Projectile;
 import org.not_found.tile.TileManager;
+import org.not_found.toolbox.Vec2;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -26,8 +26,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int tileSize = originalTileSize * scale;
 	public final int maxScreenCol = 17; //17
 	public final int maxScreenRow = 13; //13
-	public final int screenWidth = tileSize * maxScreenCol;
-	public final int screenHeight = tileSize * maxScreenRow;
+	public int screenWidth = tileSize * maxScreenCol;
+	public int screenHeight = tileSize * maxScreenRow;
 	//WORLD SETTINGS
 	public final int maxWorldCol = 50;
 	public final int maxWorldRow = 50;
@@ -73,6 +73,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Config config = new Config(this);
 	
 	//GAMESTATE
+	public int lastState;
 	public int gameState;
 	public final int loadingState = 0;
 	public final int titleState = 1;
@@ -83,6 +84,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int optionsState = 6;
 	public final int gameOverState = 7;
 	public long deltaTime = 0;
+	
+	public int globalVolumeScale = 2;
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -104,13 +107,16 @@ public class GamePanel extends JPanel implements Runnable {
 			gameState = loadingState;
 		}
 		
+		Tmusic.volumeScale = globalVolumeScale;
+		Pmusic.volumeScale = globalVolumeScale;
+		music.volumeScale = globalVolumeScale;
+		
 		Tmusic.setFile(0);
 		
 		//System.out.println(SoundEnum.Espionage.ordinal());
 		if(!Tmusic.isPlaying()) { Tmusic.setFile(SoundEnum.Espionage);} else { Tmusic.stop(); Tmusic.setFile(SoundEnum.Espionage); }
 		if(!music.isPlaying()) { music.setFile(SoundEnum.JEALOUS); } else { music.stop(); music.setFile(SoundEnum.JEALOUS);}
 		if(!Pmusic.isPlaying()) { Pmusic.setFile(SoundEnum.IntenseMoments);} else { Pmusic.stop(); Pmusic.setFile(SoundEnum.IntenseMoments); }
-		this.setBackground(Color.blue);
 	}
 	
 	public void startGameThread() {
@@ -180,6 +186,8 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void update() {
 		
+		screenWidth = this.getWidth();
+		screenHeight = this.getHeight();
 		if(gameState == playState) {
 			Tmusic.stop();
 			if(!music1) {
@@ -325,6 +333,10 @@ public class GamePanel extends JPanel implements Runnable {
 		return obj[currentMap][i];
 	}
 	
+	public OBJ getOBJ(int map, int i) {
+		return obj[currentMap][i];
+	}
+	
 	public NPC getNPC(int i) {
 		return npc[currentMap][i];
 	}
@@ -340,6 +352,14 @@ public class GamePanel extends JPanel implements Runnable {
 	public void setMONSTER(MONSTER object, int i) {
 		monster[currentMap][i] = object;
 	}
+	
+	public Vec2 getWorldPosition(int x, int y) {
+		int worldX = x * tileSize;
+		int worldY = y * tileSize;
+		
+		return new Vec2(worldX, worldY);
+	}
+	
 }
 
 

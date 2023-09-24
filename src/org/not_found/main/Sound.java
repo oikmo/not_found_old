@@ -96,4 +96,16 @@ public class Sound {
 		}
 		control.setValue(volume);
 	}
+	
+	public void checkVolume(int scale) {
+		switch(scale) {
+		case 0: volume = -80f; break;
+		case 1: volume = -20f; break;
+		case 2: volume = -12f; break;
+		case 3: volume = -5f; break;
+		case 4: volume = 1f; break;
+		case 5: volume = 6f; break;
+		}
+		control.setValue(volume);
+	}
 }

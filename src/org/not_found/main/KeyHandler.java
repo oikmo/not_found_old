@@ -23,6 +23,12 @@ public class KeyHandler implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int code = e.getKeyCode();
 		
+		System.out.println(e.getKeyChar());
+		
+		if(code == KeyEvent.VK_F11) {
+			Main.setFullScreen();
+		}
+		
 		if(gp.gameState == gp.titleState) {
 			titleState(code);
 		}
@@ -64,6 +70,13 @@ public class KeyHandler implements KeyListener {
 				rightPressed = false;
 				gp.gameState = gp.playState;
 			}
+			if(gp.ui.commandNum == 2) {
+				rightPressed = false;
+				gp.lastState = gp.titleState;
+				gp.gameState = gp.optionsState;
+				gp.ui.commandNum = -1;
+			}
+			
 			if(gp.ui.commandNum == 1) {
 				rightPressed = false;
 			}
@@ -71,9 +84,13 @@ public class KeyHandler implements KeyListener {
 				rightPressed = false;
 			}
 			if(gp.ui.commandNum == 3) {
+				//Main.window.dispose();
+				//Main.window.setState(JFrame.ICONIFIED);
 				int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit le game??", "POP-UP", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
 				if(option == JOptionPane.OK_OPTION) {
 					System.exit(0);
+				} else {
+					//Main.window.setState(JFrame.NORMAL);
 				}
 			}
 		}
@@ -104,11 +121,21 @@ public class KeyHandler implements KeyListener {
 		else if(code == KeyEvent.VK_ESCAPE)  {
 			gp.gameState = gp.pauseState;
 		}
+		
+		if(code == KeyEvent.VK_SHIFT) {
+			//gp.player.speed = 12;
+		}
 	}
 	
 	public void pauseState(int code) {
 		if(code == KeyEvent.VK_ESCAPE) {
 			gp.gameState = gp.playState;
+		}
+		
+		if(gp.ui.commandNum == -1) {
+			if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP || code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+				gp.ui.commandNum = 0;
+			}
 		}
 		
 		if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -136,7 +163,11 @@ public class KeyHandler implements KeyListener {
 	
 	public void dialogueState(int code) {
 		if(code == KeyEvent.VK_ENTER) {
+			enterPressed = true;
+		}
+		if(code == KeyEvent.VK_ESCAPE) {
 			gp.gameState = gp.playState;
+			
 		}
 	}
 	
@@ -181,6 +212,12 @@ public class KeyHandler implements KeyListener {
 		}
 		
 		if(gp.ui.subState == 0) {
+			if(gp.ui.commandNum == -1) {
+				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP || code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+					gp.ui.commandNum = 0;
+				}
+			}
+			
 			if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 				gp.ui.commandNum--;
 				gp.playSE(SoundEnum.cursor);
@@ -195,28 +232,15 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 0;
 				}
 			}
-		}
-		
-		
-		if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-			if(gp.ui.subState == 0) {
+			
+			if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 				if(gp.ui.commandNum == 0) {
-					if(gp.Tmusic.volumeScale > 0) {
-						gp.Tmusic.volumeScale--;
-						gp.Tmusic.checkVolume();
-						gp.playSE(SoundEnum.cursor);
+					if(gp.globalVolumeScale > 0) {
+						gp.globalVolumeScale--;
+						gp.Tmusic.checkVolume(gp.globalVolumeScale);
+						gp.Pmusic.checkVolume(gp.globalVolumeScale);
+						gp.music.checkVolume(gp.globalVolumeScale);
 					}
-					if(gp.Pmusic.volumeScale > 0) {
-						gp.Pmusic.volumeScale--;
-						gp.Pmusic.checkVolume();
-						gp.playSE(SoundEnum.cursor);
-					}
-					if(gp.music.volumeScale > 0) {
-						gp.music.volumeScale--;
-						gp.music.checkVolume();
-						gp.playSE(SoundEnum.cursor);
-					}
-				
 				}
 				if(gp.ui.commandNum == 1) {
 					if(gp.se.volumeScale > 0) {
@@ -225,26 +249,14 @@ public class KeyHandler implements KeyListener {
 					}
 				}
 			}
-		}
-		
-		if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-			if(gp.ui.subState == 0) {
+			
+			if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 				if(gp.ui.commandNum == 0) {
-					
-					if(gp.music.volumeScale < 5) {
-						gp.music.volumeScale++;
-						gp.music.checkVolume();
-						gp.playSE(SoundEnum.cursor);
-					}
-					if(gp.Tmusic.volumeScale < 5) {
-						gp.Tmusic.volumeScale++;
-						gp.Tmusic.checkVolume();
-						gp.playSE(SoundEnum.cursor);
-					}
-					if(gp.Pmusic.volumeScale < 5) {
-						gp.Pmusic.volumeScale++;
-						gp.Pmusic.checkVolume();
-						gp.playSE(SoundEnum.cursor);
+					if(gp.globalVolumeScale < 5) {
+						gp.globalVolumeScale++;
+						gp.Tmusic.checkVolume(gp.globalVolumeScale);
+						gp.Pmusic.checkVolume(gp.globalVolumeScale);
+						gp.music.checkVolume(gp.globalVolumeScale);
 					}
 				}
 				if(gp.ui.commandNum == 1) {
@@ -255,6 +267,17 @@ public class KeyHandler implements KeyListener {
 				}
 			}
 		}
+		
+		if(gp.ui.subState == 1) {
+			if(gp.ui.commandNum == -1) {
+				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP || code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+					gp.ui.commandNum = 0;
+				}
+			}
+		}
+		
+		
+		
 	}
 	
 	public void gameOverState(int code) {
@@ -306,6 +329,10 @@ public class KeyHandler implements KeyListener {
 		if(code == KeyEvent.VK_F) {
 			shotKeyPressed = false;
 		} 
+		
+		if(code == KeyEvent.VK_SHIFT) {
+			gp.player.speed = 4;
+		}
 	}
 
 }

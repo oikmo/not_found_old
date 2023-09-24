@@ -1,42 +1,28 @@
 package org.not_found.tile;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Transparency;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
 
 import javax.imageio.ImageIO;
 
-import org.not_found.main.GamePanel;
-import org.not_found.main.Main;
+import org.not_found.main.*;
 import org.not_found.toolbox.UtilityBox;
 
 public class TileManager  {
 	GamePanel gp;
 	public Tile[] tile;
 	public int mapTileNum[][][];
+	BufferedImage[] renderedMaps;
 	BufferedImage defaultPack = null;
 	BufferedImage[] images = new BufferedImage[256];
 	int squareLine = 16;
-	
-	List<TileImage> newAngle = new ArrayList<TileImage>();
 	
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
 		tile = new Tile[16];
 		mapTileNum = new int[gp.maxMaps][gp.maxWorldCol][gp.maxWorldRow];
+		renderedMaps = new BufferedImage[gp.maxMaps];
 		try {
 			defaultPack = ImageIO.read(new File(Main.gameDir + "/res/defaultPack.png"));
 			images = UtilityBox.fromSheet(defaultPack, 16, 16);
@@ -46,11 +32,12 @@ public class TileManager  {
 		}
 		
 		getTileImage();
-		loadMap(new File(Main.gameDir + "/res/maps/map_start.txt"), 0);
+		loadMap(new File(Main.gameDir + "/res/maps/map_cal.txt"), 0);
+		loadMap(new File(Main.gameDir + "/res/maps/map_sample.txt"), 1);
 	}
 	public void getTileImage() {
-		setup(0, false, true); //ground
-		setup(1, true, true);
+		setup(0); //ground
+		setup(1, true); //wall
 		setup(2);
 		setup(3);
 		setup(4);
@@ -75,17 +62,6 @@ public class TileManager  {
 			tile[index].image = UtilityBox.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
 			tile[index].collision = collision;
 	}
-	
-	public void setup(int index, boolean collision, boolean rotate) {
-		tile[index] = new Tile();
-		tile[index].image = images[index];
-		tile[index].image = UtilityBox.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
-		tile[index].collision = collision;
-		tile[index].canRotate = rotate;
-	}
-	
-	
-
 	
 	public void loadMap(File mapPath, int map) {
 		try {
@@ -115,61 +91,54 @@ public class TileManager  {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+		
+		draw_to_image(map);
 	}
 	
-	public void draw(Graphics2D g2) {
+	void draw_to_image(int i) {
 		int worldCol = 0;
 		int worldRow = 0;
+		
+		Graphics2D g2 = null;
 		
 		while(worldCol<gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 			int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
 			
 			int worldX = worldCol * gp.tileSize;
 			int worldY = worldRow * gp.tileSize;
-			int screenX = worldX - gp.player.worldX + gp.player.screenX;
-			int screenY = worldY - gp.player.worldY + gp.player.screenY;
-			
-			//stop moving the camera at the edge
-			if(gp.player.screenX > gp.player.worldX) {
-				screenX = worldX;
-			}
-			if(gp.player.screenY > gp.player.worldY) {
-				screenY = worldY;
-			}
-			int rightOffset =  gp.screenWidth - gp.player.screenX;
-			if(rightOffset > gp.worldWidth - gp.player.worldX) {
-				screenX = gp.screenWidth - (gp.worldWidth - worldX);
-			}
-			int bottomOffset = gp.screenHeight - gp.player.screenY;
-			if(bottomOffset > gp.worldHeight - gp.player.worldY) {
-				screenY= gp.screenHeight - (gp.worldHeight - worldY);
-			}
 			
 			
-			if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-			   worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-			   worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-			   worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-				System.out.println();
+			int side = 50*gp.tileSize;
+			//renderedMaps
+			if(renderedMaps[i] == null) { 
+				renderedMaps[i] = new BufferedImage(side, side, BufferedImage.TYPE_INT_RGB);
+			} else {
+				g2 = renderedMaps[i].createGraphics();
 				
-				g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+				g2.drawImage(tile[tileNum].image, worldX, worldY, gp.tileSize, gp.tileSize, null);
 				
-			}
-			else if(gp.player.screenX > gp.player.worldX ||
-					gp.player.screenY > gp.player.worldY || 
-					rightOffset > gp.worldWidth - gp.player.worldX ||
-					bottomOffset > gp.worldHeight - gp.player.worldY) {
-				g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+				
+				worldCol++;
+				
+				if(worldCol == gp.maxWorldCol) {
+					worldCol = 0;
+					worldRow++;
+				}
 			}
 			
 			
-			worldCol++;
+			//
 			
-			if(worldCol == gp.maxWorldCol) {
-				worldCol = 0;
-				worldRow++;
-			}
+			
 		}
+		
+		g2.dispose();
+	}
+	
+	public void draw(Graphics2D g2) {
+		int screenX = 0 - gp.player.worldX + gp.player.screenX;
+		int screenY = 0 - gp.player.worldY + gp.player.screenY;
+		g2.drawImage(renderedMaps[gp.currentMap], screenX, screenY, 50*gp.tileSize, 50*gp.tileSize, null);
 		
 	}
 	

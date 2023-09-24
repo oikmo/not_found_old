@@ -3,15 +3,20 @@ package org.not_found.entity.monster;
 import java.util.Random;
 
 import org.not_found.main.GamePanel;
+import org.not_found.object.OBJ_Coin_Bronze;
+import org.not_found.object.ui.OBJ_Heart;
+import org.not_found.object.ui.OBJ_Mana;
+import org.not_found.projectile.PROJ_Arrow;
 
-public class MON_EYE extends MONSTER {
+public class MON_EYE_ARROW extends MONSTER {
 	GamePanel gp;
 	
-	public MON_EYE(GamePanel gp) {
+	public MON_EYE_ARROW(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		name = "EYE";
+		projectile = new PROJ_Arrow(gp);
 		speed = 1;
 		maxLife = 8;
 		life = maxLife;
@@ -59,10 +64,35 @@ public class MON_EYE extends MONSTER {
 			direction = Direction.Idle;
 		}
 		
+		int i = new Random().nextInt(100)+1;
+		int limit = new Random().nextInt(99) + 1;
+		if(i >= limit && limit > 60 && !projectile.alive && shotAvailableCounter == shotCounterLimit) {
+			projectile.set(worldX, worldY, direction, true, this);
+			shotAvailableCounter = 0;
+			gp.projectiles.add(projectile);
+			
+		}
+		
 	}
 	
 	public void damageReaction() {
 		actionLockCounter = 0;
 		direction = gp.player.direction;
+	}
+	
+	public void checkDrop() {
+		//cast a die
+		int i = new Random().nextInt(100)+1;
+		
+		//set the monster drop
+		if(i < 50) {
+			dropItem(new OBJ_Coin_Bronze(gp));
+		}
+		if(i >= 50 && i < 50) {
+			dropItem(new OBJ_Heart(gp));
+		}
+		if(i >= 75 && i < 100) {
+			dropItem(new OBJ_Mana(gp));
+		}
 	}
 }
